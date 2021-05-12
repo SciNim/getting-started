@@ -1,4 +1,4 @@
-![workflow](https://github.com/SciNim/nimfftw3/actions/workflows/docs.yml/badge.svg)
+![workflow](https://github.com/SciNim/getting-started/actions/workflows/docs.yml/badge.svg)
 
 # Tutorials on using packages in SciNim
 
