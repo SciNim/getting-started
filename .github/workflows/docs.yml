@@ -22,7 +22,7 @@ jobs:
       - name: Fetch
         run: git fetch
       - name: Rebase
-        run: git rebase -Xours origin/master
+        run: git rebase -Xours origin/main
       - name: Gendoc
         run: nimble genbook
       - name: Commit files
