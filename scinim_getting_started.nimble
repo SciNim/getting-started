@@ -10,7 +10,6 @@ requires "nim >= 1.2.0"
 requires "nimib"
 requires "ggplotnim"
 
-
 import os
 task genbook, "genbook":
   for kind, path in walkDir("books"):
