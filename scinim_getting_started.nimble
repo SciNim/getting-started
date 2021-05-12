@@ -3,6 +3,7 @@ version       = "0.1.0"
 author        = "SciNim contributors"
 description   = "SciNim getting started examples"
 license       = "MIT"
+skipDirs      = @["books"]
 
 # Dependencies
 requires "nim >= 1.2.0"
