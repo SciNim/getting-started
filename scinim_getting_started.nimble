@@ -19,5 +19,5 @@ task genbook, "genbook":
       if ext == ".nim":
         selfExec("r " & path)
     if kind == pcDir: discard
-  let cmdRsync = "rsync -a --exclude \"*.nim\" books/ docs/"
+  let cmdRsync = "rsync -a --exclude \"*.gitignore\" --exclude \"*.nim\" books/ docs/"
   exec(cmdRsync)
