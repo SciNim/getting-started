@@ -12,12 +12,12 @@ requires "ggplotnim"
 
 import os
 task genbook, "genbook":
-  for kind, path in walkDir("books"):
-    # This can be used to generate an index.html ?
-    if kind == pcFile:
-      let (dir, name, ext) = path.splitFile()
-      if ext == ".nim":
-        selfExec("r " & path)
-    if kind == pcDir: discard
+  # TODO generate an index.html file that's not hardcoded
+  for path in walkDirRec("books"):
+    let (dir, name, ext) = path.splitFile()
+    if ext == ".nim":
+      selfExec("r " & path)
+  # Using rsync will recopy structure excluding gitignore and *.nim files
+  # This way we can just recursively execute every Nimib file that will generate html file and commiting the generated html files in docs
   let cmdRsync = "rsync -a --exclude \"*.gitignore\" --exclude \"*.nim\" books/ docs/"
   exec(cmdRsync)
