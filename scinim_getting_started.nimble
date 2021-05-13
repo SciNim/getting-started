@@ -7,7 +7,7 @@ skipDirs      = @["books"]
 
 # Dependencies
 requires "nim >= 1.2.0"
-requires "nimib@#486c22d9cd9c40f32f00efe9fd46630b9bd4d3c7"
+requires "nimib#486c22d9cd9c40f32f00efe9fd46630b9bd4d3c7"
 requires "ggplotnim"
 
 import os
