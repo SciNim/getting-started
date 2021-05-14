@@ -8,7 +8,7 @@ skipFiles = @["nbPostInit.nim"]
 
 # Dependencies
 requires "nim >= 1.2.0"
-requires "nimib#486c22d9cd9c40f32f00efe9fd46630b9bd4d3c7"
+requires "nimib#main"
 requires "ggplotnim"
 
 import os
@@ -17,4 +17,5 @@ task genbook, "genbook":
   for path in walkDirRec("books"):
     let (dir, name, ext) = path.splitFile()
     if ext == ".nim":
+      echo "exec(" & path & ")"
       selfExec("r " & path)
