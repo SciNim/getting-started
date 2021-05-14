@@ -4,6 +4,7 @@ author        = "SciNim contributors"
 description   = "SciNim getting started examples"
 license       = "MIT"
 skipDirs      = @["books"]
+skipFiles = @["nbPostInit.nim"]
 
 # Dependencies
 requires "nim >= 1.2.0"
