@@ -4,7 +4,7 @@ author        = "SciNim contributors"
 description   = "SciNim getting started examples"
 license       = "MIT"
 skipDirs      = @["books"]
-skipFiles = @["nbPostInit.nim"]
+skipFiles     = @["nbPostInit.nim"]
 
 # Dependencies
 requires "nim >= 1.2.0"
@@ -18,4 +18,4 @@ task genbook, "genbook":
     let (dir, name, ext) = path.splitFile()
     if ext == ".nim":
       echo "exec(" & path & ")"
-      selfExec("r " & path)
+      selfExec("r -d:nimibCustomPostInit " & path)

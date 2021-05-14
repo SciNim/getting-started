@@ -1,1 +1,3 @@
-docs/*
+docs/!.gitignore
+docs/!index.html
+docs/
