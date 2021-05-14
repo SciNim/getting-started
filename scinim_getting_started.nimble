@@ -22,7 +22,8 @@ task genbook, "genbook":
       nimFilePaths.add (path, name)
   var liElements = "<ul>\n"
   for (path, name) in nimFilePaths:
-    liElements &= &"<li><a href=\"{path}\">{name}</a></li>\n"
+    let htmlPath = path.split(".")[0] & ".html"
+    liElements &= &"<li><a href=\"{htmlPath}\">{name}</a></li>\n"
   liElements &= "</ul>"
   writeFile("books/toc.mustache", liElements)
   for (path, name) in nimFilePaths:
