@@ -26,4 +26,4 @@ task genbook, "genbook":
   liElements &= "</ul>"
   writeFile("books/toc.mustache", liElements)
   for (path, name) in nimFilePaths:
-    selfExec("r -d:nimibCustomPostInit " & path)
+    selfExec("r -d:nimibCustomPostInit " & "books/" & path)
