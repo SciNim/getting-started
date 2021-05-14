@@ -17,5 +17,5 @@ task genbook, "genbook":
   for path in walkDirRec("books"):
     let (dir, name, ext) = path.splitFile()
     if ext == ".nim":
-      echo "exec(" & path & ")"
+      # echo "exec(" & path & ")"
       selfExec("r -d:nimibCustomPostInit " & path)
