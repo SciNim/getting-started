@@ -24,8 +24,8 @@ task genbook, "genbook":
   var liElements = "<ul>\n"
   for (path, name) in nimFilePaths:
     let htmlPath = path.split(".")[0] & ".html"
-    liElements &= &"<li><a href=\"{htmlPath}\">{name}</a></li>\n"
+    liElements &= "<li><a href=\"{{> path_to_home}}/" & htmlPath & &"\">{name}</a></li>\n"
   liElements &= "</ul>"
-  writeFile("books/toc.mustache", liElements)
+  writeFile("docs/toc.mustache", liElements)
   for (path, name) in nimFilePaths:
     selfExec("r -d:nimibCustomPostInit " & "books/" & path)
