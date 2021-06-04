@@ -1,0 +1,22 @@
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "install_nim"
+        id: install_nim
+        uses: iffy/install-nim@v3
+      - run: cat nimibook.nimble
+      - run: nimble install -y
+      - name: Gen Book
+        run: nimble genbook
+
