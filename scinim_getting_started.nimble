@@ -9,7 +9,7 @@ binDir        = "bin"
 
 # Dependencies
 requires "nim >= 1.2.0"
-requires "nimibook"
+requires "https://github.com/pietroppeter/nimibook"
 requires "ggplotnim"
 
 task genbook, "build book":
