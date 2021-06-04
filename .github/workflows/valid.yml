@@ -15,8 +15,7 @@ jobs:
       - name: "install_nim"
         id: install_nim
         uses: iffy/install-nim@v3
-      - run: cat nimibook.nimble
       - run: nimble install -y
-      - name: Gen Book
+      - name: GenBook
         run: nimble genbook
 
