@@ -1,3 +1,4 @@
-docs/!.gitignore
-docs/!index.html
 docs/
+bin/
+book/*.mustache
+getting_started

@@ -1,7 +1,8 @@
-import nimib
+import nimib, nimibook
 import ggplotnim
 
 nbInit()
+nbUseNimibook
 
 nbText: """
 # Simple plotting using [ggplotnim](https://github.com/Vindaar/ggplotnim)
