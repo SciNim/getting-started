@@ -2,5 +2,5 @@
 
 # Tutorials on using packages in SciNim
 
-Use ``nimble genbook`` to generate the tutorials
+Use ``nimble genbook`` to generate the tutorials.
 
