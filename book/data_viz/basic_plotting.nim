@@ -17,6 +17,7 @@ nbCode:
   let df1 = seqsToDf(x1, y1)
   ggplot(df1, aes("x1", "y1")) +
     geom_line() +
+    theme_opaque() +
     ggsave("images/line_plot.png")
 
 nbImage("images/line_plot.png")
@@ -29,6 +30,7 @@ nbCode:
   let df2 = seqsToDf(x2, y2)
   ggplot(df2, aes("x2", "y2")) +
     geom_point() +
+    theme_opaque() +
     ggsave("images/scatter_plot.png")
 
 nbImage("images/scatter_plot.png")
