@@ -22,6 +22,15 @@ nbCode:
 
 nbImage("images/line_plot.png")
 
+nbText: """
+Every plot in `ggplotnim` is created from an input `DataFrame` using the `ggplot` procedure. The `aes`
+argument describes the so called "aesthetics", which are simply the columns of the `DataFrame` to
+visualize. From here a plot is built up "by layers".
+
+Note: the `theme_opaque` is only used here to give the output PNG a white background so it's more
+visible in this book when using dark themes.
+"""
+
 nbText: """## Scatter plot"""
 nbCode:
   import ggplotnim
@@ -36,7 +45,7 @@ nbCode:
 nbImage("images/scatter_plot.png")
 
 nbText: """
-Notice how similar the two code snippet were. This is the general structure of ggplotnim, you add geoms and combine them in different way.
+Notice how similar the two code snippet are. This is the general structure of `ggplotnim`, you add geoms and combine them in different ways.
 Try for yourself what happens if you have *both* `geom_line` and `geom_point`.
 """
 
