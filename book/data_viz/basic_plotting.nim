@@ -45,7 +45,7 @@ nbCode:
 nbImage("images/scatter_plot.png")
 
 nbText: """
-Notice how similar the two code snippet are. This is the general structure of `ggplotnim`, you add geoms and combine them in different ways.
+Notice how similar the two code snippets are. This is the general structure of `ggplotnim`, you add geoms and combine them in different ways.
 Try for yourself what happens if you have *both* `geom_line` and `geom_point`.
 """
 
