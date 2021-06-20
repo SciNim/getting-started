@@ -232,11 +232,18 @@ using `copyMem` (Nim's `memcpy`). Otherwise it contains a `seq[T]` for the data.
 difference between a sequence and a tensor is the ability to handle multidimensional data
 efficiently.
 
-In case of a `seq[T]` we either have to manually handle the indexing of the sequence or
-deal with the inefficiencies of a nested sequence `seq[seq[T]]`. An Arraymancer tensor
-always stores data in a one-dimensional data storage. Not only does it make iterating over
-all data faster, it also allows for essentially free reshaping of the data, because the
-shape is only a piece of meta data.
+In case of a `seq[T]` we either have to manually handle the indexing of the sequence (if we
+store ND data in a 1D sequence) or deal with the inefficiencies of a nested sequence `seq[seq[T]]`.
+In that case *every* access requires an additional pointer indirection."""
+nbCodeBlock:
+  let x = @[ @[1, 2, 3], @[4, 5, 6] ]
+  echo x[1][0]
+nbText: """
+The access `[1][0]` in this example first returns a sequence, which we have to dereference
+*again* to get to an element. This makes accessing data expensive.
+An Arraymancer tensor on the other hand always stores data in a one-dimensional data storage.
+Not only does it make iterating over and accessing data faster, it also allows for essentially
+free reshaping of the data, because the shape is only a piece of meta data.
 
 Another important bit of information is that tensors have reference semantics. That means
 assigning a tensor to a new variable and modifying that variable also modifies the initial
