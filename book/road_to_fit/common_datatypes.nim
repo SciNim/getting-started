@@ -282,12 +282,12 @@ This essentially does not have any meaningful overhead over the creation of `t3`
 Some more ways to construct a tensor:
 """
 nbCodeBlock:
-  let t1 = zeros[float](9) # a tensor that is explicit 0, the default
-  let t2 = ones[float](9) # a tensor that is initialized to 1
-  let t3 = newTensorWith[float]([3, 3], 5) # a 3x3 tensor initialized to 5
-  let t4 = newTensorUninit[float](10) # a tensor that is *not* initialized
-  let t5 = arange(0, 10) # the range 0 to 10 as a `Tensor[int]`
-  let t6 = linspace(0.0, 10.0, 1000) # 1000 linearly spaced points between 0 and 10
+  let t1 = zeros[float](9) ## a tensor that is explicit 0, the default
+  let t2 = ones[float](9) ## a tensor that is initialized to 1
+  let t3 = newTensorWith[float]([3, 3], 5) ## a 3x3 tensor initialized to 5
+  let t4 = newTensorUninit[float](10) ## a tensor that is *not* initialized
+  let t5 = arange(0, 10) ## the range 0 to 10 as a `Tensor[int]`
+  let t6 = linspace(0.0, 10.0, 1000) ## 1000 linearly spaced points between 0 and 10
 nbText: """
 These are only a few common ways to create a tensor.
 
