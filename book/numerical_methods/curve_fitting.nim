@@ -7,6 +7,10 @@ nbUseNimibook
 nbText: """
 # Curve fitting using [mpfit](https://github.com/Vindaar/nim-mpfit)
 
+This section will cover a curve fitting example. It assumes you are familiar with the
+data type and plotting introductions from the "Introduction" section. Here we will
+combine this knowledge to perform a simple curve fit at the end.
+
 With our acquired knowledge, we will now:
 - read some data from a CSV file into a data frame
 - perform a curve fit on the data using some functio
