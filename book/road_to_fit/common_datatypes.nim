@@ -309,6 +309,6 @@ As we won't make use of that in this tutorial, we won't cover it here. See the A
 Of course Arraymancer provides a large amount of additional functionality, starting from
 linear algebra, to statistics, machine learning and more. View the full documentation here:
 
-https://mratsim.github.io/Arraymancer/
+[Arraymancer documentation](https://mratsim.github.io/Arraymancer/)
 """
 nbSave
