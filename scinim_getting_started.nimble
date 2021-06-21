@@ -11,9 +11,12 @@ binDir        = "bin"
 requires "nim >= 1.2.0"
 requires "https://github.com/pietroppeter/nimibook"
 requires "ggplotnim"
+requires "datamancer >= 0.1.5"
+requires "mpfit"
+requires "numericalnim"
+
 
 task genbook, "build book":
   exec("nimble build -d:release")
   exec("./bin/getting_started init")
   exec("./bin/getting_started build")
-
