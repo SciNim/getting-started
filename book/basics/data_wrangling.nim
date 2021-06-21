@@ -373,13 +373,37 @@ such an example!
 
 As one of the last things to cover, we will quickly talk about data frames in wide and
 long format. In a way the example data frame above with a column "Class" and a column
-"Num" can be considered a data frame in "long" format. In wide format this data frame
-instead would look like:
+"Num" can be considered a data frame in "long" format. Long format in the sense that
+we have one discrete column "Class" that maps to different "Num" values. Because the
+column "Class" contains *discrete* values, We can imagine "transposing" the data frame
+to instead having columns "A", "B", "C" instead with the values for each of these *groups*
+is the values in the corresponding columns. Let's look at:
+- this data frame
+- the output of grouping that data frame by "Class"
+- the same data frame in wide format
+
+for clarity:
 """
 nbCodeBlock:
-  let df = seqsToDf({"A" : [1, 8, 0], "B" : [3, 4, 0], "C" : [5, 7, 2]})
-  echo df
+  let dfLong = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
+                          "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
+  echo "Long format:\n", dfLong
+  echo "----------------------------------------"
+  echo "Grouping by `Class`:"
+  for _, subDf in groups(dfLong.group_by("Class")):
+    echo subDf
+  echo "----------------------------------------"
+  let dfWide = seqsToDf({"A" : [1, 8, 0], "B" : [3, 4, 0], "C" : [5, 7, 2]})
+  echo "Wide format:\n", dfWide
 nbText: """
+As we can see, the difference between wide and long format is the way the `groub_by` results
+are "assembled". As different columns for each group (wide format) or as two (key, value)
+columns (long format).
+
+The conversion from wide -> long format is always possible. But the the mapping of long -> wide
+format requires there to be the the same number of entries for each class. If that condition
+is not satisfied, there will be missing values in the columns of the separate classes.
+
 Depending on circumstances one might have input data in either order. However, in particular
 for plotting purposes the long format is often more convenient as it allows to classify the
 discrete classes using different colors, shapes etc. automatically.
