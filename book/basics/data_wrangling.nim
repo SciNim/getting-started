@@ -1,4 +1,8 @@
-import nimib, nimibook
+# cannot import `Value` because it clashes with `mustache.values.Value`. This is fixed for
+# Nim version >= 1.5 (fully qualified type for formulas used) but important on < 1.5 (cannot
+# fully qualify types there)
+import nimib except Value
+import nimibook
 import datamancer
 
 nbInit()
