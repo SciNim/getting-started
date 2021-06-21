@@ -376,8 +376,8 @@ long format. In a way the example data frame above with a column "Class" and a c
 "Num" can be considered a data frame in "long" format. Long format in the sense that
 we have one discrete column "Class" that maps to different "Num" values. Because the
 column "Class" contains *discrete* values, We can imagine "transposing" the data frame
-to instead having columns "A", "B", "C" instead with the values for each of these *groups*
-is the values in the corresponding columns. Let's look at:
+to columns "A", "B", "C" instead with the values for each of these *groups* as the values
+in the corresponding columns. Let's look at:
 - this data frame
 - the output of grouping that data frame by "Class"
 - the same data frame in wide format
