@@ -1,0 +1,81 @@
+
+name: PR Preview
+
+on:
+  workflow_run:
+    workflows:
+      - valid
+    types:
+      - completed
+
+jobs:
+  deploy:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: potiuk/get-workflow-origin@v1_1
+        id: source-run-info
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sourceRunId: ${{ github.event.workflow_run.id }}
+      - run: echo sourceHeadSha = ${{ steps.source-run-info.outputs.sourceHeadSha }}
+      
+      - name: Show pending status check
+        uses: Sibz/github-status-action@v1.1.5
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: Netlify preview
+          sha: ${{ steps.source-run-info.outputs.sourceHeadSha }}
+          state: pending
+      
+      - name: 'Download artifact'
+        uses: actions/github-script@v3.1.0
+        with:
+          script: |
+            var artifacts = await github.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{github.event.workflow_run.id }},
+            });
+            console.log("Target artifact: " + "build-${{ steps.source-run-info.outputs.sourceHeadSha }}")
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              console.log("Found artifacts: " + artifact.name)
+              return artifact.name == "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"
+            })[0];
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/docs.zip', Buffer.from(download.data));
+      - run: rm -r docs
+      - run: unzip -d docs/ docs.zip
+
+      - run: echo Deploy Alias = ${{ steps.source-run-info.outputs.sourceHeadSha }}
+      - uses: jsmrcaga/action-netlify-deploy@master
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          deploy_alias: ${{ steps.source-run-info.outputs.sourceHeadSha }}
+          build_directory: docs/
+          install_command: ls
+          build_command: ls
+      
+      #- uses: geekyeggo/delete-artifact@v1
+      #  with:
+      #    name: build-${{ github.event.workflow_run.head_branch }}
+            
+      # Creates a status check with link to preview
+      - name: Status check
+        uses: Sibz/github-status-action@v1.1.5
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: Netlify preview
+          description: Click link to preview ⇒
+          sha: ${{ steps.source-run-info.outputs.sourceHeadSha }}
+          state: success
+          target_url: https://${{ steps.source-run-info.outputs.sourceHeadSha }}--scinim-getting-started.netlify.app
