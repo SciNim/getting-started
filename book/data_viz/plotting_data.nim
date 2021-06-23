@@ -197,14 +197,17 @@ Input data and aesthetics of course are not enough to actually draw a plot. So f
 stated what part of the data to use and added a discrete classification by one column (fill
 and color the "Type" column).
 
-In a sense this has described our coordinate system so far (from the continuity or discreteness)
-we can determine the ranges / classes for each axis, same for the colors. Now we need to tell
-the plot what to apply this to.
+In a sense this has described a coordinate system for our plot. From the continuous / discrete columns
+we can determine the data ranges ranges / classes for each "axis". Every aesthetic can
+be considered an "axis" here. For example a scatter plot of `x` and `y` values that is also classified
+by color using discrete column `A` and by shape using discrete column `B` is technically a 4
+dimensional representation.
 
-This is where the layering structure of `ggplot` actually becomes apparent, because now we
-will just list all kinds of `geoms` we wish to draw. The order we list them directly determines
-the order they are drawn in (the later ones are drawn on top of the former ones, which is important
-to remember for more busy plots).
+We now need to apply the input data and selection of columns to things we can actually draw.
+
+This is where the layering structure of `ggplot` actually becomes apparent, because from here
+we will list all kinds of `geoms` to draw. The order we list them directly determines
+the order they are drawn in.
 
 This is what all available `geom_*` procedures are for. They return `Geom` variant objects that mainly
 just store their kind and possibly some specific information required to draw them.
