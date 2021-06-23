@@ -66,7 +66,8 @@ discrete entries of column 'Type'. With it draw:
 - a scatter plot in the center positions of each bin (`binPosition = "center"`), as the data
   contains bin edges.
 - errorbars for all data of type 'background' (`data = df.filter(…)`), where the error bars range
-  from 'yMin' to 'yMax' for all points, also in center position.
+  from `yMin` to `yMax` for all points, also in center position.
+
 Finally, customize x (`xlab`) and y (`ylab`) labels and add a title (`ggtitle`)."
 
 The only thing we left out is the `ggsave` call, as we only have a dummy data frame here. We
@@ -245,6 +246,9 @@ nbCode:
                                         toSeq(0 ..< 25).mapIt(rand(10).float)),
                       "Type" : concat(newSeqWith(25, "background"),
                                       newSeqWith(25, "candidates")) })
+  echo "Input data frame: "
+  echo "Head(10): ", df.head(10).pretty(10)
+  echo "Tail(10): ", df.tail(10).pretty(10)
   ggplot(df, aes("Energy", "Counts", fill = "Type", color = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point(binPosition = "center") +
@@ -260,6 +264,9 @@ nbImage("images/multi_layer_histogram.png")
 nbText: """
 
 Maybe things have become a bit less confusing now.
+
+Try to look at the plotting command and the resulting plot and see if you can understand how the
+two relate to one another!
 """
 
 nbSave
