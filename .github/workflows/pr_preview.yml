@@ -32,6 +32,7 @@ jobs:
           authToken: ${{ secrets.GITHUB_TOKEN }}
           context: Netlify preview
           sha: ${{ steps.source-run-info.outputs.sourceHeadSha }}
+          description: Deploying site to Netlify. Please wait...
           state: pending
       
       - name: 'Download artifact'
