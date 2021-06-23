@@ -128,9 +128,8 @@ For the simplest cases (a scatter or line plot, a histogram, ...) we simply hand
 column(s) to draw. Depending on whether a column contains discrete or continuous data decides
 how the axis (or additional scale) will be laid out.
 
-To construct such an `Aesthetic` argument the `aes` macro is used (it's a macro and not a
-procedure so that we don't need N generic arguments). It can take the following
-arguments:
+To construct such an `Aesthetic` argument the `aes` macro is used. While it is a macro it
+behaves like a regular procedure and can take the following arguments:
 
 - `x`
 - `y`
@@ -185,29 +184,34 @@ now continue our construction. Assume our data frame `df` has columns "Energy" a
 ggplot(df, aes("Energy", "Counts", fill = "Type", color = "Type"))
 ```
 
-If you paid close attention to the plot example above, you will have noticed that for `yMin` and `yMax`
-we did not actually hand a column, but rather a `ggplotnim` formula. This is the main reason `aes` is
-a macro. You can hand *any* formula that references local variables or column references, or simply
-assign constant values (`aes(width = 5)` is perfectly valid). `ggplotnim` will compute the resulting
-values for you automatically before plotting.
-
-### `geoms` - Geometric shapes to fill a plot
-
-Input data and aesthetics of course are not enough to actually draw a plot. So far we have only
-stated what part of the data to use and added a discrete classification by one column (fill
-and color the "Type" column).
-
 In a sense this has described a coordinate system for our plot. From the continuous / discrete columns
 we can determine the data ranges ranges / classes for each "axis". Every aesthetic can
 be considered an "axis" here. For example a scatter plot of `x` and `y` values that is also classified
 by color using discrete column `A` and by shape using discrete column `B` is technically a 4
 dimensional representation.
 
-We now need to apply the input data and selection of columns to things we can actually draw.
+#### Formulas as `aes` arguments
 
-This is where the layering structure of `ggplot` actually becomes apparent, because from here
-we will list all kinds of `geoms` to draw. The order we list them directly determines
-the order they are drawn in.
+If you paid close attention to the plot example above, you will have noticed that for `yMin` and `yMax`
+we did not actually hand a column, but rather a `ggplotnim` [formula](https://scinim.github.io/getting-started/basics/data_wrangling.html). This is the main reason `aes` is a macro.
+
+You can hand *any* formula that references local variables or column references, or simply assign
+constant values (`aes(width = 5)` is perfectly valid). `ggplotnim` will compute the resulting values
+for you automatically before plotting.
+
+To summarize, you can use one of the following three things as values to `aes` arguments:
+- a string literal referring to a column
+- a formula computing some constant value or some operation using data frame columns
+- a constant (non string) value that can be stored in a data frame
+
+For formulas and constant values the corresponding absolute value will be computed for each
+data frame entry to be plotted.
+
+### `geoms` - Geometric shapes to fill a plot
+
+Input data and aesthetics of course are not enough to actually draw a plot. So far we have only
+stated what part of the data to use and added a discrete classification by one column (fill
+and color the "Type" column).
 
 This is what all available `geom_*` procedures are for. They return `Geom` variant objects that mainly
 just store their kind and possibly some specific information required to draw them.
@@ -237,10 +241,28 @@ should be `"center"` instead of the default `"left"` to have `x` indicate the bi
 The possibilities are almost endless. You can combine any geom with (almost) any option and
 it *should just work* (few exceptions exist, e.g. `geom_raster` only draws fixed size tiles for performance).
 
-## Another look at *that* plot
+One final thing to mention: the `geom_histogram` procedures *also* take `data` and `aes`
+arguments. This means one can override the data or the aesthetics for a single geom!
 
-Let's look at the plot from above again. This time read the command with the gained knowledge and then
-see if the explanation in words makes more sense now.
+#### Applying geom layers to build the initial plot
+
+We now need to apply the input data and selection of columns to things we can actually draw.
+
+This is where the layering structure of `ggplot` actually becomes apparent, because from here
+we will list all kinds of `geoms` to draw. The order we list them directly determines
+the order they are drawn in.
+
+Step by step we will now add layer by layer and look at what happens with each to reproduce
+the plot talked about in the beginning. For that purpose we will generate a data frame that we
+will use in all following snippets. It will contain 3 columns:
+- "Energy": a column of twice 25 elements covering the range (0, 10) with 25 entries
+- "Counts": a column of twice 25 random entries between 0 and 10. The first 25 elements
+  are drawn as floats (to get fractional values) and the second 25 entries will be random
+  integer numbers
+- "Type": simply a column that designates the first 25 rows as "background" and the latter
+  25 as "calibration"
+
+Our construction in the following is a bit artificial of course.
 """
 nbCode:
   import ggplotnim, random, sequtils
@@ -252,6 +274,214 @@ nbCode:
   echo "Input data frame: "
   echo "Head(10): ", df.head(10).pretty(10)
   echo "Tail(10): ", df.tail(10).pretty(10)
+nbText: """
+What we want to achieve as a final plot is the following, where the explanations
+are mainly due to the original motivation of where the plot example is taken from:
+- a histogram for each "Type", drawn with one color each and a bit transparent so they
+  are visible where they overlap. Let each bin content correspond to some data point
+  at that energy.
+- also plot the actual data points on top of the bins. For the "background" like data
+  we have fractional values as it's values are normalized to the "candidates" (simply
+  by scaling from some hypothetical time for background / time for candidate data).
+- For the background data we want error bars. They represent our uncertainty of the
+  background hypothesis.
+- the candidates are just counts we measured. They don't have inherent uncertainties
+  (from a frequentist perspective we have to repeat the experiment many times and *then*
+  we can write down some variance in our candidates)
+
+##### Building layer 1 - `geom_histogram`
+
+So, let's start with drawing a histogram of "Energy" and "Counts":
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts")) +
+    geom_histogram() +
+    ggsave("images/multi_layer_histogram_0.png")
+nbText: """
+So, uhm. This looks rather broken! Or at least not what we want. What's going on?
+We're asking for a histogram! By default this means `ggplotnim` will *compute* the
+histogram based on the `x` aesthetic. (Note: it should at least print a warning
+message if a `y` aesthetic is given that user probably wants identity stats!).
+Instead our data is *already* binned. We need the `stat = "identity"` option to
+the `geom_histogram` call:
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts")) +
+    geom_histogram(stat = "identity") +
+    ggsave("images/multi_layer_histogram_1.png")
+nbText: """
+
+Ahh, this looks much better. At least we have something that sort of resembles our
+input data! But it's still rather ugly. Why? Because we cover the `x` range of
+the data twice. So we see two things on top of each other. This is where
+classifying by a discrete variable comes in. Let's `color` by the "Type" column:
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type")) +
+    geom_histogram(stat = "identity") +
+    ggsave("images/multi_layer_histogram_2.png")
+nbText: """
+
+Ohh, interesting. See how we have an automatic legend based on the
+two classes found in column "Type".
+
+Well, our plot wants to run out of our graph, which is probably what
+you were focusing on, isn't it? (Note: this is also a bug. For some reason
+stacking isn't properly handled right now for the data range
+calculation. Issue #99). Let's ignore data running out of the plot for
+now, because we can't see anything anyway.
+
+But didn't we say we want to have classification by `color`? For bars
+`color` refers to the *outline* of a bar. We need to add a `fill` to get the
+bars into a fully colored object.
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity") +
+    ggsave("images/multi_layer_histogram_3.png")
+nbText: """
+Aha! Now we begin to see why the data is running out of our plot. Apparently
+both classes are being *stacked* on top of one another. This is the default
+behavior for classified histograms so that all the data is visible. Without
+transparency we would hide data otherwise.
+
+Aside from the bug that causes the data to run out of the plot (we could
+manually set a range using `ylim`). To change this behavior to the one we want
+we will apply `position = "identity"`:
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity") +
+    ggsave("images/multi_layer_histogram_4.png")
+nbText: """
+This is already looking somewhat reasonable, barring the fact that we now
+have the exact problem stacking is supposed to fix. One histogram overlaps
+the other. We can solve that by applying 50% alpha channel:
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5)) +
+    ggsave("images/multi_layer_histogram_5.png")
+nbText: """
+This is quite pretty already. The only small annoyance is that the outline is still
+sticking out between all bars, which makes it more busy than it should be. Let's fix
+that by drawing the histograms using *outlines* instead of individual bars:
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    ggsave("images/multi_layer_histogram_6.png")
+nbText: """
+Nice, first layer done! This is the result we want to achieve for the *histogram* part
+of our plot. As we can see, we've added *one* geom to the call chain. One layer.
+
+##### Building layer 2 - `geom_point`
+
+Next up, let's plot some points for the data to better highlight where our actual
+data lies (and to lay the foundation for our error bars). This is as simple as adding
+a single `geom_point` call into the chain:
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point() +
+    ggsave("images/multi_layer_histogram_7.png")
+nbText: """
+But wait. Why are our points on the left side of each bar? Because we defined our
+`Energy` column to contain *bin edges*. This is because different geoms use different
+defaults for their arguments. A histogram with identity statistics essentially interprets
+the `x` axis data as bin edges, whereas point plot of courses uses the `x` values as the
+location where to draw the points.
+
+However, the grammar of graphics allows us to change that as well. Let's tell `geom_point`
+that the data points are *bin centers*:
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point(binPosition = "center") +
+    ggsave("images/multi_layer_histogram_8.png")
+nbText: """
+Perfect, now our points are right where they belong. This concludes layer 2.
+
+##### Building layer 3 - `geom_errorbar`
+
+This leaves us with a single final layer.
+
+"""
+nbCodeInBlock:
+
+
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point(binPosition = "center") +
+    ggsave("images/multi_layer_histogram_9.png")
+nbText: """
+
+"""
+nbCodeInBlock:
+  #ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+  #  geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+  #  geom_point(binPosition = "center") +
+  #  geom_errorbar() +
+  #  ggsave("images/multi_layer_histogram_10.png")
+nbText: """
+
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point(binPosition = "center") +
+    geom_errorbar(aes = aes(yMin = f{`Counts` - 1})) +
+    ggsave("images/multi_layer_histogram_11.png")
+nbText: """
+
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point(binPosition = "center") +
+    geom_errorbar(data = df.filter(f{`Type` == "background"}), aes = aes(yMin = f{`Counts` - 1})) +
+    ggsave("images/multi_layer_histogram_12.png")
+nbText: """
+
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point(binPosition = "center") +
+    geom_errorbar(data = df.filter(f{`Type` == "background"}), aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)})) +
+    ggsave("images/multi_layer_histogram_13.png")
+nbText: """
+
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point(binPosition = "center") +
+    geom_errorbar(data = df.filter(f{`Type` == "background"}),
+                  aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
+    ggsave("images/multi_layer_histogram_14.png")
+nbText: """
+
+"""
+nbCodeInBlock:
+  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point(binPosition = "center") +
+    geom_errorbar(data = df.filter(f{`Type` == "background"}),
+                  aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
+    xlab("Energy [keV]") + ylab("#") +
+    ggtitle("A multi-layer plot of a histogram and scatter plot with error bars") +
+    ggsave("images/multi_layer_histogram_15.png")
+nbText: """
+
+## Another look at *that* plot
+
+Let's look at the plot from above again. This time read the command with the gained knowledge and then
+see if the explanation in words makes more sense now.
+"""
+nbCode:
   ggplot(df, aes("Energy", "Counts", fill = "Type", color = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point(binPosition = "center") +
@@ -270,6 +500,15 @@ Maybe things have become a bit less confusing now.
 
 Try to look at the plotting command and the resulting plot and see if you can understand how the
 two relate to one another!
+
+With the understanding of the grammar of graphics, one can essentially plot everything that
+can be mapped to geometric objects and data, for example [a periodic table](https://github.com/Vindaar/ggplotnim/blob/master/recipes.org#fun-with-elements).
+
+## A gallery of plotting examples
+
+For a large variety of actual plotting example snippets, check out the `ggplotnim` recipe section here:
+
+[Recipes](https://github.com/Vindaar/ggplotnim/blob/master/recipes.org)
 """
 
 nbSave
