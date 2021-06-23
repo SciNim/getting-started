@@ -22,6 +22,10 @@ jobs:
           sourceRunId: ${{ github.event.workflow_run.id }}
       - run: echo sourceHeadSha = ${{ steps.source-run-info.outputs.sourceHeadSha }}
       
+      - name: Set env
+        run: echo "GITHUB_SHA_SHORT=$(echo ${{ steps.source-run-info.outputs.sourceHeadSha }} | cut -c 1-20)" >> $GITHUB_ENV
+      - run: echo Short hash = ${{ env.GITHUB_SHA_SHORT }}
+        
       - name: Show pending status check
         uses: Sibz/github-status-action@v1.1.5
         with:
@@ -55,12 +59,12 @@ jobs:
       - run: rm -r docs
       - run: unzip -d docs/ docs.zip
 
-      - run: echo Deploy Alias = ${{ steps.source-run-info.outputs.sourceHeadSha }}
+      - run: echo Deploy Alias = ${{ env.GITHUB_SHA_SHORT }}
       - uses: jsmrcaga/action-netlify-deploy@master
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          deploy_alias: ${{ steps.source-run-info.outputs.sourceHeadSha }}
+          deploy_alias: ${{ env.GITHUB_SHA_SHORT }}
           build_directory: docs/
           install_command: ls
           build_command: ls
@@ -78,4 +82,4 @@ jobs:
           description: Click link to preview ⇒
           sha: ${{ steps.source-run-info.outputs.sourceHeadSha }}
           state: success
-          target_url: https://${{ steps.source-run-info.outputs.sourceHeadSha }}--scinim-getting-started.netlify.app
+          target_url: https://${{ env.GITHUB_SHA_SHORT }}--scinim-getting-started.netlify.app
