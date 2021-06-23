@@ -41,19 +41,18 @@ as long as you speak its language.
 Let's now consider a somewhat complicated plotting example. Using that we will look at why
 it is called a *grammar* of graphics.
 """
-block:
-  nbCode:
-    ## ignore the dummy `df` here. This is to be able to compile the code (we throw away
-    ## the `ggplot` result as we don't call `ggsave`)
-    let df = seqsToDf({"Energy" : @[1], "Counts" : @[2], "Type" : @["background"]})
-    discard ggplot(df, aes("Energy", "Counts", fill = "Type", color = "Type")) +
-      geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
-      geom_point(binPosition = "center") +
-      geom_errorbar(data = df.filter(f{`Type` == "background"}),
-                    aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0}),
-                    binPosition = "center") +
-      xlab("Energy [keV]") + ylab("#") +
-      ggtitle("A multi-layer plot of a histogram and scatter plot with error bars")
+nbCodeInBlock:
+  ## ignore the dummy `df` here. This is to be able to compile the code (we throw away
+  ## the `ggplot` result as we don't call `ggsave`)
+  let df = seqsToDf({"Energy" : @[1], "Counts" : @[2], "Type" : @["background"]})
+  discard ggplot(df, aes("Energy", "Counts", fill = "Type", color = "Type")) +
+    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_point(binPosition = "center") +
+    geom_errorbar(data = df.filter(f{`Type` == "background"}),
+                  aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0}),
+                  binPosition = "center") +
+    xlab("Energy [keV]") + ylab("#") +
+    ggtitle("A multi-layer plot of a histogram and scatter plot with error bars")
 nbText: """
 It may seem overwhelming. But it's actually simple and can be read from top to bottom.
 In words all this says is:
