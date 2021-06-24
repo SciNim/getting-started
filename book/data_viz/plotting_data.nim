@@ -498,7 +498,7 @@ nbCodeInBlock:
                   aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
     xlab("Energy [keV]") + ylab("#") +
     ggtitle("A multi-layer plot of a histogram and scatter plot with error bars") +
-    ggsave("images/multi_layer_histogram_15.png")
+    ggsave("images/multi_layer_histogram.png")
 nbImage("images/multi_layer_histogram.png")
 nbText: """
 
