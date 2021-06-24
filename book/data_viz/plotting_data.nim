@@ -266,6 +266,7 @@ Our construction in the following is a bit artificial of course.
 """
 nbCode:
   import ggplotnim, random, sequtils
+  randomize(42)
   let df = seqsToDf({ "Energy" : cycle(linspace(0.0, 10.0, 25).toRawSeq, 2),
                       "Counts" : concat(toSeq(0 ..< 25).mapIt(rand(10.0)),
                                         toSeq(0 ..< 25).mapIt(rand(10).float)),
@@ -297,6 +298,7 @@ nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts")) +
     geom_histogram() +
     ggsave("images/multi_layer_histogram_0.png")
+nbImage("images/multi_layer_histogram_0.png")
 nbText: """
 So, uhm. This looks rather broken! Or at least not what we want. What's going on?
 We're asking for a histogram! By default this means `ggplotnim` will *compute* the
@@ -307,21 +309,32 @@ the `geom_histogram` call:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts")) +
-    geom_histogram(stat = "identity") +
+    geom_histogram(stat = "identity", hdKind = hdBars) +
     ggsave("images/multi_layer_histogram_1.png")
+nbImage("images/multi_layer_histogram_1.png")
 nbText: """
+This looks a bit better. At least we have something that sort of resembles our
+input data! But what's that wide gray bar from 0 to roughly 3?
+Our data frame covers the `x` range *twice*. At the intersection from the first,
+- at index 24 - our "Energy" column is `10.0`. From there it jumps back to
+0.0 on the next bin. This leads to a full bin that accidentally covers the full
+range from 0 to 10. Let's check that assumption by printing values between index
+24 and 26 from our data frame:
+"""
+nbCodeInBlock:
+  echo df[24 .. 26]
+nbText: """
+As we can see index 24 with a value of `2.746` is used for a bin with bin width 10.
 
-Ahh, this looks much better. At least we have something that sort of resembles our
-input data! But it's still rather ugly. Why? Because we cover the `x` range of
-the data twice. So we see two things on top of each other. This is where
-classifying by a discrete variable comes in. Let's `color` by the "Type" column:
+To get closer to the plot we want, we will perform classification by a discrete
+variable. Let's `color` by the "Type" column:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type")) +
     geom_histogram(stat = "identity") +
     ggsave("images/multi_layer_histogram_2.png")
+nbImage("images/multi_layer_histogram_2.png")
 nbText: """
-
 Ohh, interesting. See how we have an automatic legend based on the
 two classes found in column "Type".
 
@@ -339,6 +352,7 @@ nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity") +
     ggsave("images/multi_layer_histogram_3.png")
+nbImage("images/multi_layer_histogram_3.png")
 nbText: """
 Aha! Now we begin to see why the data is running out of our plot. Apparently
 both classes are being *stacked* on top of one another. This is the default
@@ -353,6 +367,7 @@ nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity") +
     ggsave("images/multi_layer_histogram_4.png")
+nbImage("images/multi_layer_histogram_4.png")
 nbText: """
 This is already looking somewhat reasonable, barring the fact that we now
 have the exact problem stacking is supposed to fix. One histogram overlaps
@@ -362,6 +377,7 @@ nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5)) +
     ggsave("images/multi_layer_histogram_5.png")
+nbImage("images/multi_layer_histogram_5.png")
 nbText: """
 This is quite pretty already. The only small annoyance is that the outline is still
 sticking out between all bars, which makes it more busy than it should be. Let's fix
@@ -371,6 +387,7 @@ nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     ggsave("images/multi_layer_histogram_6.png")
+nbImage("images/multi_layer_histogram_6.png")
 nbText: """
 Nice, first layer done! This is the result we want to achieve for the *histogram* part
 of our plot. As we can see, we've added *one* geom to the call chain. One layer.
@@ -386,6 +403,7 @@ nbCodeInBlock:
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point() +
     ggsave("images/multi_layer_histogram_7.png")
+nbImage("images/multi_layer_histogram_7.png")
 nbText: """
 But wait. Why are our points on the left side of each bar? Because we defined our
 `Energy` column to contain *bin edges*. This is because different geoms use different
@@ -401,114 +419,109 @@ nbCodeInBlock:
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point(binPosition = "center") +
     ggsave("images/multi_layer_histogram_8.png")
+nbImage("images/multi_layer_histogram_8.png")
 nbText: """
 Perfect, now our points are right where they belong. This concludes layer 2.
 
 ##### Building layer 3 - `geom_errorbar`
 
-This leaves us with a single final layer.
+This leaves us with a single, final layer. Those of the error bars.
+Due to another bug present right now, we cannot call `geom_errorbar` without min / max
+aesthetic args right now (which should in practice raise an exception or
+draw nothing, because without limits error bars make no sense).
 
+So, let's assume we want (arbitrary) error bars that are ± 1 at each
+point. This can be achieved by assigning a formula to the `yMin` and
+`yMax` aesthetic in which we describe this relationship. Start with `yMin`:
 """
 nbCodeInBlock:
-
-
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point(binPosition = "center") +
+    geom_errorbar(aes = aes(yMin = f{`Counts` - 1.0})) +
     ggsave("images/multi_layer_histogram_9.png")
+nbImage("images/multi_layer_histogram_9.png")
 nbText: """
 
-"""
-nbCodeInBlock:
-  #ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-  #  geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
-  #  geom_point(binPosition = "center") +
-  #  geom_errorbar() +
-  #  ggsave("images/multi_layer_histogram_10.png")
-nbText: """
+Looking closely, we see that the error bars in some bins go to
+negative values! That's not acceptable for us. Error bars on counts
+should stop at 0, because we cannot measure negative counts!
 
+We do this by modifying the formula for `yMin` to simply take the maximum value
+in each case between the computed difference and 0.
+
+And in addition they are also drawn on the left side of each bin. Let's fix
+both the range of the bar as well as its placement:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point(binPosition = "center") +
-    geom_errorbar(aes = aes(yMin = f{`Counts` - 1})) +
+    geom_errorbar(binPosition = "center", aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)})) +
     ggsave("images/multi_layer_histogram_11.png")
+nbImage("images/multi_layer_histogram_11.png")
 nbText: """
-
+Much better. Of course we still only have error bars in the negative direction and lines
+down to zero (`yMax` is unset, so default value 0). On to add positive bars then:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point(binPosition = "center") +
-    geom_errorbar(data = df.filter(f{`Type` == "background"}), aes = aes(yMin = f{`Counts` - 1})) +
+    geom_errorbar(binPosition = "center", aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
     ggsave("images/multi_layer_histogram_12.png")
+nbImage("images/multi_layer_histogram_12.png")
 nbText: """
-
+Sweet! But wait, we still have error bars for the "candidates" dataset. This is where
+the fact that individual geoms can receive their own data frame comes in. We'll simply
+hand `geom_errorbar` the input data frame filtered to only "background" rows. This way
+it will only have that data to plot and we should end up without error bars on the
+"candidates" data:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point(binPosition = "center") +
-    geom_errorbar(data = df.filter(f{`Type` == "background"}), aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)})) +
-    ggsave("images/multi_layer_histogram_13.png")
-nbText: """
-
-"""
-nbCodeInBlock:
-  ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
-    geom_point(binPosition = "center") +
-    geom_errorbar(data = df.filter(f{`Type` == "background"}),
+    geom_errorbar(binPosition = "center", data = df.filter(f{`Type` == "background"}),
                   aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
-    ggsave("images/multi_layer_histogram_14.png")
+    ggsave("images/multi_layer_histogram_13.png")
+nbImage("images/multi_layer_histogram_13.png")
 nbText: """
-
+Perfect! Let's round it off by modifying the `x` and `y` labels and add a nice
+title on top:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
     geom_point(binPosition = "center") +
-    geom_errorbar(data = df.filter(f{`Type` == "background"}),
+    geom_errorbar(binPosition = "center", data = df.filter(f{`Type` == "background"}),
                   aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
     xlab("Energy [keV]") + ylab("#") +
     ggtitle("A multi-layer plot of a histogram and scatter plot with error bars") +
     ggsave("images/multi_layer_histogram_15.png")
-nbText: """
-
-## Another look at *that* plot
-
-Let's look at the plot from above again. This time read the command with the gained knowledge and then
-see if the explanation in words makes more sense now.
-"""
-nbCode:
-  ggplot(df, aes("Energy", "Counts", fill = "Type", color = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
-    geom_point(binPosition = "center") +
-    geom_errorbar(data = df.filter(f{`Type` == "background"}),
-                  aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0}),
-                  binPosition = "center") +
-    xlab("Energy [keV]") + ylab("#") +
-    ggtitle("A multi-layer plot of a histogram and scatter plot with error bars") +
-    ggsave("images/multi_layer_histogram.png")
-
 nbImage("images/multi_layer_histogram.png")
-
 nbText: """
 
-Maybe things have become a bit less confusing now.
+And here we are. We've rebuilt the whole plot from the beginning. Now you should have a
+good idea of why this plot looks the way it does.
 
-Try to look at the plotting command and the resulting plot and see if you can understand how the
-two relate to one another!
+The great thing is that this is the whole workflow of ggplot. You won't have to search
+through weird N levels deep inheritances of objects (looking at you, matplotlib!) to
+figure out how to do this or that. Every feature other feature `ggplotnim` provides is
+also handled in the same way. We just replace a few geoms or arguments or maybe add
+another command. That's all there is to the grammar of graphics. Simple, but powerful.
 
-With the understanding of the grammar of graphics, one can essentially plot everything that
-can be mapped to geometric objects and data, for example [a periodic table](https://github.com/Vindaar/ggplotnim/blob/master/recipes.org#fun-with-elements).
+With an understanding of the grammar of graphics, one can then essentially plot everything
+that can be mapped to geometric objects and data, even for example
+[a periodic table](https://github.com/Vindaar/ggplotnim/blob/master/recipes.org#fun-with-elements).
 
 ## A gallery of plotting examples
 
 For a large variety of actual plotting example snippets, check out the `ggplotnim` recipe section here:
 
 [Recipes](https://github.com/Vindaar/ggplotnim/blob/master/recipes.org)
+
+Thanks for reading! :)
 """
 
 nbSave
