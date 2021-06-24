@@ -260,7 +260,7 @@ will use in all following snippets. It will contain 3 columns:
   are drawn as floats (to get fractional values) and the second 25 entries will be random
   integer numbers
 - "Type": simply a column that designates the first 25 rows as "background" and the latter
-  25 as "calibration"
+  25 as "candidates"
 
 Our construction in the following is a bit artificial of course.
 """
@@ -290,7 +290,7 @@ are mainly due to the original motivation of where the plot example is taken fro
   (from a frequentist perspective we have to repeat the experiment many times and *then*
   we can write down some variance in our candidates)
 
-##### Building layer 1 - `geom_histogram`
+#### Building layer 1 - `geom_histogram`
 
 So, let's start with drawing a histogram of "Energy" and "Counts":
 """
@@ -309,17 +309,22 @@ the `geom_histogram` call:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts")) +
-    geom_histogram(stat = "identity", hdKind = hdBars) +
+    geom_histogram(stat = "identity") +
     ggsave("images/multi_layer_histogram_1.png")
 nbImage("images/multi_layer_histogram_1.png")
 nbText: """
 This looks a bit better. At least we have something that sort of resembles our
-input data! But what's that wide gray bar from 0 to roughly 3?
-Our data frame covers the `x` range *twice*. At the intersection from the first,
-- at index 24 - our "Energy" column is `10.0`. From there it jumps back to
-0.0 on the next bin. This leads to a full bin that accidentally covers the full
-range from 0 to 10. Let's check that assumption by printing values between index
-24 and 26 from our data frame:
+input data! But what's that wide gray bar spanning the whole `x` range with a
+height of roughly 3?
+
+Our data frame covers the `x` range *twice*. Once for our "background"
+dataset, indices 0 to 24, and then again for our "candidates" dataset,
+indices 25 to 49. At the intersection from the first part (index 24)
+our "Energy" column is `10.0`. From there it jumps back to `0.0` (index
+25) in the next bin. This leads to a full bin that accidentally covers
+the full range from 0 to 10 (with a "negative" bin width if we compute
+it bin to bin). Let's check that assumption by printing values between
+index 24 and 26 from our data frame:
 """
 nbCodeInBlock:
   echo df[24 .. 26]
@@ -379,10 +384,16 @@ nbCodeInBlock:
     ggsave("images/multi_layer_histogram_5.png")
 nbImage("images/multi_layer_histogram_5.png")
 nbText: """
-This is quite pretty already. The only small annoyance is that the outline is still
-sticking out between all bars, which makes it more busy than it should be. Let's fix
-that by drawing the histograms using *outlines* instead of individual bars:
-"""
+
+*Note*: The alpha argument requires the `some` call to hand an
+`Option[T]` value. This is required for all geom arguments that don't
+have discrete, known values (float sizes, colors, etc.) to avoid
+ambiguity between default values and possible user inputs.
+
+The plot we're seeing is quite pretty already. The only small
+annoyance is that the outline is still sticking out between all bars,
+which makes it more busy than it should be. Let's fix that by drawing
+the histograms using *outlines* instead of individual bars: """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
@@ -392,7 +403,7 @@ nbText: """
 Nice, first layer done! This is the result we want to achieve for the *histogram* part
 of our plot. As we can see, we've added *one* geom to the call chain. One layer.
 
-##### Building layer 2 - `geom_point`
+#### Building layer 2 - `geom_point`
 
 Next up, let's plot some points for the data to better highlight where our actual
 data lies (and to lay the foundation for our error bars). This is as simple as adding
@@ -423,7 +434,7 @@ nbImage("images/multi_layer_histogram_8.png")
 nbText: """
 Perfect, now our points are right where they belong. This concludes layer 2.
 
-##### Building layer 3 - `geom_errorbar`
+#### Building layer 3 - `geom_errorbar`
 
 This leaves us with a single, final layer. Those of the error bars.
 Due to another bug present right now, we cannot call `geom_errorbar` without min / max
