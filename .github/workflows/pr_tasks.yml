@@ -1,0 +1,23 @@
+name: PR Tasks
+
+on:
+  pull_request_target:
+    branches:
+      - main
+
+# This is executed in an unsafe environment so no user-code should be executed here!
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo Commit hash = ${{ github.event.pull_request.head.sha }} 
+      - name: Show pending status check
+        uses: Sibz/github-status-action@v1.1.5
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: Netlify preview
+          sha: ${{ github.event.pull_request.head.sha }}
+          description: Waiting for build to finish...
+          state: pending
