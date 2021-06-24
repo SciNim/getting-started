@@ -11,15 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Show pending status check
-        uses: Sibz/github-status-action@v1.1.5
-        with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: Netlify preview
-          sha: ${{ github.event.pull_request.head.sha }}
-          description: Waiting for build to finish
-          state: pending
-      
       - name: "install_nim"
         id: install_nim
         uses: iffy/install-nim@v3
