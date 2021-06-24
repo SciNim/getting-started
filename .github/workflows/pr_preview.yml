@@ -49,6 +49,9 @@ jobs:
               console.log("Found artifacts: " + artifact.name)
               return artifact.name == "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"
             })[0];
+            if (matchArtifact == undefined) {
+              core.setFailed('Artifact not found!');
+            }
             var download = await github.actions.downloadArtifact({
                owner: context.repo.owner,
                repo: context.repo.repo,
