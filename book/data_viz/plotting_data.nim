@@ -507,7 +507,7 @@ good idea of why this plot looks the way it does.
 
 The great thing is that this is the whole workflow of ggplot. You won't have to search
 through weird N levels deep inheritances of objects (looking at you, matplotlib!) to
-figure out how to do this or that. Every feature other feature `ggplotnim` provides is
+figure out how to do this or that. Every other feature `ggplotnim` provides is
 also handled in the same way. We just replace a few geoms or arguments or maybe add
 another command. That's all there is to the grammar of graphics. Simple, but powerful.
 
