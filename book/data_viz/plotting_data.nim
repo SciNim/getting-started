@@ -343,13 +343,8 @@ nbText: """
 Ohh, interesting. See how we have an automatic legend based on the
 two classes found in column "Type".
 
-Well, our plot wants to run out of our graph, which is probably what
-you were focusing on, isn't it? (Note: this is also a bug. For some reason
-stacking isn't properly handled right now for the data range
-calculation. Issue #99). Let's ignore data running out of the plot for
-now, because we can't see anything anyway.
-
-But didn't we say we want to have classification by `color`? For bars
+The entries seem a bit high right now. We only sampled up to a total of
+10. And didn't we say we want to have classification by `color`? For bars
 `color` refers to the *outline* of a bar. We need to add a `fill` to get the
 bars into a fully colored object.
 """
@@ -359,14 +354,12 @@ nbCodeInBlock:
     ggsave("images/multi_layer_histogram_3.png")
 nbImage("images/multi_layer_histogram_3.png")
 nbText: """
-Aha! Now we begin to see why the data is running out of our plot. Apparently
-both classes are being *stacked* on top of one another. This is the default
-behavior for classified histograms so that all the data is visible. Without
-transparency we would hide data otherwise.
+Aha! Apparently both classes are being *stacked* on top of one
+another. This is the default behavior for classified histograms so
+that all the data is visible. Without transparency we would hide data
+otherwise.
 
-Aside from the bug that causes the data to run out of the plot (we could
-manually set a range using `ylim`). To change this behavior to the one we want
-we will apply `position = "identity"`:
+To change this behavior to the one we want we will apply `position ="identity"`:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
@@ -437,7 +430,7 @@ Perfect, now our points are right where they belong. This concludes layer 2.
 #### Building layer 3 - `geom_errorbar`
 
 This leaves us with a single, final layer. Those of the error bars.
-Due to another bug present right now, we cannot call `geom_errorbar` without min / max
+Due to a bug present right now, we cannot call `geom_errorbar` without min / max
 aesthetic args right now (which should in practice raise an exception or
 draw nothing, because without limits error bars make no sense).
 
