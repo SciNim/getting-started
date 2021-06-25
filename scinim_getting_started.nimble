@@ -10,7 +10,7 @@ binDir        = "bin"
 # Dependencies
 requires "nim >= 1.2.0"
 requires "https://github.com/pietroppeter/nimibook"
-requires "ggplotnim"
+requires "ggplotnim >= 0.4.1"
 requires "datamancer >= 0.1.5"
 requires "mpfit"
 requires "numericalnim"
