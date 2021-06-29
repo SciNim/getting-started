@@ -13,4 +13,5 @@ var book = newBookFromToc("SciNim Getting Started", "book"):
 
 
 book.git_repository_url = "https://github.com/SciNim/getting-started"
+book.plausible_analytics_url = "scinim.github.io/getting-started"
 nimibookCli(book)
