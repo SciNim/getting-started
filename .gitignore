@@ -1,3 +1,4 @@
 bin/
 book/*.mustache
 getting_started
+docs/
