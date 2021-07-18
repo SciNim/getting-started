@@ -14,7 +14,7 @@ requires "ggplotnim >= 0.4.2"
 requires "datamancer >= 0.1.6"
 requires "mpfit"
 requires "numericalnim"
-requires "unchained"
+requires "unchained#head"
 
 
 task genbook, "build book":
