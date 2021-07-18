@@ -2,3 +2,4 @@ bin/
 book/*.mustache
 getting_started
 .vscode/
+docs/
