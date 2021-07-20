@@ -134,10 +134,14 @@ nbText: """
 As you might have noticed, we used a few unicode characters in the code above (•, ⁻¹). Most keyboard don't have these symbols on them but
 there are ways to work around that. On Linux you could check if your distro supports the "Compose key" which lets you use sensible
 key combinations to type symbols. For example `²` can be written using `Compose + ^ + 2`, it makes sense! 
+
 On Windows there is WinCompose which tries to emulate the compose key. There is also the Emoji/Symbols popup menu
-when you press `Windows + .` where you can find a multitude of symbols. If you don't want to use 
-these kind of (totally awesome) tools, you can also write the types in backticks (``` ` ```) and use `*` and `^`
-instead (`/` is not allowed, use negative exponents instead). Here are a few examples of equivalent ways of writing the same unit:
+when you press `Windows + .` where you can find a multitude of symbols. 
+
+If you don't want to use these kind of (totally awesome) tools,
+you can also write the types in backticks (``` ` ```) and use `*` and `^`
+instead (`/` is not allowed, use negative exponents instead). 
+Here are a few examples of equivalent ways of writing the same unit:
 """
 
 nbCodeInBlock:
