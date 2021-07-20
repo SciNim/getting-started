@@ -109,7 +109,8 @@ proc unitProc(k: kg•m•s⁻¹) =
 
 nbText: """
 There is also the `UnitLess` type which represents a quantity without a unit like for example a count or a percentage.
-It is used like the other units with the addition that `UnitLess` numbers can be passed to procs accepting `float`: 
+It is used like the other units with the addition that `UnitLess` numbers can be passed to procs accepting `float`.
+This is done through converters behind the scenes, so you don't have to manually convert between the two: 
 """
 
 nbCodeInBlock:
