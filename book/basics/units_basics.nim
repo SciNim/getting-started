@@ -8,7 +8,7 @@ nbText: """
 # Using and checking units with [Unchained](https://github.com/SciNim/Unchained)
 
 Units are crucial in physics, without them we wouldn't have any consistent way of comparing two measurements. 
-You wouldn't solve an equation without checking units afterwards as a safety-check. But when it comes to coding 
+You don't solve an equation without checking units afterwards as a safety-check. But when it comes to coding 
 physical formulas units are often ignored or in best cases in a comment somewhere. This can be solved by using
 unit libraries like `Unchained`. What puts `Unchained` apart from many other libraries is that it does the majority
 of the work at compile-time so that you know that if the code compiles, then the units are correct. 
