@@ -12,7 +12,7 @@ You don't solve an equation without checking units afterwards as a safety-check.
 physical formulas units are often ignored or in best cases in a comment somewhere. This can be solved by using
 unit libraries like `Unchained`. What puts `Unchained` apart from many other libraries is that it does the majority
 of the work at compile-time so that you know that if the code compiles, then the units are correct. 
-Other libraries would probably check this at runtime, and it will complain first when it sees the piece of code it wants to check
+Many other libraries check this at runtime, and they only complain when they run the piece of code they want to check
 the units of. As an added bonus, doing most of the work when compiling the code will make the code run faster as there will at most
 be a conversion factor injected.
 
