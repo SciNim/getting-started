@@ -46,7 +46,7 @@ But what does the code do? Let's dissect it block-by-block:
 1. `defUnit(N•s)` - There are a ridiculous amount of combinations of base units.
 Therefore you must define composite units manually before you use them. More on this in a later section.
 2. `let lbfs = 1.lbf•s` - We use the dot (`.`) to assign a unit to a number. In this case we assign a variable with the value "1 lbf•s".
-3. `let Ns = lbfs.to(N•s)` - We use the `to` template to convert a variable from one unit to another.
+3. `let Ns = lbfs.to(N•s)` - We use the `to` proc to convert a variable from one unit to another.
 """
 
 nbText: """
