@@ -83,11 +83,11 @@ nbCodeInBlock:
     echo k
 
 nbText: """
-  ```nim
-  ## Incorrect way of doing it! Missing `defUnit`
-  proc unitProc(k: kg•m•s⁻¹) =
-    echo k
-  ```
+```nim
+## Incorrect way of doing it! Missing `defUnit`
+proc unitProc(k: kg•m•s⁻¹) =
+  echo k
+```
 """
 
 #[
