@@ -117,9 +117,9 @@ nbCodeInBlock:
   proc f(x: float): float = x*x + x + 1
   let ul = 100.UnitLess
   echo f(ul)
-  # This will fail beacuse `x` isn't UnitLess:
-  # let x = 100.kg
-  # echo f(x)
+  ## This will fail beacuse `x` isn't UnitLess:
+  ## let x = 100.kg
+  ## echo f(x)
 
 nbText: """
 To get the unit of a variable you can use `typeof` and checking units is done using `is`:
