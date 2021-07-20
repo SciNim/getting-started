@@ -154,6 +154,37 @@ nbCodeInBlock:
   let textUnit = 1.`N*s`
   echo unicodeUnit == textUnit
 
+nbText: """
+### Arithmetics with units
+Units can of course be used in formulas. The supported operators are `+`, `-`, `*`, `/` and `^` (Note: `^` only work with integer exponents!). 
+You don't have to `defUnit` the resulting unit of an operation, it's done automatically.
+There are a few rules worth remembering, some more obvious than others:
+
+- You can only add and subtract units of the same quantity (hopefully pretty obvious). 
+Example: `1.kg + 1.lbs` works. `1.kg + 1.m` doesn't work.
+- You can multiply and divide units of different quantities. Example: `1.kg * 1.m` works.
+- If it is ambiguious what the resulting unit should be, they are converted to base SI units. Example: `1.kg + 1.lbs` will result in `1.45359 KiloGram`.
+- Conversion from prefixed to non-prefixed units only happen if multiple different units or prefixes of the same quantity are mixed.
+Example: `1.mm * 1.kg` results in `1 KiloGram•MilliMeter` while `1.mm * 1.cm` results in `1e-005 Meter²`.
+- Division by same quantities gives a `UnitLess` result. Example: `1.cm / 1.m` gives `0.01 UnitLess`.
+
+Let's see some actual code now! You are probably familiar with the harmonic oscillator:
+$$y(t) = A \cos (ω t + φ)$$
+where $ω$ is the frequency in $rad ⋅ s^{-1}$, $φ$ is an angle and $A$ is the maximum amplitude in $cm$.
+Let's get coding now!
+"""
+
+nbCode: import math
+nbCodeInBlock:
+  proc y(t: Second): CentiMeter =
+    let ω = 100.rad•s⁻¹ ## or 100.`rad*s^-1`
+    let A = 10.cm
+    let φ = Pi.rad
+    let argument = ω * t + φ
+    result = A * cos(argument.to(UnitLess))
+
+  echo y(0.s)
+
 
 
 nbSave
