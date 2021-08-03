@@ -15,6 +15,7 @@ requires "datamancer >= 0.1.6"
 requires "mpfit"
 requires "numericalnim"
 requires "unchained#head"
+requires "benchy"
 
 
 task genbook, "build book":
