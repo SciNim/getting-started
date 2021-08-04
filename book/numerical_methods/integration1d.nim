@@ -1,8 +1,10 @@
-import nimib, nimibook
+import nimib except Value
+import nimibook
 
 nbInit()
 nbUseNimibook()
 nbDoc.useLatex
+nbDoc.context["mathjax_support"] = true
 
 nbText: md"""
 # 1D Numerical Integration 
@@ -308,5 +310,8 @@ The take-away from this very limited testing is that depending on the characteri
 of the data, different methods might give the most accurate answer. Which one is hard to tell in general
 but trapz *might* be more robust for very sparse data as it doesn't "guess" as much as the others. But once again,
 it entirely depends on the data, so make sure to understand your data!  
+
+### Cumulative Integration with Discrete Data
+Performing cumulative integration on discrete data works the same as for continuous functions. 
   """
 nbSave()
