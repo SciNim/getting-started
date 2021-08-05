@@ -20,7 +20,7 @@ $$ f(x) = \frac{1}{(x - 0.3)^2 + 0.01} + \frac{1}{(x - 0.9)^2 + 0.04} - 6 $$
 
 It has the primitive function:
 
-$$ F(x) = 10 \arctan(10x - 3) + 5 \arctan(5x - \frac{9}{2}) - 6x $$
+$$ F(x) = 10 \arctan(10x - 3) + 5 \arctan\left(5x - \frac{9}{2}\right) - 6x $$
 
 Let's code them!
 """
