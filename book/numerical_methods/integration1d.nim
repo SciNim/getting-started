@@ -237,7 +237,7 @@ block discretePart:
   nbText: md"""
 As you can see, the resolution was too small to fully account for the big peak and undershoots it by quite a margin.
 Without having known the "real" function in this case we wouldn't have known this of course, and that is most often the
-case when we have discrete data. Therefore, the resoltion of the data is crucial for the accuracy. But let's say this 
+case when we have discrete data. Therefore, the resolution of the data is crucial for the accuracy. But let's say this 
 is all the data we have at our disposal and let's see how the different methods perform. 
 
 The integration methods at our disposal are: 
