@@ -62,7 +62,7 @@ a more detailed plotting tutorial can be found [here](../data_viz/plotting_data.
 ### Let the integration begin!
 Now we have everything we need to start integrating. The specific integral we want to compute is:
 
-$$ \int_0^1 f(x) dx $$
+$$ \int_0^1 f(x)\, \mathrm{d}x $$
 
 The methods we will use are: `trapz`, `simpson`, `gaussQuad`, `romberg`, `adaptiveSimpson` and `adaptiveGauss`.
 Where the last three are adaptive methods and the others are fixed-step methods. We will use a tolerance `tol=1e-6`
