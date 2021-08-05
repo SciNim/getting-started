@@ -218,7 +218,7 @@ block discretePart:
     var xSample = numericalnim.linspace(0.0, 1.0, 9)
     var ySample = xSample.mapIt(f(it, nil)) # nil can be passed in instead of ctx if we don't use it
 
-    let xDense = numericalnim.linspace(0, 1, 100) # "continuous" x
+    let xDense = numericalnim.linspace(0, 1, 1000) # "continuous" x
     let yDense = xDense.mapIt(f(it, nil))
 
     var sampledSpline = newHermiteSpline(xSample, ySample)
