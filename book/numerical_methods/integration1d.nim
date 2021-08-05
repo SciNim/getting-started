@@ -302,7 +302,7 @@ that changes things!
   nbText: md"""
 As expected all methods became more accurate when we increased the amount of points.
 And from the graph we can see that the points capture the shape of the curve much better now.
-We can also note that simpson has overtaken trapz and romberg is neck-in-neck with trapz now.
+We can also note that `simpson` has overtaken `trapz` and `romberg` is neck-in-neck with `trapz` now.
 Experiment for yourself with different number of points, but asymptotically `romberg` will eventually
 beat `simpson` when enough points are used. 
 
