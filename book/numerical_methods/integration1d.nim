@@ -266,7 +266,7 @@ Luckily for us our data satisfies all of them ;) So let's get coding:
 
   nbText: md"""
 As expected all the methods underestimated the integral, but it might be unexpected that
-trapz performed the best out of them. Let's add a few more points, why not 33, and let's see if 
+`trapz` performed the best out of them. Let's add a few more points, why not 33, and let's see if 
 that changes things!
   """
 
