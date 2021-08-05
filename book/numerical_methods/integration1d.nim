@@ -48,7 +48,7 @@ a more detailed plotting tutorial can be found [here](../data_viz/plotting_data.
 
   nbCodeInBlock:
     let ctxPlot = newNumContext[float]()
-    let xPlot = numericalnim.linspace(0, 1, 100)
+    let xPlot = numericalnim.linspace(0, 1, 1000)
     let yPlot = xPlot.mapIt(f(it, ctxPlot))
     
     let dfPlot = seqsToDf(xPlot, yPlot)
