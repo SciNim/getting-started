@@ -204,7 +204,7 @@ from the returned values which can be evaluated when needed.
 
 Discrete data is a different beast than continuous functions as we have limited data. Therefore, the choice
 of integration method is even more important as we can't exchange performance to get more accurate results
-like we can with continuous function (we can increase the number of intervals for example). So we want to make the
+like we can with continuous functions (we can increase the number of intervals for example). So we want to make the
 most out of the data we have, and any knowledge we have about the nature of the data is helpful. 
 For example if we know the data isn't smooth (discontinuities), then trapz could be a better choice
 than let's say simpson because simpson assumes the data is smooth. 
