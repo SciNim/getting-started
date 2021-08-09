@@ -181,7 +181,7 @@ nbCodeInBlock:
     let A = 10.cm
     let φ = Pi.rad
     let argument = ω * t + φ
-    result = A * cos(argument.to(UnitLess))
+    result = A * cos(argument)
 
   echo y(0.s)
 
