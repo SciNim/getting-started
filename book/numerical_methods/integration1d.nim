@@ -20,7 +20,7 @@ $$ f(x) = \frac{1}{(x - 0.3)^2 + 0.01} + \frac{1}{(x - 0.9)^2 + 0.04} - 6 $$
 
 It has the primitive function:
 
-$$ F(x) = 10 \arctan(10x - 3) + 5 \arctan(5x - \frac{9}{2}) - 6x $$
+$$ F(x) = 10 \arctan(10x - 3) + 5 \arctan\left(5x - \frac{9}{2}\right) - 6x $$
 
 Let's code them!
 """
@@ -48,7 +48,7 @@ a more detailed plotting tutorial can be found [here](../data_viz/plotting_data.
 
   nbCodeInBlock:
     let ctxPlot = newNumContext[float]()
-    let xPlot = numericalnim.linspace(0, 1, 100)
+    let xPlot = numericalnim.linspace(0, 1, 1000)
     let yPlot = xPlot.mapIt(f(it, ctxPlot))
     
     let dfPlot = seqsToDf(xPlot, yPlot)
@@ -62,7 +62,7 @@ a more detailed plotting tutorial can be found [here](../data_viz/plotting_data.
 ### Let the integration begin!
 Now we have everything we need to start integrating. The specific integral we want to compute is:
 
-$$ \int_0^1 f(x) dx $$
+$$ \int_0^1 f(x)\, \mathrm{d}x $$
 
 The methods we will use are: `trapz`([link](https://en.wikipedia.org/wiki/Trapezoidal_rule)), `simpson`([link](https://en.wikipedia.org/wiki/Simpson%27s_rule)), 
 `gaussQuad`([link](https://en.wikipedia.org/wiki/Gaussian_quadrature)), `romberg`([link](https://en.wikipedia.org/wiki/Romberg%27s_method)), `adaptiveSimpson` and `adaptiveGauss`.
@@ -202,12 +202,12 @@ from the returned values which can be evaluated when needed.
 
 ## Integrate Discrete Data
 
-Discrete data is a different beast than continuous functions as we have limited data. Therefore the choice
-of integration method is even more important as we can't exchange performance to get more accurate result
-like we can with continuous function (we can increase the number of intervals for example). So we want to make the
+Discrete data is a different beast than continuous functions as we have limited data. Therefore, the choice
+of integration method is even more important as we can't exchange performance to get more accurate results
+like we can with continuous functions (we can increase the number of intervals for example). So we want to make the
 most out of the data we have, and any knowledge we have about the nature of the data is helpful. 
-For example if we know the data isn't smooth (discontinuities), then trapz could be a better choice
-than let's say simpson because simpson assumes the data is smooth. 
+For example if we know the data isn't smooth (discontinuities), then `trapz` could be a better choice
+than let's say `simpson`, because `simpson` assumes the data is smooth. 
 
 Let's sample `f(x)` from above at let's say 9 points and plot how much information we lose by
 plotting the sampled points, a Hermite Spline interpolation of them and the original function:
@@ -218,7 +218,7 @@ block discretePart:
     var xSample = numericalnim.linspace(0.0, 1.0, 9)
     var ySample = xSample.mapIt(f(it, nil)) # nil can be passed in instead of ctx if we don't use it
 
-    let xDense = numericalnim.linspace(0, 1, 100) # "continuous" x
+    let xDense = numericalnim.linspace(0, 1, 1000) # "continuous" x
     let yDense = xDense.mapIt(f(it, nil))
 
     var sampledSpline = newHermiteSpline(xSample, ySample)
@@ -238,7 +238,7 @@ block discretePart:
   nbText: md"""
 As you can see, the resolution was too small to fully account for the big peak and undershoots it by quite a margin.
 Without having known the "real" function in this case we wouldn't have known this of course, and that is most often the
-case when we have discrete data. Therefore, the resoltion of the data is crucial for the accuracy. But let's say this 
+case when we have discrete data. Therefore, the resolution of the data is crucial for the accuracy. But let's say this 
 is all the data we have at our disposal and let's see how the different methods perform. 
 
 The integration methods at our disposal are: 
@@ -267,7 +267,7 @@ Luckily for us our data satisfies all of them ;) So let's get coding:
 
   nbText: md"""
 As expected all the methods underestimated the integral, but it might be unexpected that
-trapz performed the best out of them. Let's add a few more points, why not 33, and let's see if 
+`trapz` performed the best out of them. Let's add a few more points, why not 33, and let's see if 
 that changes things!
   """
 
@@ -303,13 +303,13 @@ that changes things!
   nbText: md"""
 As expected all methods became more accurate when we increased the amount of points.
 And from the graph we can see that the points capture the shape of the curve much better now.
-We can also note that simpson has overtaken trapz and romberg is neck-in-neck with trapz now.
-Experiment for yourself with different number of points, but asymtotically romberg will eventually
-beat simpson when enough points are used. 
+We can also note that `simpson` has overtaken `trapz` and `romberg` is neck-in-neck with `trapz` now.
+Experiment for yourself with different number of points, but asymptotically `romberg` will eventually
+beat `simpson` when enough points are used. 
 
 The take-away from this very limited testing is that depending on the characteristics and quality
 of the data, different methods might give the most accurate answer. Which one is hard to tell in general
-but trapz *might* be more robust for very sparse data as it doesn't "guess" as much as the others. But once again,
+but `trapz` *might* be more robust for very sparse data as it doesn't "guess" as much as the others. But once again,
 it entirely depends on the data, so make sure to understand your data!  
 
 ### Cumulative Integration with Discrete Data
