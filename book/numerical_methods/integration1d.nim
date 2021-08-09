@@ -64,7 +64,8 @@ Now we have everything we need to start integrating. The specific integral we wa
 
 $$ \int_0^1 f(x) dx $$
 
-The methods we will use are: `trapz`, `simpson`, `gaussQuad`, `romberg`, `adaptiveSimpson` and `adaptiveGauss`.
+The methods we will use are: `trapz`([link](https://en.wikipedia.org/wiki/Trapezoidal_rule)), `simpson`([link](https://en.wikipedia.org/wiki/Simpson%27s_rule)), 
+`gaussQuad`([link](https://en.wikipedia.org/wiki/Gaussian_quadrature)), `romberg`([link](https://en.wikipedia.org/wiki/Romberg%27s_method)), `adaptiveSimpson` and `adaptiveGauss`.
 Where the last three are adaptive methods and the others are fixed-step methods. We will use a tolerance `tol=1e-6`
 for the adaptive methods and `N=100` intervals for the fixed-step methods.
 Let's code this now and compare them!
