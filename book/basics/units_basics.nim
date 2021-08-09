@@ -70,10 +70,10 @@ nbText: """
 That was easy enough, and being able to use prefixes makes for a saner user experience. Forgetting to multiply by the
 correct prefix factor is a very common mistake after all. This is solved by including prefixes directly in the library,
 so you don't have to deal with them manually.
-perhaps 
+
 When it comes to composite types it gets a bit more complicated though. For example if we want to use a unit `kg•m•s⁻¹` we
 have a few more things to consider. First and foremost, composite types must either be defined in a `defUnit` or be used in a
-dot expression (eg `10.kg•m•s⁻¹`) *before* it can be used in other parts of the code. Here comes a few valid and invalid cases:
+dot expression (eg `10.kg•m•s⁻¹`) *before* it can be used in other parts of the code. Here are a few valid and invalid cases:
 """
 
 nbCodeInBlock:
