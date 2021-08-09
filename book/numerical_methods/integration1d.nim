@@ -158,7 +158,6 @@ Let's get coding!
     let dfLong = df.gather(["exact", "yTrapz", "ySimpson", "yGauss"], key="Method", value="y")
     ggplot(dfLong, aes("x", "y", color="Method")) +
       geom_line() +
-      geom_point() +
       ggsave("images/continuousHumpsComparaision.png")
 
   nbImage("images/continuousHumpsComparaision.png")
@@ -226,6 +225,7 @@ block discretePart:
 
     var dfSample = seqsToDf(xSample, ySample, xDense, yDense, ySpline)
     ggplot(dfSample) +
+      #geom_point(data = dfSample.filter(f{Value -> bool: not `xSample`.isNull.toBool}), aes = aes("xSample", "ySample", color = "Sampled")) +
       geom_point(aes("xSample", "ySample", color="Sampled")) +
       geom_line(aes("xDense", "ySpline", color="Sampled")) +
       geom_line(aes("xDense", "yDense", color="Dense")) +
