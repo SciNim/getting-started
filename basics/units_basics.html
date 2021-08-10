@@ -1,0 +1,379 @@
+<!DOCTYPE HTML>
+<html lang="en-us" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using nimibook -->
+        <meta charset="UTF-8">
+        <title>basics/units_basics.nim</title>
+
+        <!-- Custom HTML head -->
+        <!-- custom head content -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="a book built with nimibook">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+        <link rel="stylesheet" href="../assets/css/variables.css">
+        <link rel="stylesheet" href="../assets/css/general.css">
+        <link rel="stylesheet" href="../assets/css/chrome.css">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../assets/FontAwesome/css/font-awesome.min.css">
+
+        <!-- Highlight.js Stylesheets - I could use nimib native highlight but let's keep it for styling... -->
+        <link rel="stylesheet" href="../assets/css/highlight.css">
+        <link rel="stylesheet" href="../assets/css/tomorrow-night.css">
+        <link rel="stylesheet" href="../assets/css/ayu-highlight.css">
+
+        <!-- Custom theme stylesheets - why the "../"? -->
+
+
+        <!-- plausible analytics (new in nimibook) -->
+        <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "..//assets";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                                <ol class="chapter">
+                  <li class="chapter-item expanded ">
+                    <a href="../index.html" tabindex="0">
+                      <strong aria-hidden="true">1.</strong> Introduction
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/index.html" tabindex="0">
+                      <strong aria-hidden="true">2.</strong> Basic topics
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/common_datatypes.html" tabindex="0">
+                      <strong aria-hidden="true">2.1.</strong> Common datatypes
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/data_wrangling.html" tabindex="0">
+                      <strong aria-hidden="true">2.2.</strong> Data wrangling with dataframes
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/basic_plotting.html" tabindex="0">
+                      <strong aria-hidden="true">2.3.</strong> Plotting
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/units_basics.html" class="active" tabindex="0">
+                      <strong aria-hidden="true">2.4.</strong> Units
+                    </a>
+                  </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../numerical_methods/index.html" tabindex="0">
+                      <strong aria-hidden="true">3.</strong> Numerical methods
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../numerical_methods/curve_fitting.html" tabindex="0">
+                      <strong aria-hidden="true">3.1.</strong> Curve fitting
+                    </a>
+                  </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../data_viz/index.html" tabindex="0">
+                      <strong aria-hidden="true">4.</strong> Data visualization
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../data_viz/plotting_data.html" tabindex="0">
+                      <strong aria-hidden="true">4.1.</strong> Plotting data
+                    </a>
+                  </li>
+                </ol>
+<!-- I could use also an unescaped context value -->
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <!-- custom header content -->                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">SciNim Getting Started</h1>
+
+                    <div class="right-buttons">
+                        <a href="https://github.com/SciNim/getting-started" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1>Using and checking units with <a href="https://github.com/SciNim/Unchained">Unchained</a></h1>
+<p>Units are crucial in physics, without them we wouldn't have any consistent way of comparing two measurements.
+You don't solve an equation without checking units afterwards as a safety-check. But when it comes to coding
+physical formulas, units are often ignored or in best cases in a comment somewhere. This can be solved by using
+unit libraries like <code>Unchained</code>. What puts <code>Unchained</code> apart from many other libraries is that it does the majority
+of the work at compile-time so that you know that if the code compiles, then the units are correct.</p>
+<p>Many other libraries check this at runtime, and they only complain when they run the piece of code they want to check
+the units of. As an added bonus, doing most of the work when compiling the code will make the code run faster as there will at most
+be a conversion factor injected.</p>
+<h2>Motivating example</h2>
+<p>One example of a real disaster caused by conversion errors is the Mars Climate Orbiter that NASA sent to the red planet in 1999.
+It crashed. Why? Because the navigators at JPL used metric units while the manufacturers had used imperial units. So when
+the navigators thought they read 1 N⋅s from the craft's sensors it was in fact 1 lbf⋅s.</p>
+<p>As an introduction to <code>Unchained</code>, let's find out what 1 lbf⋅s is in N⋅s to understand how much of a difference it made.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  unchained
+
+<span class="hljs-comment">## Define composite units</span>
+defUnit(<span class="hljs-type">N•s</span>)
+defUnit(lbf•s)
+<span class="hljs-comment">## Assign variables</span>
+<span class="hljs-keyword">let</span> lbfs = <span class="hljs-number">1.</span>lbf•s
+<span class="hljs-keyword">let</span> <span class="hljs-type">Ns</span> = lbfs.to(<span class="hljs-type">N•s</span>)
+<span class="hljs-keyword">echo</span> lbfs, <span class="hljs-string">&quot; equals &quot;</span>, <span class="hljs-type">Ns</span></code></pre>
+<pre><samp>1 Second•Pound-force equals 4.44822 KiloGram•Meter•Second⁻¹
+</samp></pre>
+<p>As you can see, they thought the value they read was 4.4 times smaller than it really was!</p>
+<p>But what does the code do? Let's dissect it block-by-block:</p>
+<ol>
+<li>
+<p><code>defUnit(N•s)</code> - There are a ridiculous amount of combinations of base units.
+Therefore you must define composite units manually before you use them. More on this in a later section.</p>
+</li>
+<li>
+<p><code>let lbfs = 1.lbf•s</code> - We use the dot (<code>.</code>) to assign a unit to a number. In this case we assign a variable with the value &quot;1 lbf•s&quot;.</p>
+</li>
+<li>
+<p><code>let Ns = lbfs.to(N•s)</code> - We use the <code>to</code> proc to convert a variable from one unit to another.</p>
+</li>
+</ol>
+<h2>Defining and assigning units</h2>
+<p>The first thing you probably will want to do is to associate a value with a unit, for example 1 Newton. There are multiple ways
+to specify a unit, both short and long versions:</p>
+<pre><code class="nim hljs"><span class="hljs-comment">## Short version</span>
+<span class="hljs-keyword">let</span> n1 = <span class="hljs-number">1.</span><span class="hljs-type">N</span>
+<span class="hljs-comment">## Long version</span>
+<span class="hljs-keyword">let</span> n2 = <span class="hljs-number">1.</span><span class="hljs-type">Newton</span>
+<span class="hljs-comment">## Short version with prefix (milli)</span>
+<span class="hljs-keyword">let</span> n3 = <span class="hljs-number">1.</span>mN
+<span class="hljs-comment">## Long version with prefix</span>
+<span class="hljs-keyword">let</span> n4 = <span class="hljs-number">1.</span><span class="hljs-type">MilliNewton</span></code></pre>
+<p>That was easy enough, and being able to use prefixes makes for a saner user experience. Forgetting to multiply by the
+correct prefix factor is a very common mistake after all. This is solved by including prefixes directly in the library,
+so you don't have to deal with them manually.</p>
+<p>When it comes to composite types it gets a bit more complicated though. For example if we want to use a unit <code>kg•m•s⁻¹</code> we
+have a few more things to consider. First and foremost, composite types must either be defined in a <code>defUnit</code> or be used in a
+dot expression (eg <code>10.kg•m•s⁻¹</code>) <em>before</em> it can be used in other parts of the code. Here are a few valid and invalid cases:</p>
+<pre><code class="nim hljs"><span class="hljs-comment">## Correct way of doing it!</span>
+defUnit(kg•m•s⁻¹)
+<span class="hljs-keyword">proc</span> unitProc(k: kg•m•s⁻¹) =
+  <span class="hljs-keyword">echo</span> k</code></pre>
+<pre><code class="language-nim">## Incorrect way of doing it! Missing `defUnit`
+proc unitProc(k: kg•m•s⁻¹) =
+  echo k
+</code></pre>
+<p>There is also the <code>UnitLess</code> type which represents a quantity without a unit like for example a count or a percentage.
+It is used like the other units with the addition that <code>UnitLess</code> numbers can be passed to procs accepting <code>float</code>.
+This is done through converters behind the scenes, so you don't have to manually convert between the two:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
+  x * x + x + <span class="hljs-number">1</span>
+
+<span class="hljs-keyword">let</span> ul = <span class="hljs-number">100.</span><span class="hljs-type">UnitLess</span>
+<span class="hljs-keyword">echo</span> f(ul)
+<span class="hljs-comment">## This will fail beacuse `x` isn't UnitLess:</span>
+          <span class="hljs-comment">## let x = 100.kg</span>
+          <span class="hljs-comment">## echo f(x)</span></code></pre>
+<pre><samp>10101.0
+</samp></pre>
+<p>To get the unit of a variable you can use <code>typeof</code> and checking units is done using <code>is</code>:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> mass = <span class="hljs-number">10.</span>kg
+<span class="hljs-keyword">echo</span> typeof(mass) <span class="hljs-keyword">is</span> kg</code></pre>
+<pre><samp>true
+</samp></pre>
+<h3>Different ways to write units</h3>
+<p>As you might have noticed, we used a few unicode characters in the code above (•, ⁻¹). Most keyboard don't have these symbols on them but
+there are ways to work around that. On Linux you could check if your distro supports the &quot;Compose key&quot; which lets you use sensible
+key combinations to type symbols. For example <code>²</code> can be written using <code>Compose + ^ + 2</code>, it makes sense!</p>
+<p>On Windows there is WinCompose which tries to emulate the compose key. There is also the Emoji/Symbols popup menu
+when you press <code>Windows + .</code> where you can find a multitude of symbols.</p>
+<p>If you don't want to use these kind of (totally awesome) tools,
+you can also write the types in backticks (<code>`</code>) and use <code>*</code> and <code>^</code>
+instead (<code>/</code> is not allowed, use negative exponents instead).
+Here are a few examples of equivalent ways of writing the same unit:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> unicodeUnit = <span class="hljs-number">1.</span>kg•m•s⁻¹
+<span class="hljs-keyword">let</span> textUnit = <span class="hljs-number">1.</span>`kg * m * s ^- <span class="hljs-number">1</span>`
+<span class="hljs-keyword">echo</span> unicodeUnit == textUnit</code></pre>
+<pre><samp>true
+</samp></pre>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> unicodeUnit = <span class="hljs-number">1.</span><span class="hljs-type">N•s</span>
+<span class="hljs-keyword">let</span> textUnit = <span class="hljs-number">1.</span>`<span class="hljs-type">N</span> * s`
+<span class="hljs-keyword">echo</span> unicodeUnit == textUnit</code></pre>
+<pre><samp>true
+</samp></pre>
+<h3>Arithmetics with units</h3>
+<p>Units can of course be used in formulas. The supported operators are <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> and <code>^</code> (Note: <code>^</code> only work with integer exponents!).
+You don't have to <code>defUnit</code> the resulting unit of an operation, it's done automatically.
+There are a few rules worth remembering, some more obvious than others:</p>
+<ul>
+<li>
+<p>You can only add and subtract units of the same quantity (hopefully pretty obvious).
+Example: <code>1.kg + 1.lbs</code> works. <code>1.kg + 1.m</code> doesn't work.</p>
+</li>
+<li>
+<p>You can multiply and divide units of different quantities. Example: <code>1.kg * 1.m</code> works.</p>
+</li>
+<li>
+<p>If it is ambiguious what the resulting unit should be, they are converted to base SI units. Example: <code>1.kg + 1.lbs</code> will result in <code>1.45359 KiloGram</code>.</p>
+</li>
+<li>
+<p>Conversion from prefixed to non-prefixed units only happen if multiple different units or prefixes of the same quantity are mixed.
+Example: <code>1.mm * 1.kg</code> results in <code>1 KiloGram•MilliMeter</code> while <code>1.mm * 1.cm</code> results in <code>1e-005 Meter²</code>.</p>
+</li>
+<li>
+<p>Division by same quantities gives a <code>UnitLess</code> result. Example: <code>1.cm / 1.m</code> gives <code>0.01 UnitLess</code>.</p>
+</li>
+</ul>
+<p>Let's see some actual code now! You are probably familiar with the harmonic oscillator:
+$$y(t) = A \cos (ω t + φ)$$
+where $ω$ is the frequency in $rad ⋅ s^{-1}$, $φ$ is an angle and $A$ is the maximum amplitude in $cm$.
+Let's get coding now!</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  math</code></pre>
+<pre><code class="nim hljs"><span class="hljs-keyword">proc</span> y(t: <span class="hljs-type">Second</span>): <span class="hljs-type">CentiMeter</span> =
+  <span class="hljs-keyword">let</span> ω = <span class="hljs-number">100.</span>rad•s⁻¹  <span class="hljs-comment">## or 100.`rad*s^-1`</span>
+  <span class="hljs-keyword">let</span> <span class="hljs-type">A</span> = <span class="hljs-number">10.</span>cm
+  <span class="hljs-keyword">let</span> φ = <span class="hljs-type">Pi</span>.rad
+  <span class="hljs-keyword">let</span> argument = ω * t + φ
+  <span class="hljs-literal">result</span> = <span class="hljs-type">A</span> * cos(argument)
+
+<span class="hljs-keyword">echo</span> y(<span class="hljs-number">0.</span>s)</code></pre>
+<pre><samp>-10 CentiMeter
+</samp></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../basics/basic_plotting.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../numerical_methods/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../basics/basic_plotting.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../numerical_methods/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+
+
+
+        <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
