@@ -60,7 +60,7 @@ jobs:
             });
             var fs = require('fs');
             fs.writeFileSync('${{github.workspace}}/docs.zip', Buffer.from(download.data));
-      - run: rm -r docs
+      - run: rm -rf docs
       - run: unzip -d docs/ docs.zip
 
       - run: echo Deploy Alias = ${{ env.GITHUB_SHA_SHORT }}
