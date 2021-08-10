@@ -6,6 +6,7 @@ var book = newBookFromToc("SciNim Getting Started", "book"):
     entry("Common datatypes", "common_datatypes")
     entry("Data wrangling with dataframes", "data_wrangling")
     entry("Plotting", "basic_plotting")
+    entry("Units", "units_basics")
   section("Numerical methods", "numerical_methods/index"):
     entry("Curve fitting", "curve_fitting")
   section("Data visualization", "data_viz/index"):
