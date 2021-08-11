@@ -313,6 +313,33 @@ but `trapz` *might* be more robust for very sparse data as it doesn't "guess" as
 it entirely depends on the data, so make sure to understand your data!  
 
 ### Cumulative Integration with Discrete Data
-Performing cumulative integration on discrete data works the same as for continuous functions. 
+Performing cumulative integration on discrete data works the same as for continuous functions. The only differences are that
+only `cumtrapz` and `cumsimpson` are available and that you pass in `y` and `x` instead of `f`:
   """
+
+  nbCodeInBlock:
+    let a = 0.0
+    let b = 1.0
+    let tol = 1e-6
+    let N = 100
+
+    let x = numericalnim.linspace(a, b, N)
+    let y = x.mapIt(f(it, nil))
+    var exact = x.mapIt(F(it) - F(a))
+
+    let yTrapz = cumtrapz(y, x)
+    let ySimpson = cumsimpson(y, x)
+
+    echo "Trapz Error:   ", sum(abs(exact.toTensor - yTrapz.toTensor))
+    echo "Simpson Error: ", sum(abs(exact.toTensor - ySimpson.toTensor))
+
+    let df = seqsToDf(x, exact, yTrapz, ySimpson)
+    # Rewrite df in long format for plotting
+    let dfLong = df.gather(["exact", "yTrapz", "ySimpson"], key="Method", value="y")
+    ggplot(dfLong, aes("x", "y", color="Method")) +
+      geom_line() +
+      ggsave("images/discreteHumpsComparaision.png")
+
+  nbImage("images/discreteHumpsComparaision.png")
+
 nbSave()
