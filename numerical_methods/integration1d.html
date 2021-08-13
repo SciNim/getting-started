@@ -1,0 +1,546 @@
+<!DOCTYPE HTML>
+<html lang="en-us" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using nimibook -->
+        <meta charset="UTF-8">
+        <title>numerical_methods/integration1d.nim</title>
+
+        <!-- Custom HTML head -->
+        <!-- custom head content -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="a book built with nimibook">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+        <link rel="stylesheet" href="../assets/css/variables.css">
+        <link rel="stylesheet" href="../assets/css/general.css">
+        <link rel="stylesheet" href="../assets/css/chrome.css">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../assets/FontAwesome/css/font-awesome.min.css">
+
+        <!-- Highlight.js Stylesheets - I could use nimib native highlight but let's keep it for styling... -->
+        <link rel="stylesheet" href="../assets/css/highlight.css">
+        <link rel="stylesheet" href="../assets/css/tomorrow-night.css">
+        <link rel="stylesheet" href="../assets/css/ayu-highlight.css">
+
+        <!-- Custom theme stylesheets - why the "../"? -->
+
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- plausible analytics (new in nimibook) -->
+        <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "..//assets";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                                <ol class="chapter">
+                  <li class="chapter-item expanded ">
+                    <a href="../index.html" tabindex="0">
+                      <strong aria-hidden="true">1.</strong> Introduction
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/index.html" tabindex="0">
+                      <strong aria-hidden="true">2.</strong> Basic topics
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/common_datatypes.html" tabindex="0">
+                      <strong aria-hidden="true">2.1.</strong> Common datatypes
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/data_wrangling.html" tabindex="0">
+                      <strong aria-hidden="true">2.2.</strong> Data wrangling with dataframes
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/basic_plotting.html" tabindex="0">
+                      <strong aria-hidden="true">2.3.</strong> Plotting
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/units_basics.html" tabindex="0">
+                      <strong aria-hidden="true">2.4.</strong> Units
+                    </a>
+                  </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../numerical_methods/index.html" tabindex="0">
+                      <strong aria-hidden="true">3.</strong> Numerical methods
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../numerical_methods/curve_fitting.html" tabindex="0">
+                      <strong aria-hidden="true">3.1.</strong> Curve fitting
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../numerical_methods/integration1d.html" class="active" tabindex="0">
+                      <strong aria-hidden="true">3.2.</strong> Integration (1D)
+                    </a>
+                  </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../data_viz/index.html" tabindex="0">
+                      <strong aria-hidden="true">4.</strong> Data visualization
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../data_viz/plotting_data.html" tabindex="0">
+                      <strong aria-hidden="true">4.1.</strong> Plotting data
+                    </a>
+                  </li>
+                </ol>
+<!-- I could use also an unescaped context value -->
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <!-- custom header content -->                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">SciNim Getting Started</h1>
+
+                    <div class="right-buttons">
+                        <a href="https://github.com/SciNim/getting-started" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1>1D Numerical Integration</h1>
+<p>In this tutorial you will learn learn how to use <a href="https://github.com/HugoGranstrom/numericalnim/">numericalnim</a> to perform
+numerical integration both on discrete data and continuous functions.</p>
+<h2>Integrate Continuous Functions</h2>
+<p>We will start off by integrating some continuous function using a variety of methods and comparing their accuracies and performances
+so that you can make an educated choice of method. Let's start off with creating the data to integrate, I have choosen to use
+the <em>humps</em> function from MATLAB's demos:</p>
+<p>$$ f(x) = \frac{1}{(x - 0.3)^2 + 0.01} + \frac{1}{(x - 0.9)^2 + 0.04} - 6 $$</p>
+<p>It has the primitive function:</p>
+<p>$$ F(x) = 10 \arctan(10x - 3) + 5 \arctan\left(5x - \frac{9}{2}\right) - 6x $$</p>
+<p>Let's code them!</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  math, sequtils
+
+<span class="hljs-keyword">import</span>
+  numericalnim, ggplotnim, benchy
+
+<span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>; ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
+  <span class="hljs-literal">result</span> = <span class="hljs-number">1</span> / ((x - <span class="hljs-number">0.3</span>) ^ <span class="hljs-number">2</span> + <span class="hljs-number">0.01</span>) + <span class="hljs-number">1</span> / ((x - <span class="hljs-number">0.9</span>) ^ <span class="hljs-number">2</span> + <span class="hljs-number">0.04</span>) - <span class="hljs-number">6</span>
+
+<span class="hljs-keyword">proc</span> <span class="hljs-type">F</span>(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
+  <span class="hljs-literal">result</span> = <span class="hljs-number">10</span> * arctan(<span class="hljs-number">10</span> * x - <span class="hljs-number">3</span>) + <span class="hljs-number">5</span> * arctan(<span class="hljs-number">5</span> * x - <span class="hljs-number">9</span> / <span class="hljs-number">2</span>) - <span class="hljs-number">6</span> * x</code></pre>
+<p>As you can see, we defined <code>f</code> not as just <code>proc f(x: float): float</code> but added a <code>ctx: NumContext[float]</code> as well.
+That is because <code>numericalnim</code>'s integration methods expect a proc with the signature <code>proc f[T](x: float, ctx: NumContext[T]): T</code>.
+That means you can integrate functions <em>returning</em> other types than <code>float</code> if they have a certain set of supported operations.
+We won't be integrating <code>F</code> (it is the indefinite integral already) so I skipped adding <code>ctx</code> there for simplicity.</p>
+<p>Aren't you curious of what <code>f(x)</code> looks like? Thought so! Let's plot them using <code>ggplotnim</code>,
+a more detailed plotting tutorial can be found <a href="../data_viz/plotting_data.html">here</a>.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> ctxPlot = newNumContext[<span class="hljs-built_in">float</span>]()
+<span class="hljs-keyword">let</span> xPlot = numericalnim.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1000</span>)
+<span class="hljs-keyword">let</span> yPlot = xPlot.mapIt(f(it, ctxPlot))
+<span class="hljs-keyword">let</span> dfPlot = seqsToDf(xPlot, yPlot)
+ggplot(dfPlot, aes(<span class="hljs-string">&quot;xPlot&quot;</span>, <span class="hljs-string">&quot;yPlot&quot;</span>)) + geom_line() + ggsave(<span class="hljs-string">&quot;images/humps.png&quot;</span>)</code></pre>
+<pre><samp>StatusSuccess output of write_to_png
+</samp></pre>
+<figure>
+<img src="../images/humps.png" alt="">
+<figcaption></figcaption>
+</figure>
+
+<h3>Let the integration begin!</h3>
+<p>Now we have everything we need to start integrating. The specific integral we want to compute is:</p>
+<p>$$ \int_0^1 f(x), \mathrm{d}x $$</p>
+<p>The methods we will use are: <code>trapz</code>(<a href="https://en.wikipedia.org/wiki/Trapezoidal_rule">link</a>), <code>simpson</code>(<a href="https://en.wikipedia.org/wiki/Simpson%27s_rule">link</a>),
+<code>gaussQuad</code>(<a href="https://en.wikipedia.org/wiki/Gaussian_quadrature">link</a>), <code>romberg</code>(<a href="https://en.wikipedia.org/wiki/Romberg%27s_method">link</a>), <code>adaptiveSimpson</code> and <code>adaptiveGauss</code>.
+Where the last three are adaptive methods and the others are fixed-step methods. We will use a tolerance <code>tol=1e-6</code>
+for the adaptive methods and <code>N=100</code> intervals for the fixed-step methods.
+Let's code this now and compare them!</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
+<span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
+<span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-06</span>
+<span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
+<span class="hljs-keyword">let</span> exactIntegral = <span class="hljs-type">F</span>(b) - <span class="hljs-type">F</span>(a)
+<span class="hljs-keyword">let</span> trapzError = abs(trapz(f, a, b, <span class="hljs-type">N</span>) - exactIntegral)
+<span class="hljs-keyword">let</span> simpsonError = abs(simpson(f, a, b, <span class="hljs-type">N</span>) - exactIntegral)
+<span class="hljs-keyword">let</span> gaussQuadError = abs(gaussQuad(f, a, b, <span class="hljs-type">N</span>) - exactIntegral)
+<span class="hljs-keyword">let</span> rombergError = abs(romberg(f, a, b, tol = tol) - exactIntegral)
+<span class="hljs-keyword">let</span> adaptiveSimpsonError = abs(adaptiveSimpson(f, a, b, tol = tol) -
+    exactIntegral)
+<span class="hljs-keyword">let</span> adaptiveGaussError = abs(adaptiveGauss(f, a, b, tol = tol) - exactIntegral)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:      &quot;</span>, trapzError
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error:    &quot;</span>, simpsonError
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;GaussQuad Error:  &quot;</span>, gaussQuadError
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg Error:    &quot;</span>, rombergError
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;AdaSimpson Error: &quot;</span>, adaptiveSimpsonError
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;AdaGauss Error:   &quot;</span>, adaptiveGaussError</code></pre>
+<pre><samp>Trapz Error:      0.00123417243757018
+Simpson Error:    3.129097940757219e-07
+GaussQuad Error:  3.907985046680551e-14
+Romberg Error:    3.411159354982374e-09
+AdaSimpson Error: 1.061664534063311e-09
+AdaGauss Error:   0.0
+</samp></pre>
+<p>It seems like the gauss methods were the most accurate with Romberg and Simpson
+coming afterwards and in last place trapz. But at what cost did these scores come at? Which method was the fastest?
+Let's find out with a package called <code>benchy</code>. <code>keep</code> is used to prevent the compiler from optimizing away the code:</p>
+<pre><code class="nim hljs">timeIt <span class="hljs-string">&quot;Trapz&quot;</span>:
+  keep trapz(f, a, b, <span class="hljs-type">N</span>)
+timeIt <span class="hljs-string">&quot;Simpson&quot;</span>:
+  keep simpson(f, a, b, <span class="hljs-type">N</span>)
+timeIt <span class="hljs-string">&quot;GaussQuad&quot;</span>:
+  keep gaussQuad(f, a, b, <span class="hljs-type">N</span>)
+timeIt <span class="hljs-string">&quot;Romberg&quot;</span>:
+  keep romberg(f, a, b, tol = tol)
+timeIt <span class="hljs-string">&quot;AdaSimpson&quot;</span>:
+  keep adaptiveSimpson(f, a, b, tol = tol)
+timeIt <span class="hljs-string">&quot;AdaGauss&quot;</span>:
+  keep adaptiveGauss(f, a, b, tol = tol)</code></pre>
+<pre><samp>name ............................... min time      avg time    std dv   runs
+Trapz .............................. 0.005 ms      0.006 ms    ±0.001  x1000
+Simpson ............................ 0.005 ms      0.006 ms    ±0.001  x1000
+GaussQuad .......................... 0.011 ms      0.012 ms    ±0.000  x1000
+Romberg ............................ 0.007 ms      0.008 ms    ±0.000  x1000
+AdaSimpson ......................... 0.036 ms      0.036 ms    ±0.001  x1000
+AdaGauss ........................... 0.007 ms      0.008 ms    ±0.001  x1000
+</samp></pre>
+<p>As we can see, all methods except AdaSimpson were roughly equally fast. So if I were to choose
+a winner, it would be <code>adaptiveGauss</code> because it was the most accurate while still being among
+the fastest methods.</p>
+<h3>Cumulative Integration</h3>
+<p>There is one more type of integration one can do, namely cumulative integration. This is for the case
+when you don't just want to calculate the total integral but want an approximation for <code>F(X)</code>, so we
+need the integral evaluated at multiple points. An example is if we have the acceleration <code>a(t)</code> as a function.
+If we integrate it we get the velocity, but to be able to integrate the velocity (to get the distance)
+we need it as a function, not a single value. That is where cumulative integration comes in!</p>
+<p>The methods available to us from <code>numericalnim</code> are: <code>cumtrapz</code>, <code>cumsimpson</code>, <code>cumGauss</code> and <code>cumGaussSpline</code>.
+All methods except <code>cumGaussSpline</code> returns the cumulative integral as a <code>seq[T]</code>, but this instead returns a
+Hermite spline. We will both be calculating the errors and visualizing the different approximations of <code>F(x)</code>.
+Let's get coding!</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
+<span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
+<span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-06</span>
+<span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
+<span class="hljs-keyword">let</span> dx = (b - a) / <span class="hljs-type">N</span>.toFloat
+<span class="hljs-keyword">let</span> x = numericalnim.linspace(a, b, <span class="hljs-number">100</span>)
+<span class="hljs-keyword">var</span> exact = x.mapIt(<span class="hljs-type">F</span>(it) - <span class="hljs-type">F</span>(a))
+<span class="hljs-keyword">let</span> yTrapz = cumtrapz(f, x, dx = dx)
+<span class="hljs-keyword">let</span> ySimpson = cumsimpson(f, x, dx = dx)
+<span class="hljs-keyword">let</span> yGauss = cumGauss(f, x, tol = tol, initialPoints = x)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:   &quot;</span>, sum(abs(exact.toTensor - yTrapz.toTensor))
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error: &quot;</span>, sum(abs(exact.toTensor - ySimpson.toTensor))
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Gauss Error:   &quot;</span>, sum(abs(exact.toTensor - yGauss.toTensor))
+<span class="hljs-keyword">let</span> df = seqsToDf(x, exact, yTrapz, ySimpson, yGauss)
+<span class="hljs-keyword">let</span> dfLong = df.gather([<span class="hljs-string">&quot;exact&quot;</span>, <span class="hljs-string">&quot;yTrapz&quot;</span>, <span class="hljs-string">&quot;ySimpson&quot;</span>, <span class="hljs-string">&quot;yGauss&quot;</span>],
+                       key = <span class="hljs-string">&quot;Method&quot;</span>, value = <span class="hljs-string">&quot;y&quot;</span>)
+ggplot(dfLong, aes(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>, color = <span class="hljs-string">&quot;Method&quot;</span>)) + geom_line() +
+    ggsave(<span class="hljs-string">&quot;images/continuousHumpsComparaision.png&quot;</span>)</code></pre>
+<pre><samp>Trapz Error:   0.1629684871013665
+Simpson Error: 0.001052250314251719
+Gauss Error:   5.453207330141652e-13
+StatusSuccess output of write_to_png
+</samp></pre>
+<figure>
+<img src="../images/continuousHumpsComparaision.png" alt="">
+<figcaption></figcaption>
+</figure>
+
+<p>As we can see in the graph they are all so close to the exact curve that you can't distingush between
+them, but when we look at the total error we see that once again the Gauss method is superior.</p>
+<blockquote>
+<h4>Note:</h4>
+<p>When we called <code>cumGauss</code> we passed in a parameter <code>initialPoints</code> as well. The reason for that
+is the fact that the Gauss method uses polynomials of degree 21 in its internal calculations while the
+final interpolation at the x-values in <code>x</code> is performed using a 3rd degree polynomial. This means that Gauss
+internally might only need quite few points because of its high degree, but that means we get too few
+points for the final 3rd degree interpolation. So to make sure we have enough points in the end we supply
+it with enough initial points so that it has enough points to make good predictions even if it doesn't
+split any additional intervals. By default it uses 100 equally spaced points though so unless you know you
+need far more or less points you should be good.
+This is especially important when using <code>cumGaussSpline</code> as we need enough
+points to construct an accurate spline.</p>
+</blockquote>
+<p>The last method is <code>cumGaussSpline</code> which is identical to <code>cumGauss</code> except it constructs a Hermite spline
+from the returned values which can be evaluated when needed.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
+<span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
+<span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-06</span>
+<span class="hljs-keyword">let</span> spline = cumGaussSpline(f, a, b, tol = tol)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;One point: &quot;</span>, spline.eval(<span class="hljs-number">0.0</span>)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Three points: &quot;</span>, spline.eval(@[<span class="hljs-number">0.0</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">1.0</span>])
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Integrate it again: &quot;</span>, adaptiveGauss(spline, a, b)</code></pre>
+<pre><samp>One point: 0.0
+Three points: @[0.0, 21.78684367031352, 29.85832539549869]
+Integrate it again: 17.26538964301353
+</samp></pre>
+<p>I think that about wraps it up regarding integrating continuous functions! Let's take a look at
+integrating discrete data now!</p>
+<h2>Integrate Discrete Data</h2>
+<p>Discrete data is a different beast than continuous functions as we have limited data. Therefore, the choice
+of integration method is even more important as we can't exchange performance to get more accurate results
+like we can with continuous functions (we can increase the number of intervals for example). So we want to make the
+most out of the data we have, and any knowledge we have about the nature of the data is helpful.
+For example if we know the data isn't smooth (discontinuities), then <code>trapz</code> could be a better choice
+than let's say <code>simpson</code>, because <code>simpson</code> assumes the data is smooth.</p>
+<p>Let's sample <code>f(x)</code> from above at let's say 9 points and plot how much information we lose by
+plotting the sampled points, a Hermite Spline interpolation of them and the original function:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span> xSample = numericalnim.linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">9</span>)
+<span class="hljs-keyword">var</span> ySample = xSample.mapIt(f(it, <span class="hljs-literal">nil</span>))
+<span class="hljs-keyword">let</span> xDense = numericalnim.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1000</span>)
+<span class="hljs-keyword">let</span> yDense = xDense.mapIt(f(it, <span class="hljs-literal">nil</span>))
+<span class="hljs-keyword">var</span> sampledSpline = newHermiteSpline(xSample, ySample)
+<span class="hljs-keyword">var</span> ySpline = sampledSpline.eval(xDense)
+<span class="hljs-keyword">var</span> dfSample = seqsToDf(xSample, ySample, xDense, yDense, ySpline)
+ggplot(dfSample) + geom_point(aes(<span class="hljs-string">&quot;xSample&quot;</span>, <span class="hljs-string">&quot;ySample&quot;</span>, color = <span class="hljs-string">&quot;Sampled&quot;</span>)) +
+    geom_line(aes(<span class="hljs-string">&quot;xDense&quot;</span>, <span class="hljs-string">&quot;ySpline&quot;</span>, color = <span class="hljs-string">&quot;Sampled&quot;</span>)) +
+    geom_line(aes(<span class="hljs-string">&quot;xDense&quot;</span>, <span class="hljs-string">&quot;yDense&quot;</span>, color = <span class="hljs-string">&quot;Dense&quot;</span>)) +
+    scale_x_continuous() +
+    scale_y_continuous() +
+    ggsave(<span class="hljs-string">&quot;images/sampledHumps.png&quot;</span>)</code></pre>
+<pre><samp>StatusSuccess output of write_to_png
+</samp></pre>
+<figure>
+<img src="../images/sampledHumps.png" alt="">
+<figcaption></figcaption>
+</figure>
+
+<p>As you can see, the resolution was too small to fully account for the big peak and undershoots it by quite a margin.
+Without having known the &quot;real&quot; function in this case we wouldn't have known this of course, and that is most often the
+case when we have discrete data. Therefore, the resolution of the data is crucial for the accuracy. But let's say this
+is all the data we have at our disposal and let's see how the different methods perform.</p>
+<p>The integration methods at our disposal are:</p>
+<ul>
+<li><code>trapz</code>: Works for any data.</li>
+<li><code>simpson</code>: Works for any data with 3 or more data points.</li>
+<li><code>romberg</code>: Works <strong>only</strong> for equally spaced points. The number of points must also be
+of the form <code>2^n + 1</code> (eg. 3, 5, 9, 17, 33 etc).</li>
+</ul>
+<p>Luckily for us our data satisfies all of them ;) So let's get coding:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> exact = <span class="hljs-type">F</span>(<span class="hljs-number">1</span>) - <span class="hljs-type">F</span>(<span class="hljs-number">0</span>)
+<span class="hljs-keyword">var</span> trapzIntegral = trapz(ySample, xSample)
+<span class="hljs-keyword">var</span> simpsonIntegral = simpson(ySample, xSample)
+<span class="hljs-keyword">var</span> rombergIntegral = romberg(ySample, xSample)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Exact:   &quot;</span>, exact
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz:   &quot;</span>, trapzIntegral
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson: &quot;</span>, simpsonIntegral
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg: &quot;</span>, rombergIntegral
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:   &quot;</span>, abs(trapzIntegral - exact)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error: &quot;</span>, abs(simpsonIntegral - exact)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg Error: &quot;</span>, abs(rombergIntegral - exact)</code></pre>
+<pre><samp>Exact:   29.85832539549867
+Trapz:   29.33117732440506
+Simpson: 29.07021311510501
+Romberg: 28.53591179962037
+Trapz Error:   0.5271480710936096
+Simpson Error: 0.788112280393662
+Romberg Error: 1.322413595878309
+</samp></pre>
+<p>As expected all the methods underestimated the integral, but it might be unexpected that
+<code>trapz</code> performed the best out of them. Let's add a few more points, why not 33, and let's see if
+that changes things!</p>
+<pre><code class="nim hljs">xSample = numericalnim.linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">33</span>)
+ySample = xSample.mapIt(f(it, <span class="hljs-literal">nil</span>))
+sampledSpline = newHermiteSpline(xSample, ySample)
+ySpline = sampledSpline.eval(xDense)
+dfSample = seqsToDf(xSample, ySample, xDense, yDense, ySpline)
+ggplot(dfSample) + geom_point(aes(<span class="hljs-string">&quot;xSample&quot;</span>, <span class="hljs-string">&quot;ySample&quot;</span>, color = <span class="hljs-string">&quot;Sampled&quot;</span>)) +
+    geom_line(aes(<span class="hljs-string">&quot;xDense&quot;</span>, <span class="hljs-string">&quot;ySpline&quot;</span>, color = <span class="hljs-string">&quot;Sampled&quot;</span>)) +
+    geom_line(aes(<span class="hljs-string">&quot;xDense&quot;</span>, <span class="hljs-string">&quot;yDense&quot;</span>, color = <span class="hljs-string">&quot;Dense&quot;</span>)) +
+    scale_x_continuous() +
+    scale_y_continuous() +
+    ggsave(<span class="hljs-string">&quot;images/sampledHumps33.png&quot;</span>)
+trapzIntegral = trapz(ySample, xSample)
+simpsonIntegral = simpson(ySample, xSample)
+rombergIntegral = romberg(ySample, xSample)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Exact:   &quot;</span>, exact
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz:   &quot;</span>, trapzIntegral
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson: &quot;</span>, simpsonIntegral
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg: &quot;</span>, rombergIntegral
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:   &quot;</span>, abs(trapzIntegral - exact)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error: &quot;</span>, abs(simpsonIntegral - exact)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg Error: &quot;</span>, abs(rombergIntegral - exact)</code></pre>
+<pre><samp>StatusSuccess output of write_to_png
+Exact:   29.85832539549867
+Trapz:   29.84626609518119
+Simpson: 29.85807788992319
+Romberg: 29.84669883230159
+Trapz Error:   0.01205930031748892
+Simpson Error: 0.0002475055754800337
+Romberg Error: 0.01162656319708333
+</samp></pre>
+<figure>
+<img src="../images/sampledHumps33.png" alt="">
+<figcaption></figcaption>
+</figure>
+
+<p>As expected all methods became more accurate when we increased the amount of points.
+And from the graph we can see that the points capture the shape of the curve much better now.
+We can also note that <code>simpson</code> has overtaken <code>trapz</code> and <code>romberg</code> is neck-in-neck with <code>trapz</code> now.
+Experiment for yourself with different number of points, but asymptotically <code>romberg</code> will eventually
+beat <code>simpson</code> when enough points are used.</p>
+<p>The take-away from this very limited testing is that depending on the characteristics and quality
+of the data, different methods might give the most accurate answer. Which one is hard to tell in general
+but <code>trapz</code> <em>might</em> be more robust for very sparse data as it doesn't &quot;guess&quot; as much as the others. But once again,
+it entirely depends on the data, so make sure to understand your data!</p>
+<h3>Cumulative Integration with Discrete Data</h3>
+<p>Performing cumulative integration on discrete data works the same as for continuous functions. The only differences are that
+only <code>cumtrapz</code> and <code>cumsimpson</code> are available and that you pass in <code>y</code> and <code>x</code> instead of <code>f</code>:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
+<span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
+<span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-06</span>
+<span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
+<span class="hljs-keyword">let</span> x = numericalnim.linspace(a, b, <span class="hljs-type">N</span>)
+<span class="hljs-keyword">let</span> y = x.mapIt(f(it, <span class="hljs-literal">nil</span>))
+<span class="hljs-keyword">var</span> exact = x.mapIt(<span class="hljs-type">F</span>(it) - <span class="hljs-type">F</span>(a))
+<span class="hljs-keyword">let</span> yTrapz = cumtrapz(y, x)
+<span class="hljs-keyword">let</span> ySimpson = cumsimpson(y, x)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:   &quot;</span>, sum(abs(exact.toTensor - yTrapz.toTensor))
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error: &quot;</span>, sum(abs(exact.toTensor - ySimpson.toTensor))
+<span class="hljs-keyword">let</span> df = seqsToDf(x, exact, yTrapz, ySimpson)
+<span class="hljs-keyword">let</span> dfLong = df.gather([<span class="hljs-string">&quot;exact&quot;</span>, <span class="hljs-string">&quot;yTrapz&quot;</span>, <span class="hljs-string">&quot;ySimpson&quot;</span>], key = <span class="hljs-string">&quot;Method&quot;</span>,
+                       value = <span class="hljs-string">&quot;y&quot;</span>)
+ggplot(dfLong, aes(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>, color = <span class="hljs-string">&quot;Method&quot;</span>)) + geom_line() +
+    ggsave(<span class="hljs-string">&quot;images/discreteHumpsComparaision.png&quot;</span>)</code></pre>
+<pre><samp>Trapz Error:   0.1667713445258438
+Simpson Error: 0.001344104336917881
+StatusSuccess output of write_to_png
+</samp></pre>
+<figure>
+<img src="../images/discreteHumpsComparaision.png" alt="">
+<figcaption></figcaption>
+</figure>
+
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../numerical_methods/curve_fitting.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../data_viz/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../numerical_methods/curve_fitting.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../data_viz/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+
+
+
+        <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
