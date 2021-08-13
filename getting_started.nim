@@ -9,6 +9,7 @@ var book = newBookFromToc("SciNim Getting Started", "book"):
     entry("Units", "units_basics")
   section("Numerical methods", "numerical_methods/index"):
     entry("Curve fitting", "curve_fitting")
+    entry("Integration (1D)", "integration1d")
   section("Data visualization", "data_viz/index"):
     entry("Plotting data", "plotting_data")
 
