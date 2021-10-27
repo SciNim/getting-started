@@ -121,7 +121,9 @@ nbCode:
   echo myarray.shape
 
 nbText: """
-  Now let's do a simple 1d interplation using Scipy
+  Now let's do a simple 1d interplation using Scipy.
+
+  For simplicity, let's use a simple, straightforward function : f(x) = 10*x and do a linear 1D interpolation. This makes the result easy to verify.
 """
 
 nbCode:
@@ -132,8 +134,9 @@ nbCode:
     x_coord = toNdArray(mypoints)
     y_coord = toNdArray(myvalues)
 
-  var f_interp = interp.interp1d(x_coord, y_coord, "cubic")
+  var f_interp = interp.interp1d(x_coord, y_coord, "linear")
   discard py.print(f_interp)
+
 nbText: """
   The result of interp1d is an interpolator function. In Nim, it's necessary to call it explicitly using ``callObject`` proc.
 """
@@ -144,17 +147,30 @@ nbCode:
   # Yay, we just did a BiCubic interpolation !
   echo val_at_new_point
 
-  var new_points_coord = @[2.5, 3.5, 4.5, 5.5].toTensor().toNdArray()
+nbText: """
+  As expected, the result of the linear 1D interpolation evaluated on the coordinate 1.5 is 15.
+
+  Now let's do it on an Array :
+"""
+
+nbCode:
+  var new_points_coord = @[2.5, 3.5, 4.5, 5.5]
   var new_values = callObject(f_interp, new_points_coord).toTensor[:float]()
   echo new_values
 
-
 nbText: """
-  And that's it !
+  The result of the linear 1D interpolation on [2.5, 3.5, 4.5, 5.5] is [25, 35, 45, 55], as we expected !
+
+
+  (if you executed the code snippet as-is, don't forget to remove the generated Python file ``mymod.py``).
 """
 
 nbCodeInBlock:
   removeFile(getCurrentDir() / "mymod.py")
 
+nbText: """
+  And that's it, for this tutorial !
 
+  While simple, the approach presented here allows to re-use most (if not all) of the Scipy / Numpy API relying on ndarray and convert them to Arraymancer Tensor, a format easily used in Nim.
+"""
 nbSave
