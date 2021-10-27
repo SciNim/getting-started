@@ -12,6 +12,11 @@ var book = newBookFromToc("SciNim Getting Started", "book"):
     entry("Integration (1D)", "integration1d")
   section("Data visualization", "data_viz/index"):
     entry("Plotting data", "plotting_data")
+  section("Interfacing with other language", "external_language_integration/index"):
+    entry("Interfacing with Python", "nim_with_py")
+    entry("Interfacing with Julia", "nim_with_jl")
+    entry("Interfacing with R", "nim_with_R")
+
 
 
 book.git_repository_url = "https://github.com/SciNim/getting-started"
