@@ -17,7 +17,7 @@ requires "numericalnim"
 requires "unchained#head"
 requires "benchy"
 requires "nimpy >= 0.2.0"
-requires "https://github.com/SciNim/scinim >= 0.2.2"
+requires "scinim >= 0.2.2"
 
 
 task genbook, "build book":
