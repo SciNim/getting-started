@@ -94,7 +94,7 @@ nbText: """
 
 ## Extending Nim through Scipy & Numpy
 
-  Now that we know how to use Python through Nim, let's see how we can use Nimpy / Scipy scientific function through Nim.
+  Now that we know how to use Python through Nim, let's see how we can use Nimpy / Scipy scientific functions through Nim.
 
   The main difficulty is to work with numpy ndarray type in Nim.
 
