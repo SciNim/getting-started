@@ -124,7 +124,7 @@ nbCode:
 nbText: """
   Now let's do a simple 1d interplation using Scipy.
 
-  For simplicity, let's use a simple, straightforward function : f(x) = 10*x and do a linear 1D interpolation. This makes the result easy to verify.
+  For simplicity, let's use a simple, straightforward function : $$ f(x) = 10*x $$ and do a linear 1D interpolation. This makes the result easy to verify.
 """
 
 nbCode:
