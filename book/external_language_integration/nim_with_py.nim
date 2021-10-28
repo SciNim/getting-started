@@ -90,7 +90,7 @@ nbCode:
   echo nimValue
 
 nbText: """
-  Note that this example works with an object, but most Nim data structure are convertible to PyObject through Nimpy, including (but not limited to) : Table, JsonNode, Set, OpenArray, Enum, Tuple etc..
+  Note that this example works with an object, but most Nim data structure are convertible to PyObject through Nimpy, including (but not limited to) : `Table, JsonNode, Set, OpenArray, Enum, Tuple` etc..
 
 ## Extending Nim through Scipy & Numpy
 
