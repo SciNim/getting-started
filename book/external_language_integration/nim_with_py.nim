@@ -160,7 +160,7 @@ nbCode:
   echo new_values
 
 nbText: """
-  The result of the linear 1D interpolation on [2.5, 3.5, 4.5, 5.5] is [25, 35, 45, 55], as we expected !
+  The result of the linear 1D interpolation on `[2.5, 3.5, 4.5, 5.5]` is `[25, 35, 45, 55]`, as we expected !
 
 
   (if you executed the code snippet as-is, don't forget to remove the generated Python file ``mymod.py``).
