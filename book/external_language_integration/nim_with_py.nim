@@ -33,7 +33,7 @@ nbCode:
 nbText: """
   Most type conversion Nim -> Python will be done automatically though Nimpy templates. Python -> Nim type conversion has to be called manually with the ``to()`` API.
 
-  Let's see how it works in practice. In order to do that, we are going to create a local Python file with our custom functions, import it in Nim and call the Python function from Nim and convert the result back to nim types.
+  Let's see how it works in practice. In order to do that, we are going to create a local Python file with our custom functions, import it in Nim and call the Python function from Nim and convert the result back to Nim types.
 
   The next portion will create said Python file using Nim code. If you're looking to reproduce this tutorial  at home, you can (and probably should) do it using your favorite text editor.
 """
