@@ -24,7 +24,7 @@ nbCode:
 
 nbText: """
   That's basically all there is to it.
-  If you don't want to use to dot operator (which can get confusing), it is also possible use ``callMethod`` directly
+  If you don't want to use the dot operator (which can get confusing), it is also possible use ``callMethod`` directly
 """
 
 nbCode:
