@@ -96,7 +96,7 @@ nbText: """
 
   Now that we know how to use Python through Nim, let's see how we can use Nimpy / Scipy scientific functions through Nim.
 
-  The main difficulty is to work with numpy ndarray type in Nim.
+  The main difficulty is to work with the numpy ndarray type in Nim.
 
   In order to do that, we'll use the [scinim/numpyarrays API](https://github.com/SciNim/scinim/blob/main/scinim/numpyarrays.nim).
   By default, the conversion is done from/to Arraymancer Tensor; but the API covers ``ptr UncheckedArray[T]`` so it can be extended to any type with an underlying data buffer.
