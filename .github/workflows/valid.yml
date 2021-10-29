@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+      - run: pip install scipy numpy
       - name: "install_nim"
         id: install_nim
         uses: iffy/install-nim@v3
