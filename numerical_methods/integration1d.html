@@ -148,6 +148,30 @@
                       <strong aria-hidden="true">4.1.</strong> Plotting data
                     </a>
                   </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/index.html" tabindex="0">
+                      <strong aria-hidden="true">5.</strong> Interfacing with other language
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/nim_with_py.html" tabindex="0">
+                      <strong aria-hidden="true">5.1.</strong> Interfacing with Python
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/nim_with_jl.html" tabindex="0">
+                      <strong aria-hidden="true">5.2.</strong> Interfacing with Julia
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/nim_with_R.html" tabindex="0">
+                      <strong aria-hidden="true">5.3.</strong> Interfacing with R
+                    </a>
+                  </li>
                 </ol>
 <!-- I could use also an unescaped context value -->
             </div>
@@ -247,7 +271,7 @@ for the adaptive methods and <code>N=100</code> intervals for the fixed-step met
 Let's code this now and compare them!</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
-<span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-06</span>
+<span class="hljs-keyword">let</span> tol = <span class="hljs-number">0.000001</span>
 <span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
 <span class="hljs-keyword">let</span> exactIntegral = <span class="hljs-type">F</span>(b) - <span class="hljs-type">F</span>(a)
 <span class="hljs-keyword">let</span> trapzError = abs(trapz(f, a, b, <span class="hljs-type">N</span>) - exactIntegral)
@@ -287,11 +311,11 @@ timeIt <span class="hljs-string">&quot;AdaGauss&quot;</span>:
   keep adaptiveGauss(f, a, b, tol = tol)</code></pre>
 <pre><samp>name ............................... min time      avg time    std dv   runs
 Trapz .............................. 0.005 ms      0.006 ms    ±0.001  x1000
-Simpson ............................ 0.005 ms      0.006 ms    ±0.001  x1000
-GaussQuad .......................... 0.011 ms      0.012 ms    ±0.000  x1000
-Romberg ............................ 0.007 ms      0.008 ms    ±0.000  x1000
-AdaSimpson ......................... 0.036 ms      0.036 ms    ±0.001  x1000
-AdaGauss ........................... 0.007 ms      0.008 ms    ±0.001  x1000
+Simpson ............................ 0.006 ms      0.006 ms    ±0.001  x1000
+GaussQuad .......................... 0.011 ms      0.012 ms    ±0.002  x1000
+Romberg ............................ 0.008 ms      0.008 ms    ±0.001  x1000
+AdaSimpson ......................... 0.039 ms      0.040 ms    ±0.003  x1000
+AdaGauss ........................... 0.008 ms      0.008 ms    ±0.001  x1000
 </samp></pre>
 <p>As we can see, all methods except AdaSimpson were roughly equally fast. So if I were to choose
 a winner, it would be <code>adaptiveGauss</code> because it was the most accurate while still being among
@@ -308,7 +332,7 @@ Hermite spline. We will both be calculating the errors and visualizing the diffe
 Let's get coding!</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
-<span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-06</span>
+<span class="hljs-keyword">let</span> tol = <span class="hljs-number">0.000001</span>
 <span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
 <span class="hljs-keyword">let</span> dx = (b - a) / <span class="hljs-type">N</span>.toFloat
 <span class="hljs-keyword">let</span> x = numericalnim.linspace(a, b, <span class="hljs-number">100</span>)
@@ -353,7 +377,7 @@ points to construct an accurate spline.</p>
 from the returned values which can be evaluated when needed.</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
-<span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-06</span>
+<span class="hljs-keyword">let</span> tol = <span class="hljs-number">0.000001</span>
 <span class="hljs-keyword">let</span> spline = cumGaussSpline(f, a, b, tol = tol)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;One point: &quot;</span>, spline.eval(<span class="hljs-number">0.0</span>)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Three points: &quot;</span>, spline.eval(@[<span class="hljs-number">0.0</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">1.0</span>])
@@ -476,7 +500,7 @@ it entirely depends on the data, so make sure to understand your data!</p>
 only <code>cumtrapz</code> and <code>cumsimpson</code> are available and that you pass in <code>y</code> and <code>x</code> instead of <code>f</code>:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
-<span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-06</span>
+<span class="hljs-keyword">let</span> tol = <span class="hljs-number">0.000001</span>
 <span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
 <span class="hljs-keyword">let</span> x = numericalnim.linspace(a, b, <span class="hljs-type">N</span>)
 <span class="hljs-keyword">let</span> y = x.mapIt(f(it, <span class="hljs-literal">nil</span>))

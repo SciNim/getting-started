@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using nimibook -->
         <meta charset="UTF-8">
-        <title>basics/basic_plotting.nim</title>
+        <title>external_language_integration/nim_with_jl.nim</title>
 
         <!-- Custom HTML head -->
         <!-- custom head content -->
@@ -104,7 +104,7 @@
                     </a>
                   </li>
                   <li class="chapter-item expanded ">
-                    <a href="../basics/basic_plotting.html" class="active" tabindex="0">
+                    <a href="../basics/basic_plotting.html" tabindex="0">
                       <strong aria-hidden="true">2.3.</strong> Plotting
                     </a>
                   </li>
@@ -161,7 +161,7 @@
                     </a>
                   </li>
                   <li class="chapter-item expanded ">
-                    <a href="../external_language_integration/nim_with_jl.html" tabindex="0">
+                    <a href="../external_language_integration/nim_with_jl.html" class="active" tabindex="0">
                       <strong aria-hidden="true">5.2.</strong> Interfacing with Julia
                     </a>
                   </li>
@@ -219,54 +219,17 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1>Simple plotting using <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a></h1>
-<h2>Line plot</h2>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  ggplotnim
-
-<span class="hljs-keyword">let</span> x1 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
-<span class="hljs-keyword">let</span> y1 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">9.0</span>]
-<span class="hljs-keyword">let</span> df1 = seqsToDf(x1, y1)
-ggplot(df1, aes(<span class="hljs-string">&quot;x1&quot;</span>, <span class="hljs-string">&quot;y1&quot;</span>)) + geom_line() + ggsave(<span class="hljs-string">&quot;images/line_plot.png&quot;</span>)</code></pre>
-<pre><samp>StatusSuccess output of write_to_png
-</samp></pre>
-<figure>
-<img src="../images/line_plot.png" alt="">
-<figcaption></figcaption>
-</figure>
-
-<p>Every plot in <code>ggplotnim</code> is created from an input <code>DataFrame</code> using the <code>ggplot</code> procedure. The <code>aes</code>
-argument describes the so called &quot;aesthetics&quot;, which are simply the columns of the <code>DataFrame</code> to
-visualize. From here a plot is built up &quot;by layers&quot;.</p>
-<p>Note: the <code>theme_opaque</code> is only used here to give the output PNG a white background so it's more
-visible in this book when using dark themes.</p>
-<h2>Scatter plot</h2>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  ggplotnim
-
-<span class="hljs-keyword">let</span> x2 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
-<span class="hljs-keyword">let</span> y2 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">9.0</span>]
-<span class="hljs-keyword">let</span> df2 = seqsToDf(x2, y2)
-ggplot(df2, aes(<span class="hljs-string">&quot;x2&quot;</span>, <span class="hljs-string">&quot;y2&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/scatter_plot.png&quot;</span>)</code></pre>
-<pre><samp>StatusSuccess output of write_to_png
-</samp></pre>
-<figure>
-<img src="../images/scatter_plot.png" alt="">
-<figcaption></figcaption>
-</figure>
-
-<p>Notice how similar the two code snippets are. This is the general structure of <code>ggplotnim</code>, you add geoms and combine them in different ways.
-Try for yourself what happens if you have <em>both</em> <code>geom_line</code> and <code>geom_point</code>.</p>
+                        <p>This section remains to be written. In the meantime, check-out <a href="https://github.com/Clonkk/nimjl">nimjl</a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../basics/data_wrangling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../external_language_integration/nim_with_py.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../basics/units_basics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../external_language_integration/nim_with_R.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -276,11 +239,11 @@ Try for yourself what happens if you have <em>both</em> <code>geom_line</code> a
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../basics/data_wrangling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../external_language_integration/nim_with_py.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../basics/units_basics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../external_language_integration/nim_with_R.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

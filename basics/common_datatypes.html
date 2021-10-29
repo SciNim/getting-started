@@ -146,6 +146,30 @@
                       <strong aria-hidden="true">4.1.</strong> Plotting data
                     </a>
                   </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/index.html" tabindex="0">
+                      <strong aria-hidden="true">5.</strong> Interfacing with other language
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/nim_with_py.html" tabindex="0">
+                      <strong aria-hidden="true">5.1.</strong> Interfacing with Python
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/nim_with_jl.html" tabindex="0">
+                      <strong aria-hidden="true">5.2.</strong> Interfacing with Julia
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/nim_with_R.html" tabindex="0">
+                      <strong aria-hidden="true">5.3.</strong> Interfacing with R
+                    </a>
+                  </li>
                 </ol>
 <!-- I could use also an unescaped context value -->
             </div>
@@ -364,7 +388,7 @@ standard library provides a <code>rand</code> procedure we can combine with <cod
 
 randomize()
 <span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>).mapIt(rand(<span class="hljs-number">10.0</span>))</code></pre>
-<pre><samp>@[9.770835611229229, 1.526190823694131, 8.114166974774033, 9.477926759848138, 7.280729379544006]
+<pre><samp>@[0.1006944498693674, 7.774848721274261, 0.528450297351486, 3.959730673955997, 4.97033706676784]
 </samp></pre>
 <p>samples 5 floating point numbers between 0 and 10.</p>
 <h2><code>Tensor[T]</code> - an ND-array type from <a href="https://github.com/mratsim/Arraymancer">Arraymancer</a></h2>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using nimibook -->
         <meta charset="UTF-8">
-        <title>basics/basic_plotting.nim</title>
+        <title>external_language_integration/nim_with_py.nim</title>
 
         <!-- Custom HTML head -->
         <!-- custom head content -->
@@ -104,7 +104,7 @@
                     </a>
                   </li>
                   <li class="chapter-item expanded ">
-                    <a href="../basics/basic_plotting.html" class="active" tabindex="0">
+                    <a href="../basics/basic_plotting.html" tabindex="0">
                       <strong aria-hidden="true">2.3.</strong> Plotting
                     </a>
                   </li>
@@ -156,7 +156,7 @@
                   <li>
                   <ol class="section">
                   <li class="chapter-item expanded ">
-                    <a href="../external_language_integration/nim_with_py.html" tabindex="0">
+                    <a href="../external_language_integration/nim_with_py.html" class="active" tabindex="0">
                       <strong aria-hidden="true">5.1.</strong> Interfacing with Python
                     </a>
                   </li>
@@ -219,54 +219,123 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1>Simple plotting using <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a></h1>
-<h2>Line plot</h2>
+                        <h1>Using Python with Nim</h1>
+<p>In this tutorial, we explore how to use <a href="https://github.com/yglukhov/nimpy">Nimpy</a> to integrate Python code with Nim.</p>
+<p>There are 2 potential motivations for using Python:</p>
+<ul>
+<li>Extending the Nim Scientific computing ecosystem; mostly with Scipy / Numpy.</li>
+<li>Having a scripting language inside a compiled application</li>
+</ul>
+<h2>Using Python as a scripting language in Nim</h2>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  ggplotnim
+  std / os
 
-<span class="hljs-keyword">let</span> x1 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
-<span class="hljs-keyword">let</span> y1 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">9.0</span>]
-<span class="hljs-keyword">let</span> df1 = seqsToDf(x1, y1)
-ggplot(df1, aes(<span class="hljs-string">&quot;x1&quot;</span>, <span class="hljs-string">&quot;y1&quot;</span>)) + geom_line() + ggsave(<span class="hljs-string">&quot;images/line_plot.png&quot;</span>)</code></pre>
-<pre><samp>StatusSuccess output of write_to_png
+<span class="hljs-keyword">import</span>
+  nimpy
+
+<span class="hljs-keyword">let</span> py = pyBuiltinsModule()
+<span class="hljs-keyword">discard</span> py.print(<span class="hljs-string">&quot;Hello world from Python..&quot;</span>)</code></pre>
+<p>That's basically all there is to it.
+If you don't want to use the dot operator (which can get confusing), it is also possible use <code>callMethod</code> directly</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">discard</span> callMethod(py, <span class="hljs-string">&quot;print&quot;</span>,
+                   <span class="hljs-string">&quot;This is effectively identical to the previous call&quot;</span>)</code></pre>
+<p>Most type conversion Nim -&gt; Python will be done automatically though Nimpy templates. Python -&gt; Nim type conversion has to be called manually with the <code>to()</code> API.</p>
+<p>Let's see how it works in practice. In order to do that, we are going to create a local Python file with our custom functions, import it in Nim and call the Python function from Nim and convert the result back to Nim types.</p>
+<p>The next portion will create said Python file using Nim code. If you're looking to reproduce this tutorial  at home, you can (and probably should) do it using your favorite text editor.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> mymod = open(getCurrentDir() / <span class="hljs-string">&quot;mymod.py&quot;</span>, fmWrite)
+mymod.write(<span class="hljs-string">&quot;&quot;&quot;def myfunc(inputArg):
+    outputArg = {}
+    outputArg[&quot;argFloat&quot;] = inputArg[&quot;argFloat&quot;] / 2
+    outputArg[&quot;argStr&quot;] = inputArg[&quot;argStr&quot;][::-1]
+    sortedList = sorted(inputArg[&quot;argSeq&quot;])
+    outputArg[&quot;argSeq&quot;] = sortedList
+    return outputArg
+&quot;&quot;&quot;</span>)
+mymod.close()</code></pre>
+<p>Now, onto the good parts :</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">type</span>
+  <span class="hljs-type">MyObj</span>* = <span class="hljs-keyword">object</span>
+    argFloat: <span class="hljs-built_in">float</span>
+    argStr: <span class="hljs-built_in">string</span>
+    argSeq: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">int</span>]
+
+<span class="hljs-keyword">let</span>
+  nimSeq: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">int</span>] = @[<span class="hljs-number">6</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">1</span>, <span class="hljs-number">8</span>, <span class="hljs-number">5</span>]
+  nimTup = <span class="hljs-type">MyObj</span>(argFloat: <span class="hljs-number">36.66</span>, argStr: <span class="hljs-string">&quot;I</span><span class="hljs-meta">\'</span><span class="hljs-string">m a string&quot;</span>, argSeq: nimSeq)
+<span class="hljs-keyword">let</span> sys = pyImport(<span class="hljs-string">&quot;sys&quot;</span>)
+<span class="hljs-keyword">discard</span> sys.path.append(getCurrentDir())
+<span class="hljs-keyword">let</span> mymod = pyImport(<span class="hljs-string">&quot;mymod&quot;</span>)
+<span class="hljs-keyword">let</span> retValue = mymod.myfunc(nimTup)
+<span class="hljs-keyword">echo</span> typeof(retValue)
+<span class="hljs-keyword">discard</span> py.print(retValue)</code></pre>
+<pre><samp>PyObject
 </samp></pre>
-<figure>
-<img src="../images/line_plot.png" alt="">
-<figcaption></figcaption>
-</figure>
-
-<p>Every plot in <code>ggplotnim</code> is created from an input <code>DataFrame</code> using the <code>ggplot</code> procedure. The <code>aes</code>
-argument describes the so called &quot;aesthetics&quot;, which are simply the columns of the <code>DataFrame</code> to
-visualize. From here a plot is built up &quot;by layers&quot;.</p>
-<p>Note: the <code>theme_opaque</code> is only used here to give the output PNG a white background so it's more
-visible in this book when using dark themes.</p>
-<h2>Scatter plot</h2>
+<p>As you can see, by default every Python function called will return a PyObject. To convert this PyObject into a useful Nim type simply do :</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> nimValue = retValue.to(<span class="hljs-type">MyObj</span>)
+<span class="hljs-keyword">echo</span> typeof(nimValue)
+<span class="hljs-keyword">echo</span> nimValue</code></pre>
+<pre><samp>MyObj
+(argFloat: 18.33, argStr: &quot;gnirts a m\'I&quot;, argSeq: @[1, 2, 3, 4, 5, 6, 7, 8])
+</samp></pre>
+<p>Note that this example works with an object, but most Nim data structure are convertible to PyObject through Nimpy, including (but not limited to) : <code>Table, JsonNode, Set, OpenArray, Enum, Tuple</code> etc..</p>
+<h2>Extending Nim through Scipy &amp; Numpy</h2>
+<p>Now that we know how to use Python through Nim, let's see how we can use Nimpy / Scipy scientific functions through Nim.</p>
+<p>The main difficulty is to work with the numpy ndarray type in Nim.</p>
+<p>In order to do that, we'll use the <a href="https://github.com/SciNim/scinim/blob/main/scinim/numpyarrays.nim">scinim/numpyarrays API</a>.
+By default, the conversion is done from/to Arraymancer Tensor; but the API covers <code>ptr UncheckedArray[T]</code> so it can be extended to any type with an underlying data buffer.</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  ggplotnim
+  arraymancer
 
-<span class="hljs-keyword">let</span> x2 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
-<span class="hljs-keyword">let</span> y2 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">9.0</span>]
-<span class="hljs-keyword">let</span> df2 = seqsToDf(x2, y2)
-ggplot(df2, aes(<span class="hljs-string">&quot;x2&quot;</span>, <span class="hljs-string">&quot;y2&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/scatter_plot.png&quot;</span>)</code></pre>
-<pre><samp>StatusSuccess output of write_to_png
+<span class="hljs-keyword">import</span>
+  scinim / numpyarrays
+
+<span class="hljs-keyword">let</span> np = pyImport(<span class="hljs-string">&quot;numpy&quot;</span>)
+<span class="hljs-keyword">var</span> mytensor = @[@[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>], @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>], @[<span class="hljs-number">7.0</span>, <span class="hljs-number">8.0</span>, <span class="hljs-number">9.0</span>]].toTensor
+<span class="hljs-keyword">discard</span> py.print(mytensor)
+<span class="hljs-keyword">var</span> myarray = toNdArray(mytensor)
+<span class="hljs-keyword">echo</span> myarray.dtype()
+<span class="hljs-keyword">echo</span> myarray.shape</code></pre>
+<pre><samp>&lt;class 'numpy.float64'&gt;
+@[3, 3]
 </samp></pre>
-<figure>
-<img src="../images/scatter_plot.png" alt="">
-<figcaption></figcaption>
-</figure>
-
-<p>Notice how similar the two code snippets are. This is the general structure of <code>ggplotnim</code>, you add geoms and combine them in different ways.
-Try for yourself what happens if you have <em>both</em> <code>geom_line</code> and <code>geom_point</code>.</p>
+<p>Now let's do a simple 1d interpolation using Scipy.</p>
+<p>For simplicity, let's use a simple, straightforward function : $$ f(x) = 10*x $$ and do a linear 1D interpolation. This makes the result easy to verify.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = pyImport(<span class="hljs-string">&quot;scipy.interpolate&quot;</span>)
+<span class="hljs-keyword">var</span>
+  mypoints = @[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>, <span class="hljs-number">7.0</span>, <span class="hljs-number">8.0</span>, <span class="hljs-number">9.0</span>].toTensor
+  myvalues = @[<span class="hljs-number">10.0</span>, <span class="hljs-number">20.0</span>, <span class="hljs-number">30.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">50.0</span>, <span class="hljs-number">60.0</span>, <span class="hljs-number">70.0</span>, <span class="hljs-number">80.0</span>, <span class="hljs-number">90.0</span>].toTensor
+  x_coord = toNdArray(mypoints)
+  y_coord = toNdArray(myvalues)
+<span class="hljs-keyword">var</span> f_interp = interp.interp1d(x_coord, y_coord, <span class="hljs-string">&quot;linear&quot;</span>)
+<span class="hljs-keyword">discard</span> py.print(f_interp)</code></pre>
+<p>The result of interp1d is an interpolator function. In Nim, it's necessary to call it explicitly using <code>callObject</code> proc.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span> val_at_new_point = callObject(f_interp, <span class="hljs-number">1.5</span>).to(<span class="hljs-built_in">float</span>)
+<span class="hljs-keyword">echo</span> val_at_new_point</code></pre>
+<pre><samp>15.0
+</samp></pre>
+<p>As expected, the result of the linear 1D interpolation evaluated on the coordinate 1.5 is 15.</p>
+<p>Now let's do it on an Array :</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span> new_points_coord = @[<span class="hljs-number">2.5</span>, <span class="hljs-number">3.5</span>, <span class="hljs-number">4.5</span>, <span class="hljs-number">5.5</span>]
+<span class="hljs-keyword">var</span> new_values = toTensor[<span class="hljs-built_in">float</span>](callObject(f_interp, new_points_coord))
+<span class="hljs-keyword">echo</span> new_values</code></pre>
+<pre><samp>Tensor[system.float] of shape &quot;[4]&quot; on backend &quot;Cpu&quot;
+    25    35    45    55
+</samp></pre>
+<p>The result of the linear 1D interpolation on <code>[2.5, 3.5, 4.5, 5.5]</code> is <code>[25, 35, 45, 55]</code>, as we expected !</p>
+<p>(if you executed the code snippet as-is, don't forget to remove the generated Python file <code>mymod.py</code>).</p>
+<pre><code class="nim hljs">removeFile(getCurrentDir() / <span class="hljs-string">&quot;mymod.py&quot;</span>)</code></pre>
+<p>And that's it, for this tutorial !</p>
+<p>While simple, the approach presented here allows to re-use most (if not all) of the Scipy / Numpy API relying on ndarray and convert them to Arraymancer Tensor, a format easily used in Nim.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../basics/data_wrangling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../external_language_integration/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../basics/units_basics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../external_language_integration/nim_with_jl.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -276,11 +345,11 @@ Try for yourself what happens if you have <em>both</em> <code>geom_line</code> a
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../basics/data_wrangling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../external_language_integration/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../basics/units_basics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../external_language_integration/nim_with_jl.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
