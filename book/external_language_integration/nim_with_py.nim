@@ -12,6 +12,8 @@ There are 2 potential motivations for using Python:
 * Extending the Nim Scientific computing ecosystem; mostly with Scipy / Numpy.
 * Having a scripting language inside a compiled application
 
+There is a third use case : it's implementing Python module in Nim (for example, to speed up Python). While potentially useful, we will not cover it in this tutorial but you can read go check-out
+[nimporter](https://github.com/Pebaz/Nimporter).
 
 ## Using Python as a scripting language in Nim
 """
@@ -124,7 +126,7 @@ nbCode:
 nbText: """
   Now let's do a simple 1d interpolation using Scipy.
 
-  For simplicity, let's use a simple, straightforward function : $$ f(x) = 10*x $$ and do a linear 1D interpolation. This makes the result easy to verify.
+  For simplicity, let's use a simple, straightforward function : $$f(x) = 10*x$$ and do a linear 1D interpolation. This makes the result easy to verify.
 """
 
 nbCode:
