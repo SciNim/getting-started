@@ -4,26 +4,26 @@ nbInit()
 nbUseNimibook
 
 nbText: """
-# 1) Using Julia with Nim
+# Using Julia with Nim
 
 In this tutorial, we explore how to use [Nimjl](https://github.com/Clokk/nimjl) to integrate [Julia](https://julialang.org/) code with Nim.
 
-## 1.1) What is Julia ?
+## What is Julia ?
 
 Julia is a dynamicalyl typed scripting language designed for high performance; it compiles to efficient native code through LLVM.
 
 Most notably, it has a strong emphasis on scientific computing and Julia Arrays type are one of the fastest multi-dimensionnal arrays - or Tensor-like - data structures out there.
 
-## 1.2) Why use Julia inside Nim ?
+## Why use Julia inside Nim ?
 
 * Extending Nim ecosystem with Julia Scientific package
 * As an efficient scripting language in a compiled application.
 
-# 2) Tutorial
+# Tutorial
 
 [Nimjl](https://github.com/Clokk/nimjl) already has some [examples](https://github.com/Clonkk/nimjl/examples/) that explains the basics, make sure to go through them in order.
 
-## 2.1) Basic stuff
+## Basic stuff
 
 
 """
@@ -49,7 +49,7 @@ nbText: """As you can see, both code are identical.
 
 But wait didn't we just pass Nim string to Julia ? How does that work ?
 
-## 2.2) Julia's typing system
+## Julia's typing system
 
 As mentionned, Julia is **dynamically typed**, which means that from Nim point of view, every Julia object is a pointers of the C struct ``jl_value_t`` - mapped in Nim to ``JlValue``.
 
@@ -57,7 +57,7 @@ For convenience:
 * ``proc jltypeof(x: JlVal) : string`` will invoke the Julia function ``typeof`` and convert the result to a string.
 * ``proc `$`(x: JlVal) : string`` will call the Julia function ``string`` and convert the result to a string - this allow us to call ``echo`` with JlValue and obtain the same output as Julia's ``println``.
 
-### 2.2.1) Converting Nim type to Julia value
+### Converting Nim type to Julia value
 
 Most Nim value can be converted to JlValue through the function ``toJlVal`` or its alias ``toJlValue`` (I always got the two name confused so I ended up defining both...).
 
@@ -76,7 +76,7 @@ nbCode:
 nbText: """
 **This operation will perform a copy** (almost always).
 
-### 2.2.2) Converting from Julia to Nim
+### Converting from Julia to Nim
 
 In the previous example we calculated the square root of 255.0, stored in a JlValue. But using JlValue in Nim is hardly practical, so let's how to convert it back to a float:
 
@@ -90,7 +90,8 @@ nbCode:
   # Check the result
   assert nimRes == sqrt(255.0)
 
-nbText: """### 2.2.3) Using non-POD data structures
+nbText: """
+### Using non-POD data structures
 
 #### Dict() <-> Table
 
@@ -146,12 +147,33 @@ If the type is not known to Julia, the Nim object will be mapped to a NamedTuple
 Let's how it works in practice. First we will have to create a local module and include it.
 
 """
-nbCode:
-  import std/os # Will be used later
-nbCodeInBlock:
-  # Create a new file
-  let mymod = open(getCurrentDir() / "mymod.jl", fmWrite)
-  mymod.write("""
+# nbCode:
+#   import std/os # Will be used later
+# nbCodeInBlock:
+#   # Create a new file
+#   let mymod = open(getCurrentDir() / "mymod.jl", fmWrite)
+#   mymod.write("""
+# module localexample
+#   mutable struct Foo
+#     x::Int
+#     y::Float64
+#     z::String
+#     # Nim initialize the Julia variable with empty constructor by default
+#     Foo() = new()
+#     Foo(x, y, z) = new(x, y, z)
+#   end
+#   function applyToFoo(foo::Foo)
+#     foo.x += 1
+#     foo.y *= 2/3
+#     foo.z *= " General Kenobi !"
+#   end
+#   export Foo
+#   export applyToFoo
+# end
+# """)
+#   mymod.close()
+
+nbFile("mymod.jl"):"""
 module localexample
   mutable struct Foo
     x::Int
@@ -169,8 +191,7 @@ module localexample
   export Foo
   export applyToFoo
 end
-""")
-  mymod.close()
+"""
 
 nbText: """Now that we have our local Julia module, let's include it and convert object to Nim.
 """
@@ -259,21 +280,17 @@ This is important because you may end up having confusing result if you take it 
 
 #### Creating Arrays
 
-TODO
+Array creation can be done in 3 different way :
+* By calling native Julia constructor (Julia owns the memory)
+* By copying an existing buffer (Julia owns the memory)
+* By using an existing buffer without copy (Julia does not own the memory)
 
-Who owns the memory ?
-Memory allocation
+TODO example
 
-* From a buffer
-* From a 1D seq / openarray
-* From a seq[seq]
-* From a Tensor
-* From Julia itself
+When using JlArray whose memory is handled by the Julia VM in Nim, beware to gc-root the Arrays in the JUlia VM so it doesn't get collected by Julia's gc.
 
+TODO example
 """
-
-nbCode: # TODO
-  discard
 
 nbText: """
 #### Conversion between JlArray[T] <-> Tensor[T]
@@ -282,14 +299,15 @@ TODO
 #### Indexing (and its side effects)
 TODO
 
-#### Basic algorithm
+#### Examples
 TODO
 
 Installing a package, calling an algorithm, getting the result as an Arraymancer
 
 """
 
-nbCodeInBlock:
+nbCode:
+  import std/os
   removeFile(getCurrentDir() / "mymod.jl")
 
 nbSave

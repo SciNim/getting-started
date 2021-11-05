@@ -19,7 +19,6 @@ There is a third use case : it's implementing Python module in Nim (for example,
 """
 
 nbCode:
-  import std/os # Will be used later
   import nimpy
   let py = pyBuiltinsModule()
   discard py.print("Hello world from Python..")
@@ -39,11 +38,23 @@ nbText: """
 
   The next portion will create said Python file using Nim code. If you're looking to reproduce this tutorial  at home, you can (and probably should) do it using your favorite text editor.
 """
+# nbCode:
+#   import std/os # Will be used later
+# nbCodeInBlock:
+#   # Create a new file
+#   let mymod = open(getCurrentDir() / "mymod.py", fmWrite)
+#   mymod.write("""
+# def myfunc(inputArg):
+#     outputArg = {}
+#     outputArg["argFloat"] = inputArg["argFloat"] / 2
+#     outputArg["argStr"] = inputArg["argStr"][::-1]
+#     sortedList = sorted(inputArg["argSeq"])
+#     outputArg["argSeq"] = sortedList
+#     return outputArg
+# """)
+#   mymod.close()
 
-nbCodeInBlock:
-  # Create a new file
-  let mymod = open(getCurrentDir() / "mymod.py", fmWrite)
-  mymod.write("""
+nbFile("mymod.py"):"""
 def myfunc(inputArg):
     outputArg = {}
     outputArg["argFloat"] = inputArg["argFloat"] / 2
@@ -51,9 +62,7 @@ def myfunc(inputArg):
     sortedList = sorted(inputArg["argSeq"])
     outputArg["argSeq"] = sortedList
     return outputArg
-""")
-  mymod.close()
-
+"""
 
 nbText: """
   Now, onto the good parts :
@@ -168,7 +177,8 @@ nbText: """
   (if you executed the code snippet as-is, don't forget to remove the generated Python file ``mymod.py``).
 """
 
-nbCodeInBlock:
+nbCode:
+  import std/os
   removeFile(getCurrentDir() / "mymod.py")
 
 nbText: """
@@ -176,4 +186,5 @@ nbText: """
 
   While simple, the approach presented here allows to re-use most (if not all) of the Scipy / Numpy API relying on ndarray and convert them to Arraymancer Tensor, a format easily used in Nim.
 """
+
 nbSave
