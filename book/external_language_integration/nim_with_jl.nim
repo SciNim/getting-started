@@ -140,15 +140,156 @@ The key is to know beforehand the fields of the Tuple in order to easily use it 
 For object, the conversion proc is done by iterating over the object's fields and calling the conversion proc.
 
 In order for the conversion to be possible, it is necessary that the type is declared in both Nim and Julia (as a mutable struct) and that the empty constructor is defined in Julia.
+
+If the type is not known to Julia, the Nim object will be mapped to a NamedTuple (losing the mutability).
+
+Let's how it works in practice. First we will have to create a local module and include it.
+
 """
+nbCode:
+  import std/os # Will be used later
+nbCodeInBlock:
+  # Create a new file
+  let mymod = open(getCurrentDir() / "mymod.jl", fmWrite)
+  mymod.write("""
+module localexample
+  mutable struct Foo
+    x::Int
+    y::Float64
+    z::String
+    # Nim initialize the Julia variable with empty constructor by default
+    Foo() = new()
+    Foo(x, y, z) = new(x, y, z)
+  end
+  function applyToFoo(foo::Foo)
+    foo.x += 1
+    foo.y *= 2/3
+    foo.z *= " General Kenobi !"
+  end
+  export Foo
+  export applyToFoo
+end
+""")
+  mymod.close()
+
+nbText: """Now that we have our local Julia module, let's include it and convert object to Nim.
+"""
+
+nbCode:
+  # Create the same Foo typr
+  type
+    Foo = object
+      x: int
+      y: float
+      z: string
+
+  # Include the file
+  jlInclude(getCurrentDir() / "mymod.jl")
+  # This is equivalent to Julia `using ...`
+  jlUseModule(".localexample")
+
+nbText: """Now let's see how conversion works for object:
+
+"""
+
+nbCode:
+    var foo = Foo(x: 144, y: 12.0, z: "123")
+    var jlfoo = toJlVal(foo)
+    echo jlfoo
+    echo typeof(jlfoo) # From Nim's point of view it's still a JlValue
+    echo jltypeof(jlfoo) # From Julia's point of view, it's a Foo object.
+
+nbText: """The object gets converted to the mutable struct type "Foo" in Julia.
+
+Despite being a JlValue for Nim, you can still access and modify its field using `.` - just as you would a Nim object.
+
+Internally, this will call Julia's metaprogramming function getproperty / setproperty!.
+
+Let's see :
+"""
+
+nbCode:
+  echo jlfoo.x
+  echo typeof(jlfoo.x)
+  echo jltypeof(jlfoo.x)
+
+  jlfoo.x = 20
+  jlfoo.y = -11.0
+  jlfoo.z = "Hello there !"
+  echo jlfoo
 
 nbText: """
-### Manipulating Arrays
 
 
-### Calling external module
+And like all JlValue, it can be used as a function argument. For example, let's call the function ``applyToFoo`` we previously defined in Julia.
+
+This function adds 1 to the x field; multiply the y field by 2/3; append the string "General Kenobi !" to the z field.
+"""
+
+nbCode:
+  discard Julia.applyToFoo(jlfoo)
+  echo jlfoo
+
+nbText: """And there we have it. ``jlfoo`` has been modified.
+
+Finally, let's convert back the Julia object to a Nim "Foo" object :
 
 """
 
+nbCode:
+  var foo2 = jlfoo.to(Foo)
+  echo foo2
+  echo typeof(foo2)
+
+nbText: """foo2 is now back in Nim land with the previously modified value.
+
+Of course, this dummy examples doesn't do much but it demonstrate the type of workflow you can setup between Nim and Julia.
+
+### Manipulating Arrays
+
+Julia Arrays are one of the best NDArray data structures available. That's why a special emphasis is made on handling Julia Arrays.
+
+nimjl defines the generic type ``JlArray[T]``. A JlArray is a special JlValue that represent the type ``Array{T}`` in Julia. It's generic so Nim has the information of the underlying type and it's possible to access its buffer and iterate over it.
+
+The closest Nim equivalent would be [Arraymancer](https://github.com/mratsim/Arraymancer) Tensor type.
+
+Just keep in mind, **Julia's Array are column major**, while Nim usually follows C's  convention of Row major.
+
+This is important because you may end up having confusing result if you take it into account.
+
+#### Creating Arrays
+
+TODO
+
+Who owns the memory ?
+Memory allocation
+
+* From a buffer
+* From a 1D seq / openarray
+* From a seq[seq]
+* From a Tensor
+* From Julia itself
+
+"""
+
+nbCode: # TODO
+  discard
+
+nbText: """
+#### Conversion between JlArray[T] <-> Tensor[T]
+TODO
+
+#### Indexing (and its side effects)
+TODO
+
+#### Basic algorithm
+TODO
+
+Installing a package, calling an algorithm, getting the result as an Arraymancer
+
+"""
+
+nbCodeInBlock:
+  removeFile(getCurrentDir() / "mymod.jl")
 
 nbSave
