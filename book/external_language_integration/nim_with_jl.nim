@@ -280,23 +280,71 @@ This is important because you may end up having confusing result if you take it 
 
 #### Creating Arrays
 
-Array creation can be done in 3 different way :
-* By calling native Julia constructor (Julia owns the memory)
-* By copying an existing buffer (Julia owns the memory)
-* By using an existing buffer without copy (Julia does not own the memory)
+Array creation can be done in multiple different way.
 
-TODO example
-
-When using JlArray whose memory is handled by the Julia VM in Nim, beware to gc-root the Arrays in the JUlia VM so it doesn't get collected by Julia's gc.
-
-TODO example
+By calling native Julia constructor - memory is allocated and owned by Julia, JlValue needs to be gc-rooted in order to be used between calls:
 """
 
-nbText: """
-#### Conversion between JlArray[T] <-> Tensor[T]
-TODO
+nbCodeInBlock:
+  # Use a Julia constructor to create 5x5 Matrix of Float
+  var localArray = Julia.zeros(5, 5)
+  # localArray memory is owned by Julia
+  echo localArray
 
+nbText:"""
+By copying an existing buffer / Tensor / seq - memory is allocated and owned by Julia during copy; JlValue needs to be gc-rooted in order to be used between calls:
+"""
+nbCode:
+  import std/sequtils
+nbCodeInBlock:
+  var localNimArray = newSeqWith(5, newSeq[float](5))
+  var localArray = toJlArray(localNimArray)
+  # localArray memory is owned by Julia
+  echo localArray
+
+
+nbText:"""
+  By using an existing buffer (or Tensor) - no memory allocation is performed and Julia does not own the memory. The memory has to be contiguous:
+"""
+nbCodeInBlock:
+  var localNimArray = newSeq[float](25) # Create a Nim buffer of contiguous memory
+  var localArray = jlArrayFromBuffer(localNimArray).reshape(5, 5)
+  echo localArray
+  localNimArray[0] = 14
+  # localArray memory is NOT owned by Julia
+  # As you can see modifying the buffer modify the Julia Array.
+  # Keep in mind when using buffer directly that Julia Array are Column Major.
+  echo localArray
+
+nbText:"""
+When using JlArray whose memory is handled by the Julia VM in Nim, you need to gc-root the Arrays in the Julia VM so it doesn't get collected by Julia's gc over successive calls.
+
+This is done by using the ``jlGcRoot`` which calls the C macros ``JL_GC_PUSH`` with the arguments and then calls the C macro ``JL_GC_POP()`` at the end of the template's scope.
+
+For more detailed explanantion regarding ``JL_GC_PUSH()``/ ``JL_GC_POP``, please refer to Julia's official documentation on [embbedding](https://docs.julialang.org/en/v1/manual/embedding/#Memory-Management).
+"""
+
+nbCodeInBlock:
+  # Use a Julia constructor to create 5x5 Matrix of Float
+  var localArray = Julia.zeros(5, 5)
+  jlGcRoot(localArray):
+    # localArray is gc-rooted as long as you're in ``jlGcRoot`` template scope
+    echo localArray
+    # Do more stuff... localArray will not be collected by Julia's GC
+    echo localArray
+    # localArray "rooting" ends here
+
+nbText: """
+  Note that if Julia does **not** own the memory, then calling ``jlGcRoot`` on the value is forbidden (and will probably result in a segfault). The Julia VM cannot refer to memory it does not own regarding its gc collection routine.
+"""
+
+
+nbText:"""
 #### Indexing (and its side effects)
+``JlArray[T]`` can be indexed in Nim.
+
+
+#### Conversion between JlArray[T] <-> Tensor[T]
 TODO
 
 #### Examples
