@@ -38,21 +38,6 @@ nbText: """
 
   The next portion will create said Python file using Nim code. If you're looking to reproduce this tutorial  at home, you can (and probably should) do it using your favorite text editor.
 """
-# nbCode:
-#   import std/os # Will be used later
-# nbCodeInBlock:
-#   # Create a new file
-#   let mymod = open(getCurrentDir() / "mymod.py", fmWrite)
-#   mymod.write("""
-# def myfunc(inputArg):
-#     outputArg = {}
-#     outputArg["argFloat"] = inputArg["argFloat"] / 2
-#     outputArg["argStr"] = inputArg["argStr"][::-1]
-#     sortedList = sorted(inputArg["argSeq"])
-#     outputArg["argSeq"] = sortedList
-#     return outputArg
-# """)
-#   mymod.close()
 
 nbFile("mymod.py"):"""
 def myfunc(inputArg):
