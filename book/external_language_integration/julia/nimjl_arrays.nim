@@ -207,8 +207,157 @@ nbCodeInBlock:
 
 nbText:"""Note that the slicing syntax is based on Arraymancer slciing syntax, but respect Julia's indexing convention.
 
-## Conversion between JlArray[T] <-> Tensor[T]
-TODO
+## Conversion between JlArray[T] and Arraymancer's Tensor[T] (and dealing with RowMajor/ColMajor)
+
+Working with Arraymancer Tensor isn't that different from working with Array at first glance; the major difference is that Tensor can be either column major or row major so when creating a JlArray by copy from a Tensor, the data will be set to column major order before copying.
+
+"""
+
+nbCode:
+  import arraymancer
+
+nbCodeInBlock:
+  var localTensor = newTensor[int64](3, 5)
+  var i = 0
+  localTensor.apply_inline:
+    inc(i)
+    i
+  echo localTensor
+
+  var localArray = localTensor.toJlArray()
+  echo localArray
+
+nbText: """Despite localTensor being row major by-default, the JlArray (that is col major by default) still has identical values.
+
+This only applies when a copy is performed :
+"""
+
+nbCodeInBlock:
+  var localTensor = newTensor[int64](3, 5)
+  var i = 0
+  localTensor.apply_inline:
+    inc(i)
+    i
+  echo localTensor
+
+  var localArray = jlArrayFromBuffer(localTensor)
+  echo localArray
+
+nbText: """When working from the raw buffer of the Tensor, because the order is still column major the ``JlArray[T]`` values are different from the previous examples.
+
+  To convert a ``JlArray[T]`` to a ``Tensor[T]``, simply use ``to`` proc as you would with any other type; with just an additional argument to specify the memory layout of the Tensor created this way:
+"""
+
+nbCodeInBlock:
+  var localArray = Julia.rand([1, 2, 3, 4, 5], (5, 5)).toJlArray[:int]()
+  var localTensor = localArray.to(Tensor[int], colMajor)
+
+  echo localArray
+  echo localTensor
+
+  var localTensor2 = localArray.to(Tensor[int], rowMajor)
+  assert(localTensor == localTensor2)
+
+nbText:"""Both Tensors have identical indexed values but the buffer are different according to the memory layout argument.
+
+When passing Tensor directly as values in a ``jlCall`` / ``Julia.`` expression, a ``JlArray[T]`` will be constructed by buffer; so you should be aware about the memory layout of the buffer.
+
+"""
+
+nbCode:
+  var orderedTensor = newTensor[int]([3, 2])
+  var idx = 0
+  orderedTensor.apply_inline:
+    inc(idx)
+    idx
+  echo orderedTensor
+
+nbText: """Let's use the simple Tensor above as an example with a trivial funciton such as ``transpose`` and compare the results.
+
+Case 1 : Using Tensor argument directly (no copy):
+"""
+
+nbCodeInBlock:
+  var res = Julia.transpose(orderedTensor).toJlArray(int)
+  echo res
+  echo orderedTensor.transpose()
+
+nbText:"""This is expanded to:
+"""
+
+nbCodeInBlock:
+  # When passing localTensor, a ``JlArray`` is created using ``jlFromBuffer``.
+  # Since the Tensor is row major and the Array col major, the order of the values is not conserved
+  var res = Julia.transpose(toJlVal(jlArrayFromBuffer(orderedTensor))).toJlArray(int)
+  echo res
+  echo orderedTensor.transpose()
+
+nbText:"""Therefore, no copy is made : the Julia Array points to the Tensor's buffer.
+
+The indexed values between ``Julia.transpose(...)`` and ``orderedTensor.transpose()`` **are different** because they are indexed differently : Julia Arrays are indexed in column major while this Arraymancer Tensor is in column major.
+
+Case 2 : Copying the Tensor into an Array and using the Array:
+"""
+nbCodeInBlock:
+  var tensorCopied = toJlArray(orderedTensor)
+  # Tensor is copier to Array in ColMajor order
+  var res = Julia.transpose(tensorCopied).toJlArray(int)
+  echo res
+  echo orderedTensor.transpose()
+
+nbText:"""On the other hand, on this case because the Array has been created from **a copy**, the indexed value have been copied into ``JlArray`` in column major order.
+
+As a consequence, the indexed value of ``Julia.transpose()`` and ``orderedTensor.transpose()`` **are identical**.
+
+Note that you can use ``swapMemoryOrder`` on an existing ``JlArray[T]`` to obtain a copy of the Array but permuted.
+"""
+
+nbCodeInBlock:
+  var tensorView = jlArrayFromBuffer(orderedTensor)
+  var tensorCopied = toJlArray(orderedTensor)
+  echo tensorView
+  echo tensorCopied
+
+nbText: """The array are actually different from Julia's point of view: ``tensorView`` is row major values (the Tensor buffer) indexed as column major while ``tensorCopied`` is col major values indexed as col major.
+
+In Nim, the utility proc ``swapMemoryOrder()`` will change **return a copy** with a swapped memory order (col major -> row major & vice-versa) to handle such cases more easily.
+
+## Broadcasting
+
+One of main appeal of Arrays in Julia, is the ability to broadcast function of a single element.
+In Nimjl this is done using the ``jlBroadcast``.
+"""
+
+nbCodeInBlock:
+  var localArray = @[
+    @[4, 4, 4, 4],
+    @[4, 4, 4, 4],
+    @[4, 4, 4, 4]
+  ].toJlArray()
+  echo localArray
+  var sqrtLocalArray = jlBroadcast(sqrt, localArray).toJlArray(float) # sqrt of int is a float
+  echo sqrtLocalArray
+
+nbText: """This is the equivalent in Julia of calling ``sqrt.(localArray)``.
+
+For convenience, the usual broadcasted operators have also been defined:
+"""
+
+nbCodeInBlock:
+  var localArray = @[
+    @[4, 4, 4, 4],
+    @[4, 4, 4, 4],
+    @[4, 4, 4, 4]
+  ].toJlArray()
+  echo localArray
+  var res = (localArray +. localArray)*.2 -. (localArray/.2)
+  echo res
+
+nbText: """## Final word ?
+  Thanks for reading this far ! I hope that this tutorial will help you get started mixing Julia and Nim in your application.
+
+  If you found a bug in [nimjl](https://github.com/Clonkk/nimjl), opening an issue will be much appreciated.
+  Got a question ? Contact the SciNim team writing these [getting started](https://github.com/scinim/getting-started) either by opening an issue or through the Nim Discord/Matrix on the science channel.
 
 """
 
