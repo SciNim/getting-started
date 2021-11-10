@@ -17,8 +17,9 @@ requires "mpfit"
 requires "numericalnim"
 requires "unchained#head"
 requires "benchy"
-requires "nimpy >= 0.2.0"
 requires "scinim >= 0.2.2"
+requires "nimpy >= 0.2.0"
+requires "nimjl >= 0.6.3"
 
 
 task genbook, "build book":
