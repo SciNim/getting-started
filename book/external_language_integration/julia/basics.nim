@@ -48,7 +48,7 @@ Internally, this is rewritten to :
 nbCode:
   discard jlCall("println", "Hello world !")
 
-nbText: """Both code are identical; like mentionned the ``Julia.`` is syntaxic sugar for calling Julia function; it always returns a JlValue (that can be nil if the Julia function does not return anything).
+nbText: """Both codes are identical; like mentioned above the ``Julia.`` is syntactic sugar for calling Julia functions; it always returns a JlValue (that can be nil if the Julia function does not return anything).
 
 The equivalent C code would be :
 ```c
