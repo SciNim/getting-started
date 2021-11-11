@@ -11,7 +11,7 @@ nimjl defines the generic type ``JlArray[T]``. A JlArray is a special JlValue th
 
 The closest Nim equivalent would be [Arraymancer](https://github.com/mratsim/Arraymancer) Tensor type.
 
-Just keep in mind, **Julia's Array are column major**, while Nim usually follows C's  convention of Row major.
+Just keep in mind, **Julia's Arrays are column-major**, while Nim usually follows C's convention of row-major.
 
 This is important because you may end up having confusing results if you don't take it into account.
 
