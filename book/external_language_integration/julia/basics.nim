@@ -40,7 +40,7 @@ nbCode:
 
 nbText: """The ``Julia.init()`` calls initialize the Julia VM. No call before the init will work.
 
-The ``Julia.exit()`` calls is optionnal since it's added as an exit procs (see [std/exitprocs](https://nim-lang.org/docs/exitprocs.html) )
+The ``Julia.exit()`` calls is optional since it's added as an exit procs (see [std/exitprocs](https://nim-lang.org/docs/exitprocs.html) )
 
 Internally, this is rewritten to :
 """
