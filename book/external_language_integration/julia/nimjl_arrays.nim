@@ -13,7 +13,7 @@ The closest Nim equivalent would be [Arraymancer](https://github.com/mratsim/Arr
 
 Just keep in mind, **Julia's Array are column major**, while Nim usually follows C's  convention of Row major.
 
-This is important because you may end up having confusing result if you take it into account.
+This is important because you may end up having confusing results if you don't take it into account.
 
 ## Creating Arrays
 
