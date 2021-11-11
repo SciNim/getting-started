@@ -3,7 +3,7 @@ import nimib, nimibook
 nbInit()
 nbUseNimibook
 
-nbText: """Previously, we've seen how the basic of Nimjl works; now let's explore how to work with non-trivial type when calling functions.
+nbText: """Previously, we've seen how the basics of Nimjl works; now let's explore how to work with non-trivial types when calling functions.
 
 ## Julia Dict() and Nim Table[U, V]
 
