@@ -320,7 +320,7 @@ nbCodeInBlock:
 
 nbText: """The array are actually different from Julia's point of view: ``tensorView`` is row major values (the Tensor buffer) indexed as column major while ``tensorCopied`` is col major values indexed as col major.
 
-In Nim, the utility proc ``swapMemoryOrder()`` will change **return a copy** with a swapped memory order (col major -> row major & vice-versa) to handle such cases more easily.
+In Nim, the utility proc ``swapMemoryOrder()`` will change and **return a copy** with a swapped memory order (col major -> row major & vice-versa) to handle such cases more easily.
 
 ## Broadcasting
 
