@@ -38,7 +38,7 @@ nbCodeInBlock:
 
 nbText:"""### Construct from existing buffer
 
-When a ``JlArray[T]`` has to be constructed from existing values - i.e. an existing Nim buffer - the easiest way is to either copy the buffer into a ``JlArray[T]`` OR have the array points to the buffer.
+When a ``JlArray[T]`` has to be constructed from existing values - i.e. an existing Nim buffer - the easiest way is to either copy the buffer into a ``JlArray[T]`` OR have the array point to the buffer.
 
 #### Copying an existing buffer
 
