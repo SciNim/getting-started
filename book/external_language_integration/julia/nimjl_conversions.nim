@@ -35,7 +35,7 @@ nbCode:
     echo r
     echo jlDict
 
-nbText: """The key ``1`` has effectivelent been removed.
+nbText: """The key ``1`` has effectively been removed.
 
 Note, that you can also use ``[]`` and ``[]=`` operator on Dict().
 """
