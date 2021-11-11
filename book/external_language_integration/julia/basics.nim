@@ -59,7 +59,7 @@ The equivalent C code would be :
 
 """
 
-nbText:"""As mentionned, Julia is **dynamically typed**, which means that from Nim point of view, every Julia object is a pointers of the C struct ``jl_value_t`` - mapped in Nim to ``JlValue``.
+nbText:"""As mentioned, Julia is **dynamically typed**, which means that from Nim's point of view, every Julia object is a pointer of the C struct ``jl_value_t`` - mapped in Nim to ``JlValue``.
 
 ### Converting Nim type to Julia value
 
