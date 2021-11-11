@@ -63,7 +63,7 @@ nbText:"""As mentioned, Julia is **dynamically typed**, which means that from Ni
 
 ### Converting Nim type to Julia value
 
-Most Nim value can be converted to JlValue through the function ``toJlVal`` or its alias ``toJlValue`` (I always got the two name confused so I ended up defining both...).
+Most Nim values can be converted to JlValue through the function ``toJlVal`` or its alias ``toJlValue`` (I always got the two name confused so I ended up defining both...).
 
 When passing a Nim value as a Julia argument through ``jlCall`` or ``Julia.myfunction``, Nim will automatically convert the argument by calling ``toJlVal``.
 
