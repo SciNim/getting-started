@@ -205,7 +205,7 @@ nbCodeInBlock:
   echo typeof(e1hat2)
   echo jltypeof(e1hat2)
 
-nbText:"""Note that the slicing syntax is based on Arraymancer slciing syntax, but respect Julia's indexing convention.
+nbText:"""Note that the slicing syntax is based on Arraymancer slicing syntax, but respect Julia's indexing convention.
 
 ## Conversion between JlArray[T] and Arraymancer's Tensor[T] (and dealing with RowMajor/ColMajor)
 
