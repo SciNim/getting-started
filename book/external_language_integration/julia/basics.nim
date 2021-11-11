@@ -10,7 +10,7 @@ In this tutorial, we explore how to use [Nimjl](https://github.com/Clokk/nimjl) 
 
 ## What is Julia ?
 
-Julia is a dynamicalyl typed scripting language designed for high performance; it compiles to efficient native code through LLVM.
+Julia is a dynamically typed scripting language designed for high performance; it compiles to efficient native code through LLVM.
 
 Most notably, it has a strong emphasis on scientific computing and Julia Arrays type are one of the fastest multi-dimensionnal arrays - or Tensor-like - data structures out there.
 
