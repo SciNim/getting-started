@@ -135,7 +135,7 @@ nbText: """
 
 And like all JlValue, it can be used as a function argument. For example, let's call the function ``applyToFoo`` we previously defined in Julia.
 
-This function adds 1 to the x field; multiply the y field by 2/3; append the string "General Kenobi !" to the z field.
+This function adds 1 to the x field; multiply the y field by 2/3; append the string " General Kenobi !" to the z field.
 """
 
 nbCode:
