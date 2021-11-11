@@ -25,7 +25,7 @@ Most notably, it has a strong emphasis on scientific computing and Julia's Array
 
 ## Basic stuff
 
-Nimjl is a mostly Nim wrapper around the C API of Julia; and then some syntax suagr around it to make it more easily to use. That means that inherently, Nimjl is limited to the capabilities of the C-API of Julia.
+Nimjl is mostly a Nim wrapper around the C API of Julia; and then some syntax sugar around it to make it easier to use. That means that inherently, Nimjl is limited to the capabilities of the C-API of Julia.
 
 Now let's what the code looks like :
 """
