@@ -1,4 +1,5 @@
 import nimib, nimibook
+import std/os
 
 nbInit()
 nbUseNimibook
@@ -162,9 +163,7 @@ nbText: """
   (if you executed the code snippet as-is, don't forget to remove the generated Python file ``mymod.py``).
 """
 
-nbCode:
-  import std/os
-  removeFile(getCurrentDir() / "mymod.py")
+removeFile(getCurrentDir() / "mymod.py")
 
 nbText: """
   And that's it, for this tutorial !

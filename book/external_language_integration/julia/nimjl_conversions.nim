@@ -1,4 +1,5 @@
 import nimib, nimibook
+import std/os
 
 nbInit()
 nbUseNimibook
@@ -160,8 +161,6 @@ Of course, this dummy examples doesn't do much but it demonstrate the type of wo
 Next, let's talk about arrays
 """
 
-nbCode:
-  import std/os
-  removeFile(getCurrentDir() / "mymod.jl")
+removeFile(getCurrentDir() / "mymod.jl")
 
 nbSave
