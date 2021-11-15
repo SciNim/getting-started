@@ -157,13 +157,27 @@
                   <ol class="section">
                   <li class="chapter-item expanded ">
                     <a href="../external_language_integration/nim_with_py.html" class="active" tabindex="0">
-                      <strong aria-hidden="true">5.1.</strong> Interfacing with Python
+                      <strong aria-hidden="true">5.1.</strong> Nimpy - The Nim Python bridge
                     </a>
                   </li>
                   <li class="chapter-item expanded ">
-                    <a href="../external_language_integration/nim_with_jl.html" tabindex="0">
-                      <strong aria-hidden="true">5.2.</strong> Interfacing with Julia
+                    <a href="../external_language_integration/julia/basics.html" tabindex="0">
+                      <strong aria-hidden="true">5.2.</strong> Nimjl - The Nim Julia bridge
                     </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/julia/nimjl_conversions.html" tabindex="0">
+                      <strong aria-hidden="true">5.2.1.</strong> Advanced types
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/julia/nimjl_arrays.html" tabindex="0">
+                      <strong aria-hidden="true">5.2.2.</strong> Julia Arrays from Nim
+                    </a>
+                  </li>
+                  </ol>
                   </li>
                   <li class="chapter-item expanded ">
                     <a href="../external_language_integration/nim_with_R.html" tabindex="0">
@@ -226,11 +240,10 @@
 <li>Extending the Nim Scientific computing ecosystem; mostly with Scipy / Numpy.</li>
 <li>Having a scripting language inside a compiled application</li>
 </ul>
+<p>There is a third use case : it's implementing Python module in Nim (for example, to speed up Python). While potentially useful, we will not cover it in this tutorial but you can read go check-out
+<a href="https://github.com/Pebaz/Nimporter">nimporter</a>.</p>
 <h2>Using Python as a scripting language in Nim</h2>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  std / os
-
-<span class="hljs-keyword">import</span>
   nimpy
 
 <span class="hljs-keyword">let</span> py = pyBuiltinsModule()
@@ -242,16 +255,15 @@ If you don't want to use the dot operator (which can get confusing), it is also 
 <p>Most type conversion Nim -&gt; Python will be done automatically though Nimpy templates. Python -&gt; Nim type conversion has to be called manually with the <code>to()</code> API.</p>
 <p>Let's see how it works in practice. In order to do that, we are going to create a local Python file with our custom functions, import it in Nim and call the Python function from Nim and convert the result back to Nim types.</p>
 <p>The next portion will create said Python file using Nim code. If you're looking to reproduce this tutorial  at home, you can (and probably should) do it using your favorite text editor.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> mymod = open(getCurrentDir() / <span class="hljs-string">&quot;mymod.py&quot;</span>, fmWrite)
-mymod.write(<span class="hljs-string">&quot;&quot;&quot;def myfunc(inputArg):
+<p>Writing file <code>mymod.py</code> :</p>
+<pre><code class="language-py">def myfunc(inputArg):
     outputArg = {}
     outputArg[&quot;argFloat&quot;] = inputArg[&quot;argFloat&quot;] / 2
     outputArg[&quot;argStr&quot;] = inputArg[&quot;argStr&quot;][::-1]
     sortedList = sorted(inputArg[&quot;argSeq&quot;])
     outputArg[&quot;argSeq&quot;] = sortedList
     return outputArg
-&quot;&quot;&quot;</span>)
-mymod.close()</code></pre>
+</code></pre>
 <p>Now, onto the good parts :</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">type</span>
   <span class="hljs-type">MyObj</span>* = <span class="hljs-keyword">object</span>
@@ -299,7 +311,7 @@ By default, the conversion is done from/to Arraymancer Tensor; but the API cover
 @[3, 3]
 </samp></pre>
 <p>Now let's do a simple 1d interpolation using Scipy.</p>
-<p>For simplicity, let's use a simple, straightforward function : $$ f(x) = 10*x $$ and do a linear 1D interpolation. This makes the result easy to verify.</p>
+<p>For simplicity, let's use a simple, straightforward function : $$f(x) = 10*x$$ and do a linear 1D interpolation. This makes the result easy to verify.</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = pyImport(<span class="hljs-string">&quot;scipy.interpolate&quot;</span>)
 <span class="hljs-keyword">var</span>
   mypoints = @[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>, <span class="hljs-number">7.0</span>, <span class="hljs-number">8.0</span>, <span class="hljs-number">9.0</span>].toTensor
@@ -323,7 +335,6 @@ By default, the conversion is done from/to Arraymancer Tensor; but the API cover
 </samp></pre>
 <p>The result of the linear 1D interpolation on <code>[2.5, 3.5, 4.5, 5.5]</code> is <code>[25, 35, 45, 55]</code>, as we expected !</p>
 <p>(if you executed the code snippet as-is, don't forget to remove the generated Python file <code>mymod.py</code>).</p>
-<pre><code class="nim hljs">removeFile(getCurrentDir() / <span class="hljs-string">&quot;mymod.py&quot;</span>)</code></pre>
 <p>And that's it, for this tutorial !</p>
 <p>While simple, the approach presented here allows to re-use most (if not all) of the Scipy / Numpy API relying on ndarray and convert them to Arraymancer Tensor, a format easily used in Nim.</p>
 
@@ -335,7 +346,7 @@ By default, the conversion is done from/to Arraymancer Tensor; but the API cover
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../external_language_integration/nim_with_jl.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../external_language_integration/julia/basics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -349,7 +360,7 @@ By default, the conversion is done from/to Arraymancer Tensor; but the API cover
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../external_language_integration/nim_with_jl.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../external_language_integration/julia/basics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

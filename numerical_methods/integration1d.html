@@ -159,13 +159,27 @@
                   <ol class="section">
                   <li class="chapter-item expanded ">
                     <a href="../external_language_integration/nim_with_py.html" tabindex="0">
-                      <strong aria-hidden="true">5.1.</strong> Interfacing with Python
+                      <strong aria-hidden="true">5.1.</strong> Nimpy - The Nim Python bridge
                     </a>
                   </li>
                   <li class="chapter-item expanded ">
-                    <a href="../external_language_integration/nim_with_jl.html" tabindex="0">
-                      <strong aria-hidden="true">5.2.</strong> Interfacing with Julia
+                    <a href="../external_language_integration/julia/basics.html" tabindex="0">
+                      <strong aria-hidden="true">5.2.</strong> Nimjl - The Nim Julia bridge
                     </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/julia/nimjl_conversions.html" tabindex="0">
+                      <strong aria-hidden="true">5.2.1.</strong> Advanced types
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/julia/nimjl_arrays.html" tabindex="0">
+                      <strong aria-hidden="true">5.2.2.</strong> Julia Arrays from Nim
+                    </a>
+                  </li>
+                  </ol>
                   </li>
                   <li class="chapter-item expanded ">
                     <a href="../external_language_integration/nim_with_R.html" tabindex="0">
@@ -310,12 +324,12 @@ timeIt <span class="hljs-string">&quot;AdaSimpson&quot;</span>:
 timeIt <span class="hljs-string">&quot;AdaGauss&quot;</span>:
   keep adaptiveGauss(f, a, b, tol = tol)</code></pre>
 <pre><samp>name ............................... min time      avg time    std dv   runs
-Trapz .............................. 0.005 ms      0.005 ms    ±0.000  x1000
-Simpson ............................ 0.005 ms      0.005 ms    ±0.000  x1000
-GaussQuad .......................... 0.010 ms      0.010 ms    ±0.001  x1000
-Romberg ............................ 0.007 ms      0.007 ms    ±0.000  x1000
-AdaSimpson ......................... 0.031 ms      0.031 ms    ±0.001  x1000
-AdaGauss ........................... 0.007 ms      0.007 ms    ±0.001  x1000
+Trapz .............................. 0.006 ms      0.007 ms    ±0.002  x1000
+Simpson ............................ 0.006 ms      0.007 ms    ±0.001  x1000
+GaussQuad .......................... 0.011 ms      0.012 ms    ±0.001  x1000
+Romberg ............................ 0.008 ms      0.009 ms    ±0.001  x1000
+AdaSimpson ......................... 0.033 ms      0.035 ms    ±0.002  x1000
+AdaGauss ........................... 0.008 ms      0.009 ms    ±0.002  x1000
 </samp></pre>
 <p>As we can see, all methods except AdaSimpson were roughly equally fast. So if I were to choose
 a winner, it would be <code>adaptiveGauss</code> because it was the most accurate while still being among
