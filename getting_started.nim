@@ -13,8 +13,10 @@ var book = newBookFromToc("SciNim Getting Started", "book"):
   section("Data visualization", "data_viz/index"):
     entry("Plotting data", "plotting_data")
   section("Interfacing with other language", "external_language_integration/index"):
-    entry("Interfacing with Python", "nim_with_py")
-    entry("Interfacing with Julia", "nim_with_jl")
+    entry("Nimpy - The Nim Python bridge", "nim_with_py")
+    section("Nimjl - The Nim Julia bridge", "julia/basics"):
+      entry("Advanced types", "nimjl_conversions")
+      entry("Julia Arrays from Nim", "nimjl_arrays")
     entry("Interfacing with R", "nim_with_R")
 
 
