@@ -8,12 +8,6 @@ import datamancer
 nbInit()
 nbUseNimibook
 
-# in case nimib #59 is merged this isn't needed anymore
-template nbCodeBlock(body: untyped): untyped =
-  block:
-    nbCode:
-      body
-
 nbText: """
 # Data wrangling using the `DataFrame` from [Datamancer](https://github.com/SciNim/Datamancer)
 
@@ -81,7 +75,7 @@ nbText: """
 Finally, one can also create a `DataFrame` starting from an empty object and
 assigning sequences, tensors or scalar values manually:
 """
-nbCodeBlock:
+nbCodeInBlock:
   var df = newDataFrame()
   df["x"] = @[1, 2, 3] ## assign a sequence. This sets the `DataFrame` length to 3
   df["y"] = @[4.0, 5.0, 6.0].toTensor ## assign a tensor. Input now `must` match length 3
@@ -105,7 +99,7 @@ as floats or any column as strings.
 
 The syntax is as follows:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
   let t1: Tensor[int] = df["x", int] ## this is a no-op
   let t2: Tensor[float] = df["x", float] ## converts integers to floats
@@ -127,7 +121,7 @@ conversions need to be performed).
 As we saw in the previous section, accessing a tensor of a column is cheap. We can
 use that to perform aggregations on full columns:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
   echo df["x", int].sum
   echo df["y", float].mean
@@ -154,7 +148,7 @@ into the specifics here:
 If we have a data frame with multiple columns we may want to keep only
 a subset of these going forward. This can be achieved using `select`:
 """
-nbCodeBlock:
+nbCodeInBlock:
   var df = newDataFrame()
   for i in 0 ..< 100:
     df["x" & $i] = @[1 + i, 2 + i, 3 + i]
@@ -164,7 +158,7 @@ which drops every column not selected.
 
 The inverse is also possible using `drop`:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0], "z" : @["a", "b", "c"]})
   echo df.drop("x")
 nbText: """
@@ -174,7 +168,7 @@ nbText: """
 `rename`, as the name implies, is used to rename columns. Usage is rather simple. We'll
 get our first glance at the `f{}` macro to generate a `FormulaNode` here:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
   echo df.rename(f{"foo" <- "x"})
 nbText: """
@@ -191,7 +185,7 @@ The sort order is handled in the same way as in Nim's standard library, i.e. usi
 an `order` argument that takes either `SortOrder.Ascending` or `SortOrder.Descending`.
 The default order is ascending order.
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "x" : @[4, 2, 7, 4], "y" : @[2.3, 7.1, 3.3, 1.0],
                       "z" : @["b", "c", "d", "a"]})
   echo df.arrange("x") ## sort by `x` in ascending order (default)
@@ -207,7 +201,7 @@ columns. This is not always the most desired option of course, which is why `uni
 accepts a variable number of columns. Then only uniqueness among these columns is
 considered.
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "x" : @[1, 2, 2, 2, 4], "y" : @[5.0, 6.0, 7.0, 8.0, 9.0],
                       "z" : @["a", "b", "b", "d", "e"]})
   echo df.unique() ## consider uniqueness of all columns, nothing removed
@@ -227,13 +221,13 @@ quotes. This is all the complexity of that macro we will discuss in this introdu
 
 Let's compute the sum of two columns to get a feel:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "x" : @[1, 2, 3], "y" : @[10, 11, 12] })
   echo df.mutate(f{"x+y" ~ `x` + `y`})
 nbText: """
 Of course we can use constants and local Nim symbols as well:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "x" : @[1, 2, 3]})
   echo df.mutate(f{"x+5" ~ `x` + 5 })
   let y = 2.0
@@ -249,7 +243,7 @@ specify the types manually.
 
 And as stated we can also overwrite columns:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "x" : @[1, 2, 3] })
   echo df.mutate(f{"x" ~ `x` + `x`})
 nbText: """
@@ -274,7 +268,7 @@ These mentioned formulas can of course also return boolean values. In combinatio
 with the `filter` procedure this allows us to remove rows of a data frame that
 fail to pass a condition (or a "predicate").
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "x" : @[1, 2, 3, 4, 5], "y" : @["a", "b", "c", "d", "e"] })
   echo df.filter(f{ `x` < 3 or `y` == "e" })
 nbText: """
@@ -286,7 +280,7 @@ simple single column operations, but does not scale well. That's what `summarize
 for. Here we use the last operator used in the `f{}` macro, namely the reduction
 `<<` operator:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "x" : @[1, 2, 3, 4, 5], "y" : @[5, 10, 15, 20, 25] })
   echo df.summarize(f{float:  mean(`x`) }) ## compute mean, auto creates a column name
   echo df.summarize(f{float: "mean(x)" << mean(`x`) }) ## same but with a custom name
@@ -321,7 +315,7 @@ to a single row if using `unique` on the same columns as grouped by.
 
 This should become clearer with an example:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C"],
                       "Num" : @[1, 5, 3, 4, 8, 7, 2] })
     .group_by("Class")
@@ -341,7 +335,7 @@ group.
 A few examples:
 - `summarize`
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
                       "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
   echo df.group_by("Class").summarize(f{int: "sum(Num)" << sum(`Num`)})
@@ -349,7 +343,7 @@ nbText: """
   We can see this computes the sum for each class now.
 - `filter`:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
                       "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
   echo df.group_by("Class").filter(f{ sum(`Num`) <= 9 })
@@ -358,7 +352,7 @@ nbText: """
   that uses a reducing formula as input would usually not make too much sense anyway.
 - `mutate`:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
                       "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
   echo df.group_by("Class").mutate(f{"Num - mean" ~ `Num` - mean(`Num`)})
@@ -384,7 +378,7 @@ in the corresponding columns. Let's look at:
 
 for clarity:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let dfLong = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
                           "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
   echo "Long format:\n", dfLong
@@ -414,7 +408,7 @@ the "keys" (the column from which a value came) and a name for the column of the
 that were "gathered". We can use it to recover the ("Class", "Num") data frame from
 the last one:
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df = seqsToDf({"A" : [1, 8, 0], "B" : [3, 4, 0], "C" : [5, 7, 2]})
   echo df.gather(df.getKeys(), ## get all keys to gather
                  key = "Class", ## the name of the `key` column
@@ -430,7 +424,7 @@ is currently still missing. It will be added soon)
 As the last common example of data frame operations, we shall consider joining two
 data frames by a common column.
 """
-nbCodeBlock:
+nbCodeInBlock:
   let df1 = seqsToDf({ "Class" : @["A", "B", "C", "D", "E"],
                        "Num" : @[1, 5, 3, 4, 6] })
   let df2 = seqsToDf({ "Class" : ["E", "B", "A", "D", "C"],
