@@ -27,7 +27,7 @@ jobs:
       - run: echo Short hash = ${{ env.GITHUB_SHA_SHORT }}
         
       - name: Show pending status check
-        uses: Sibz/github-status-action@v1.1.6
+        uses: Sibz/github-status-action@v1.1.5
         with:
           authToken: ${{ secrets.GITHUB_TOKEN }}
           context: Netlify preview
@@ -79,7 +79,7 @@ jobs:
             
       # Creates a status check with link to preview
       - name: Status check
-        uses: Sibz/github-status-action@v1.1.6
+        uses: Sibz/github-status-action@v1.1.5
         with:
           authToken: ${{ secrets.GITHUB_TOKEN }}
           context: Netlify preview
