@@ -27,7 +27,7 @@ nbCode:
   import arraymancer
   let t = arange(0, 9).reshape([3, 3]) ## typical tensor constructors
   echo t +. 1 ## broadcasting operations
-"""
+nbText: """
 
 ### Neo
 
@@ -45,7 +45,8 @@ nbCode:
   import datamancer
   let df = seqsToDf({"Age" : @[24, 32, 53], "Name" : @["Foo", "Bar", "Baz"]})
   echo df
-"""
+
+nbText: """
 
 ### NimData
 
