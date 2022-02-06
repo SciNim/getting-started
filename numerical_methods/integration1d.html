@@ -252,18 +252,21 @@ the <em>humps</em> function from MATLAB's demos:</p>
 <span class="hljs-keyword">import</span>
   numericalnim, ggplotnim, benchy
 
-<span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>; ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
+<span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>; ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
   <span class="hljs-literal">result</span> = <span class="hljs-number">1</span> / ((x - <span class="hljs-number">0.3</span>) ^ <span class="hljs-number">2</span> + <span class="hljs-number">0.01</span>) + <span class="hljs-number">1</span> / ((x - <span class="hljs-number">0.9</span>) ^ <span class="hljs-number">2</span> + <span class="hljs-number">0.04</span>) - <span class="hljs-number">6</span>
 
 <span class="hljs-keyword">proc</span> <span class="hljs-type">F</span>(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
   <span class="hljs-literal">result</span> = <span class="hljs-number">10</span> * arctan(<span class="hljs-number">10</span> * x - <span class="hljs-number">3</span>) + <span class="hljs-number">5</span> * arctan(<span class="hljs-number">5</span> * x - <span class="hljs-number">9</span> / <span class="hljs-number">2</span>) - <span class="hljs-number">6</span> * x</code></pre>
-<p>As you can see, we defined <code>f</code> not as just <code>proc f(x: float): float</code> but added a <code>ctx: NumContext[float]</code> as well.
-That is because <code>numericalnim</code>'s integration methods expect a proc with the signature <code>proc f[T](x: float, ctx: NumContext[T]): T</code>.
-That means you can integrate functions <em>returning</em> other types than <code>float</code> if they have a certain set of supported operations.
-We won't be integrating <code>F</code> (it is the indefinite integral already) so I skipped adding <code>ctx</code> there for simplicity.</p>
+<p>As you can see, we defined <code>f</code> not as just <code>proc f(x: float): float</code> but added a <code>ctx: NumContext[float, float]</code> as well.
+That is because <code>numericalnim</code>'s integration methods expect a proc with the signature <code>proc f[T; U](x: U, ctx: NumContext[T, U]): T</code>,
+where <code>U</code> is the type used for computations internally (typically a <code>float</code> or a type like it) and <code>T</code> is the user defined
+type that is the result of the function to be integrated (and may be used to include custom data in the body of the function).</p>
+<p>This means that you can both integrate functions <em>returning</em> other types than <code>float</code>, namely <code>T</code> if they provide a certain
+set of supported operations, as well as perform the integration using types <code>U</code> as long as they behave &quot;float-like&quot;.</p>
+<p>We won't be integrating <code>F</code> (it is the indefinite integral already) so I skipped adding <code>ctx</code> there for simplicity.</p>
 <p>Aren't you curious of what <code>f(x)</code> looks like? Thought so! Let's plot them using <code>ggplotnim</code>,
 a more detailed plotting tutorial can be found <a href="../data_viz/plotting_data.html">here</a>.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> ctxPlot = newNumContext[<span class="hljs-built_in">float</span>]()
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> ctxPlot = newNumContext[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]()
 <span class="hljs-keyword">let</span> xPlot = numericalnim.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1000</span>)
 <span class="hljs-keyword">let</span> yPlot = xPlot.mapIt(f(it, ctxPlot))
 <span class="hljs-keyword">let</span> dfPlot = seqsToDf(xPlot, yPlot)
@@ -324,12 +327,12 @@ timeIt <span class="hljs-string">&quot;AdaSimpson&quot;</span>:
 timeIt <span class="hljs-string">&quot;AdaGauss&quot;</span>:
   keep adaptiveGauss(f, a, b, tol = tol)</code></pre>
 <pre><samp>name ............................... min time      avg time    std dv   runs
-Trapz .............................. 0.006 ms      0.006 ms    ±0.001  x1000
-Simpson ............................ 0.006 ms      0.007 ms    ±0.001  x1000
-GaussQuad .......................... 0.011 ms      0.012 ms    ±0.001  x1000
-Romberg ............................ 0.006 ms      0.008 ms    ±0.002  x1000
-AdaSimpson ......................... 0.025 ms      0.036 ms    ±0.003  x1000
-AdaGauss ........................... 0.007 ms      0.008 ms    ±0.002  x1000
+Trapz .............................. 0.005 ms      0.006 ms    ±0.002  x1000
+Simpson ............................ 0.005 ms      0.005 ms    ±0.000  x1000
+GaussQuad .......................... 0.010 ms      0.010 ms    ±0.000  x1000
+Romberg ............................ 0.007 ms      0.007 ms    ±0.000  x1000
+AdaSimpson ......................... 0.031 ms      0.031 ms    ±0.001  x1000
+AdaGauss ........................... 0.007 ms      0.007 ms    ±0.001  x1000
 </samp></pre>
 <p>As we can see, all methods except AdaSimpson were roughly equally fast. So if I were to choose
 a winner, it would be <code>adaptiveGauss</code> because it was the most accurate while still being among
