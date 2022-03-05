@@ -103,8 +103,8 @@ nbCode:
   import ggplotnim
   let x = @[1, 2, 3, 4]
   let y = @[2, 4, 8, 16]
-  let df = toDf({"x" : x, "y" : y}) ## toDf(x, y) would use the identifiers as keys, i.e. equivalent
-  ggplot(toDf(x, y), aes("x", "y")) + geom_point() + ggsave("images/simple_points.pdf")
+  let dfP = toDf({"x" : x, "y" : y}) ## toDf(x, y) would use the identifiers as keys, i.e. equivalent
+  ggplot(dfP, aes("x", "y")) + geom_point() + ggsave("images/simple_points.pdf")
 
 nbText: """
 Also see the introduction to data visualization using `ggplotnim` [here](https://scinim.github.io/getting-started/data_viz/plotting_data.html).
