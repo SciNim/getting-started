@@ -46,7 +46,7 @@ nbCodeInBlock:
   ## the `ggplot` result as we don't call `ggsave`)
   let df = seqsToDf({"Energy" : @[1], "Counts" : @[2], "Type" : @["background"]})
   discard ggplot(df, aes("Energy", "Counts", fill = "Type", color = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point(binPosition = "center") +
     geom_errorbar(data = df.filter(f{`Type` == "background"}),
                   aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0}),
@@ -373,15 +373,10 @@ the other. We can solve that by applying 50% alpha channel:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5)) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5) +
     ggsave("images/multi_layer_histogram_5.png")
 nbImage("images/multi_layer_histogram_5.png")
 nbText: """
-
-*Note*: The alpha argument requires the `some` call to hand an
-`Option[T]` value. This is required for all geom arguments that don't
-have discrete, known values (float sizes, colors, etc.) to avoid
-ambiguity between default values and possible user inputs.
 
 The plot we're seeing is quite pretty already. The only small
 annoyance is that the outline is still sticking out between all bars,
@@ -389,7 +384,7 @@ which makes it more busy than it should be. Let's fix that by drawing
 the histograms using *outlines* instead of individual bars: """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     ggsave("images/multi_layer_histogram_6.png")
 nbImage("images/multi_layer_histogram_6.png")
 nbText: """
@@ -404,7 +399,7 @@ a single `geom_point` call into the chain:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point() +
     ggsave("images/multi_layer_histogram_7.png")
 nbImage("images/multi_layer_histogram_7.png")
@@ -420,7 +415,7 @@ that the data points are *bin centers*:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point(binPosition = "center") +
     ggsave("images/multi_layer_histogram_8.png")
 nbImage("images/multi_layer_histogram_8.png")
@@ -440,7 +435,7 @@ point. This can be achieved by assigning a formula to the `yMin` and
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point(binPosition = "center") +
     geom_errorbar(aes = aes(yMin = f{`Counts` - 1.0})) +
     ggsave("images/multi_layer_histogram_9.png")
@@ -459,7 +454,7 @@ both the range of the bar as well as its placement:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point(binPosition = "center") +
     geom_errorbar(binPosition = "center", aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)})) +
     ggsave("images/multi_layer_histogram_11.png")
@@ -470,7 +465,7 @@ down to zero (`yMax` is unset, so default value 0). On to add positive bars then
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point(binPosition = "center") +
     geom_errorbar(binPosition = "center", aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
     ggsave("images/multi_layer_histogram_12.png")
@@ -484,7 +479,7 @@ it will only have that data to plot and we should end up without error bars on t
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point(binPosition = "center") +
     geom_errorbar(binPosition = "center", data = df.filter(f{`Type` == "background"}),
                   aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
@@ -496,7 +491,7 @@ title on top:
 """
 nbCodeInBlock:
   ggplot(df, aes("Energy", "Counts", color = "Type", fill = "Type")) +
-    geom_histogram(stat = "identity", position = "identity", alpha = some(0.5), hdKind = hdOutline) +
+    geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point(binPosition = "center") +
     geom_errorbar(binPosition = "center", data = df.filter(f{`Type` == "background"}),
                   aes = aes(yMin = f{max(`Counts` - 1.0, 0.0)}, yMax = f{`Counts` + 1.0})) +
