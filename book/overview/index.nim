@@ -24,7 +24,7 @@ channel!
 
 The libraries listed here all provide basic data types that are helpful in general.
 
-### Arraymancer
+### [Arraymancer](https://github.com/mratsim/arraymancer)
 
 [Arraymancer](https://github.com/mratsim/arraymancer) provides a generic `Tensor[T]` type,
 similar to a Numpy `ndarray`. On top it defines operations from indexing, broadcasting
@@ -36,12 +36,12 @@ nbCode:
   echo t +. 1 ## broadcasting operations
 nbText: """
 
-### Neo
+### [Neo](https://github.com/andreaferretti/neo)
 
 [Neo](https://github.com/andreaferretti/neo) provides primitives for linear algebra. This means
 it implements vectors and matrices, either with static or dynamic sizes.
 
-### Datamancer
+### [Datamancer](https://github.com/scinim/datamancer)
 
 [Datamancer](https://github.com/scinim/datamancer) builds on top of Arraymancer to provide
 a `DataFrame` runtime based implementation. Runtime based means the types of columns are
@@ -55,30 +55,18 @@ nbCode:
 
 nbText: """
 
-### NimData
+### [NimData](https://github.com/bluenote10/nimdata)
 
 [NimData](https://github.com/bluenote10/nimdata) provides another `DataFrame` implementation,
 which - compared to Datamancer - has a stricter CT safety focus. Its implementation is
 row based and the `DataFrame` type is determined at compile time. Operations are built on top
 of iterators for lazy evaluation.
 
-## Flambeau
+## [Flambeau](https://github.com/scinim/flambeau)
 
 [Flambeau](https://github.com/scinim/flambeau) is a [libtorch](https://pytorch.org/) wrapper. Thus,
-it provides both a general `Tensor[T]` type (and the expected associated operations) as well as
+it provides both a `Tensor[T]` type (and the expected associated operations) as well as
 being a machine learning library.
-
-## Other libraries
-
-- [scinim](https://github.com/SciNim/scinim) <- library of general scientific things that are
-  either primitives or too small to have their own library
-- [Measuremancer](https://github.com/SciNim/Measuremancer) <- library for automatic error propagation
-  of measurement uncertainties
-- [unchained](https://github.com/SciNim/Unchained) <- library for CT checking of physical units and
-  automatic conversion between units
-- [spfun](https://github.com/c-blake/spfun) <- contains many special function
-- gsl bindings
-  - [gsl-nim](https://github.com/YesDrX/gsl-nim) <- wrapper for GSL
 
 ## Data visualization
 
@@ -89,7 +77,7 @@ Beyond the libraries listed in this section, keep in mind that your favorite
 Python, Julia and R plotting library is only a [nimpy](https://github.com/yglukhov/nimpy),
 [nimjl](https://github.com/Clonkk/nimjl) and [Rnim](https://github.com/SciNim/Rnim) call away!
 
-### ggplotnim
+### [ggplotnim](https://github.com/Vindaar/ggplotnim)
 
 [ggplotnim](https://github.com/Vindaar/ggplotnim) is a pure Nim library for data visualization
 that is highly inspired by [ggplot2](https://ggplot2.tidyverse.org) for R. It is a library using
@@ -109,7 +97,7 @@ nbCode:
 nbText: """
 Also see the introduction to data visualization using `ggplotnim` [here](https://scinim.github.io/getting-started/data_viz/plotting_data.html).
 
-### nim-plotly
+### [nim-plotly](https://github.com/SciNim/nim-plotly)
 
 As the name implies [nim-plotly](https://github.com/SciNim/nim-plotly) is an interface to the
 JavaScript library [plotly.js](https://plotly.com/javascript/basic-charts/). It generates
@@ -131,7 +119,7 @@ Both of these open a `gnuplot` process and feed data to it via `stdin`.
 Numerical algorithms for integration, interpolation, (numerical) differentiation and
 solving differential equations are of course fundamental for scientific computing.
 
-### Numericalnim
+### [Numericalnim](https://github.com/SciNim/numericalnim)
 
 [Numericalnim](https://github.com/SciNim/numericalnim) is *the* most comprehensive
 library for numerical algorithms in Nim. It contains multiple algorithms each for the
@@ -140,7 +128,7 @@ topics mentioned above.
 See for example the tutorial for numerical integration [here](https://scinim.github.io/getting-started/numerical_methods/integration1d.html)
 to get acquainted with the basic usage of the library.
 
-### Polynumeric
+### [Polynumeric](https://github.com/SciNim/polynumeric)
 
 For purely polynomial operations, the [polynumeric](https://github.com/SciNim/polynumeric)
 is useful. It provides all common operations on polynomials one might need (integration,
@@ -183,31 +171,34 @@ problems (i.e. non-linear curve fitting).
 
 ## Binary data storage formats
 
-- [nimhfd5](https://github.com/Vindaar/nimhdf5) <- high level bindings for the HDF5 library
-- [netcdf](https://github.com/SciNim/netcdf) <- wrapper for NetCDF library
-- [mcpl](https://github.com/SciNim/mcpl) <- wrapper for MCPL library
-- [freccia](https://github.com/SciNim/freccia) <- Nim library for Apache Arrow format
-- [nio](https://github.com/c-blake/nio) <- also includes operations for binary data handling
+- [nimhfd5](https://github.com/Vindaar/nimhdf5) ⇐ high level bindings for the HDF5 library
+- [netcdf](https://github.com/SciNim/netcdf) ⇐ wrapper for NetCDF library
+- [mcpl](https://github.com/SciNim/mcpl) ⇐ wrapper for MCPL library
+- [freccia](https://github.com/SciNim/freccia) ⇐ Nim library for Apache Arrow format
+- [nio](https://github.com/c-blake/nio) ⇐ also includes operations for binary data handling
 
 ## Symbolic operations
 
-- [astgrad](https://github.com/SciNim/astgrad) <- symbolic derivatives based on Nim AST
-- [symbolicnim](https://github.com/hugogranstrom/symbolicnim) <- pure Nim library for symbolic computations
-- [symengine](https://github.com/SciNim/symengine.nim) <- wrapper for C++ library for symbolic computations
+- [astgrad](https://github.com/SciNim/astgrad) ⇐ symbolic derivatives based on Nim AST
+- [symbolicnim](https://github.com/hugogranstrom/symbolicnim) ⇐ pure Nim library for symbolic computations
+- [symengine](https://github.com/SciNim/symengine.nim) ⇐ wrapper for C++ library for symbolic computations
 
 ## Numbers
 
-- [theo](https://github.com/SciNim/theo)
-- [nim-constants](https://github.com/SciNim/nim-constants) <- contains many physical constants
-- decimal library
-- bignum
-- nim-bigints
+- [nim-constants](https://github.com/SciNim/nim-constants) ⇐ contains many physical constants
+- decimal libraries
+  - [nim-decimal](https://github.com/status-im/nim-decimal) ⇐ decimal library wrapping C lib `mpdecimal`
+  - [decimal128](https://github.com/JohnAD/decimal128) ⇐ pure Nim decimal library, missing some features
+- multi-precision integers (bigints)
+  - [bignum](https://github.com/SciNim/bignum) ⇐ wrapper of GMP providing arbitrary precision ints & rationals, does not wrap `mpfr` (so no multi precision floats)
+  - [bigints](https://github.com/nim-lang/bigints) ⇐ pure Nim bigint library
+  - [theo](https://github.com/SciNim/theo) ⇐ optimized bigint library, WIP
 
 ## FFT
 
-- [nimfftw3](https://github.com/SciNim/nimfftw3) <- FFTW3 wrapper
-- [impulse](https://github.com/SciNim/impulse) <- pocket FFT wrapper
-- [kissFFT](https://github.com/m13253/nim-kissfft) <- kissFFT wrapper
+- [nimfftw3](https://github.com/SciNim/nimfftw3) ⇐ FFTW3 wrapper
+- [impulse](https://github.com/SciNim/impulse) ⇐ pocket FFT wrapper, in principle a repository for signal processing primitives
+- [kissFFT](https://github.com/m13253/nim-kissfft) ⇐ kissFFT wrapper
 
 ## Primitive compute wrappers
 
@@ -224,23 +215,35 @@ problems (i.e. non-linear curve fitting).
 
 ## Random number generation
 
-- [alea](https://github.com/andreaferretti/alea) <- amazing library for random number generation
+- [alea](https://github.com/andreaferretti/alea) ⇐ library for random number generation, sampling from many different distributions. Allows to wrap custom (e.g. stdlib) RNGs
+- [sitmo](https://github.com/jxy/sitmo) ⇐ Nim implementation of the Sitmo parallel RNG
 
 ## Biology specific
 
 - biology libraries, ask brentp for some input
-- bionim
+- [bionim](https://github.com/SciNim/bionim) ⇐  collection of data structures and algorithms for bioinformatics
+- [bio](https://github.com/SciNim/bio) ⇐ a library for working with biological sequences
 
 ## Physics
 
-- [qex](https://github.com/jcosborn/qex/) <- lattice QCD library
+- [unchained](https://github.com/SciNim/Unchained) ⇐ library for CT checking of physical units and
+  automatic conversion between units
+- [qex](https://github.com/jcosborn/qex/) ⇐ lattice QCD library
+- [mclimit](https://github.com/SciNim/mclimit) ⇐ Nim port of the ROOT TLimit class for confidence level computations (limits) for experiments with small statistics
 
 ## Other useful libraries
-- [zero-functional](https://github.com/zero-functional/zero-functional) <- library for zero cost chaining of
+
+- [scinim](https://github.com/SciNim/scinim) ⇐ library of general scientific things that are
+  either primitives or too small to have their own library
+- [Measuremancer](https://github.com/SciNim/Measuremancer) ⇐ library for automatic error propagation
+  of measurement uncertainties
+- [spfun](https://github.com/c-blake/spfun) ⇐ contains many special functions
+- [gsl-nim](https://github.com/YesDrX/gsl-nim) ⇐ wrapper for GSL (GNU Scientific Library)
+- [zero-functional](https://github.com/zero-functional/zero-functional) ⇐ library for zero cost chaining of
   functional primitves (map, apply, fold, ...). Fuses multiple operations into a single loop.
-- [pattern matching in fusion](https://github.com/nim-lang/fusion/blob/master/src/fusion/matching.rst) <- pattern
+- [pattern matching in fusion](https://github.com/nim-lang/fusion/blob/master/src/fusion/matching.rst) ⇐ pattern
   matching for Nim
-- [cligen](https://github.com/c-blake/cligen) <- elegant library to write CLI interfaces
+- [cligen](https://github.com/c-blake/cligen) ⇐ elegant library to write CLI interfaces
 
 ## Language bindings
 
@@ -251,15 +254,15 @@ for an introduction to the C / C++ FFI.
 For more details on how to use the language specific bindings, see the section
 about it [here](https://scinim.github.io/getting-started/external_language_integration/index.html)
 
-## Julia
+### Julia
 
 - [nimjl](https://github.com/Clonkk/nimjl)
 
-## Python
+### Python
 
 - [nimpy](https://github.com/yglukhov/nimpy)
 
-## R
+### R
 
 - [Rnim](https://github.com/SciNim/Rnim)
 
