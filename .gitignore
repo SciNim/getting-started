@@ -3,3 +3,4 @@ book/*.mustache
 getting_started
 .vscode/
 docs/
+book/book.json
