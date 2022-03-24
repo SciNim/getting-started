@@ -1,7 +1,6 @@
 import nimib, nimibook
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 # in case nimib #59 is merged this isn't needed anymore
 template nbCodeBlock(body: untyped): untyped =

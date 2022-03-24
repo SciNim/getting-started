@@ -1,7 +1,6 @@
 import nimib, nimibook
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 nbText: """
 This section is a series of tutorial of how to interface with various programming language.

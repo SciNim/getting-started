@@ -1,8 +1,7 @@
 import nimib, nimibook
 import std/os
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 nbText: """
 # Using Python with Nim

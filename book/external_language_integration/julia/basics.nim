@@ -1,7 +1,6 @@
 import nimib, nimibook
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 nbText: """
 # Using Julia with Nim

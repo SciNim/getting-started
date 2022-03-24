@@ -1,8 +1,6 @@
 import nimib, nimibook
-import ggplotnim
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 nbText: """
 # Data visualization

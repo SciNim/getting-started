@@ -1,8 +1,7 @@
 import nimib, nimibook
 import mpfit, ggplotnim
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 nbText: """
 # Curve fitting using [mpfit](https://github.com/Vindaar/nim-mpfit)

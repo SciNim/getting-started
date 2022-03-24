@@ -5,8 +5,7 @@ import nimib except Value
 import nimibook
 import datamancer
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 # in case nimib #59 is merged this isn't needed anymore
 template nbCodeBlock(body: untyped): untyped =

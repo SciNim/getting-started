@@ -1,7 +1,7 @@
 import nimib, nimibook
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
+
 nbDoc.useLatex
 
 nbText: """
