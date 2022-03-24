@@ -9,8 +9,8 @@ binDir        = "bin"
 
 # Dependencies
 requires "nim >= 1.2.0"
-requires "nimib#head"
-requires "nimibook >= 0.2.1"
+requires "nimib >= 0.3.0"
+requires "nimibook >= 0.3.0"
 requires "ggplotnim >= 0.4.2"
 requires "datamancer >= 0.1.6"
 requires "mpfit"
