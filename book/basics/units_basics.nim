@@ -1,8 +1,7 @@
 import nimib, nimibook
 
 nbInit(theme = useNimibook)
-
-nbDoc.useLatex
+nb.context["mathjax_support"] = true
 
 nbText: """
 # Using and checking units with [Unchained](https://github.com/SciNim/Unchained)
