@@ -6,16 +6,16 @@ nbDoc.useLatex
 nbDoc.context["mathjax_support"] = true
 
 nbText: md"""
-# 1D Numerical Integration 
-In this tutorial you will learn learn how to use [numericalnim](https://github.com/HugoGranstrom/numericalnim/) to perform 
-numerical integration both on discrete data and continuous functions. 
+# 1D Numerical Integration
+In this tutorial you will learn learn how to use [numericalnim](https://github.com/HugoGranstrom/numericalnim/) to perform
+numerical integration both on discrete data and continuous functions.
 
 ## Integrate Continuous Functions
 We will start off by integrating some continuous function using a variety of methods and comparing their accuracies and performances
 so that you can make an educated choice of method. Let's start off with creating the data to integrate, I have choosen to use
 the *humps* function from MATLAB's demos:
 
-$$ f(x) = \frac{1}{(x - 0.3)^2 + 0.01} + \frac{1}{(x - 0.9)^2 + 0.04} - 6 $$ 
+$$ f(x) = \frac{1}{(x - 0.3)^2 + 0.01} + \frac{1}{(x - 0.9)^2 + 0.04} - 6 $$
 
 It has the primitive function:
 
@@ -27,7 +27,7 @@ Let's code them!
 nbCode:
   import math, sequtils
   import numericalnim, ggplotnim, benchy
-  proc f(x: float, ctx: NumContext[float]): float =
+  proc f(x: float, ctx: NumContext[float, float]): float =
     result = 1 / ((x - 0.3)^2 + 0.01) + 1 / ((x - 0.9)^2 + 0.04) - 6
 
   proc F(x: float): float =
@@ -36,20 +36,25 @@ nbCode:
 block continuousPart: # Want to be able to use cross-codeblock variables, but also separate each part of the tutorial.
 
   nbText: md"""
-As you can see, we defined `f` not as just `proc f(x: float): float` but added a `ctx: NumContext[float]` as well.
-That is because `numericalnim`'s integration methods expect a proc with the signature ``proc f[T](x: float, ctx: NumContext[T]): T``.
-That means you can integrate functions *returning* other types than `float` if they have a certain set of supported operations.
+As you can see, we defined `f` not as just `proc f(x: float): float` but added a `ctx: NumContext[float, float]` as well.
+That is because `numericalnim`'s integration methods expect a proc with the signature ``proc f[T; U](x: U, ctx: NumContext[T, U]): T``,
+where `U` is the type used for computations internally (typically a `float` or a type like it) and `T` is the user defined
+type that is the result of the function to be integrated (and may be used to include custom data in the body of the function).
+
+This means that you can both integrate functions *returning* other types than `float`, namely `T` if they provide a certain
+set of supported operations, as well as perform the integration using types `U` as long as they behave "float-like".
+
 We won't be integrating `F` (it is the indefinite integral already) so I skipped adding `ctx` there for simplicity.
 
 Aren't you curious of what `f(x)` looks like? Thought so! Let's plot them using `ggplotnim`,
-a more detailed plotting tutorial can be found [here](../data_viz/plotting_data.html).  
+a more detailed plotting tutorial can be found [here](../data_viz/plotting_data.html).
   """
 
   nbCodeInBlock:
-    let ctxPlot = newNumContext[float]()
+    let ctxPlot = newNumContext[float, float]()
     let xPlot = numericalnim.linspace(0, 1, 1000)
     let yPlot = xPlot.mapIt(f(it, ctxPlot))
-    
+
     let dfPlot = seqsToDf(xPlot, yPlot)
     ggplot(dfPlot, aes("xPlot", "yPlot")) +
       geom_line() +
@@ -63,7 +68,7 @@ Now we have everything we need to start integrating. The specific integral we wa
 
 $$ \int_0^1 f(x)\, \mathrm{d}x $$
 
-The methods we will use are: `trapz`([link](https://en.wikipedia.org/wiki/Trapezoidal_rule)), `simpson`([link](https://en.wikipedia.org/wiki/Simpson%27s_rule)), 
+The methods we will use are: `trapz`([link](https://en.wikipedia.org/wiki/Trapezoidal_rule)), `simpson`([link](https://en.wikipedia.org/wiki/Simpson%27s_rule)),
 `gaussQuad`([link](https://en.wikipedia.org/wiki/Gaussian_quadrature)), `romberg`([link](https://en.wikipedia.org/wiki/Romberg%27s_method)), `adaptiveSimpson` and `adaptiveGauss`.
 Where the last three are adaptive methods and the others are fixed-step methods. We will use a tolerance `tol=1e-6`
 for the adaptive methods and `N=100` intervals for the fixed-step methods.
@@ -89,7 +94,7 @@ Let's code this now and compare them!
     echo "GaussQuad Error:  ", gaussQuadError
     echo "Romberg Error:    ", rombergError
     echo "AdaSimpson Error: ", adaptiveSimpsonError
-    echo "AdaGauss Error:   ", adaptiveGaussError 
+    echo "AdaGauss Error:   ", adaptiveGaussError
 
   nbText: md"""
 It seems like the gauss methods were the most accurate with Romberg and Simpson
@@ -131,7 +136,7 @@ we need it as a function, not a single value. That is where cumulative integrati
 
 The methods available to us from `numericalnim` are: `cumtrapz`, `cumsimpson`, `cumGauss` and `cumGaussSpline`.
 All methods except `cumGaussSpline` returns the cumulative integral as a `seq[T]`, but this instead returns a
-Hermite spline. We will both be calculating the errors and visualizing the different approximations of `F(x)`. 
+Hermite spline. We will both be calculating the errors and visualizing the different approximations of `F(x)`.
 Let's get coding!
   """
 
@@ -140,7 +145,7 @@ Let's get coding!
     let b = 1.0
     let tol = 1e-6
     let N = 100
-    let dx = (b - a) / N.toFloat 
+    let dx = (b - a) / N.toFloat
 
     let x = numericalnim.linspace(a, b, 100)
     var exact = x.mapIt(F(it) - F(a))
@@ -174,12 +179,12 @@ internally might only need quite few points because of its high degree, but that
 points for the final 3rd degree interpolation. So to make sure we have enough points in the end we supply
 it with enough initial points so that it has enough points to make good predictions even if it doesn't
 split any additional intervals. By default it uses 100 equally spaced points though so unless you know you
-need far more or less points you should be good. 
+need far more or less points you should be good.
 This is especially important when using `cumGaussSpline` as we need enough
-points to construct an accurate spline. 
+points to construct an accurate spline.
 
 The last method is `cumGaussSpline` which is identical to `cumGauss` except it constructs a Hermite spline
-from the returned values which can be evaluated when needed. 
+from the returned values which can be evaluated when needed.
   """
 
   nbCodeInBlock:
@@ -204,9 +209,9 @@ from the returned values which can be evaluated when needed.
 Discrete data is a different beast than continuous functions as we have limited data. Therefore, the choice
 of integration method is even more important as we can't exchange performance to get more accurate results
 like we can with continuous functions (we can increase the number of intervals for example). So we want to make the
-most out of the data we have, and any knowledge we have about the nature of the data is helpful. 
+most out of the data we have, and any knowledge we have about the nature of the data is helpful.
 For example if we know the data isn't smooth (discontinuities), then `trapz` could be a better choice
-than let's say `simpson`, because `simpson` assumes the data is smooth. 
+than let's say `simpson`, because `simpson` assumes the data is smooth.
 
 Let's sample `f(x)` from above at let's say 9 points and plot how much information we lose by
 plotting the sampled points, a Hermite Spline interpolation of them and the original function:
@@ -237,13 +242,13 @@ block discretePart:
   nbText: md"""
 As you can see, the resolution was too small to fully account for the big peak and undershoots it by quite a margin.
 Without having known the "real" function in this case we wouldn't have known this of course, and that is most often the
-case when we have discrete data. Therefore, the resolution of the data is crucial for the accuracy. But let's say this 
-is all the data we have at our disposal and let's see how the different methods perform. 
+case when we have discrete data. Therefore, the resolution of the data is crucial for the accuracy. But let's say this
+is all the data we have at our disposal and let's see how the different methods perform.
 
-The integration methods at our disposal are: 
+The integration methods at our disposal are:
 - `trapz`: Works for any data.
 -  `simpson`: Works for any data with 3 or more data points.
-- `romberg`: Works **only** for equally spaced points. The number of points must also be 
+- `romberg`: Works **only** for equally spaced points. The number of points must also be
 of the form `2^n + 1` (eg. 3, 5, 9, 17, 33 etc).
 
 Luckily for us our data satisfies all of them ;) So let's get coding:
@@ -266,7 +271,7 @@ Luckily for us our data satisfies all of them ;) So let's get coding:
 
   nbText: md"""
 As expected all the methods underestimated the integral, but it might be unexpected that
-`trapz` performed the best out of them. Let's add a few more points, why not 33, and let's see if 
+`trapz` performed the best out of them. Let's add a few more points, why not 33, and let's see if
 that changes things!
   """
 
@@ -304,12 +309,12 @@ As expected all methods became more accurate when we increased the amount of poi
 And from the graph we can see that the points capture the shape of the curve much better now.
 We can also note that `simpson` has overtaken `trapz` and `romberg` is neck-in-neck with `trapz` now.
 Experiment for yourself with different number of points, but asymptotically `romberg` will eventually
-beat `simpson` when enough points are used. 
+beat `simpson` when enough points are used.
 
 The take-away from this very limited testing is that depending on the characteristics and quality
 of the data, different methods might give the most accurate answer. Which one is hard to tell in general
 but `trapz` *might* be more robust for very sparse data as it doesn't "guess" as much as the others. But once again,
-it entirely depends on the data, so make sure to understand your data!  
+it entirely depends on the data, so make sure to understand your data!
 
 ### Cumulative Integration with Discrete Data
 Performing cumulative integration on discrete data works the same as for continuous functions. The only differences are that

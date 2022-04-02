@@ -13,7 +13,7 @@ jobs:
       - run: pip install scipy numpy
       - name: "install_nim"
         id: install_nim
-        uses: iffy/install-nim@v3
+        uses: iffy/install-nim@v4.1.1
       - run: nimble install -y
       - name: GenBook
         run: nimble genbook
@@ -24,4 +24,3 @@ jobs:
           path: docs/
           retention-days: 1
           if-no-files-found: error
-
