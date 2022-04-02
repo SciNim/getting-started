@@ -1,6 +1,6 @@
 import nimibook
 
-var book = newBookFromToc("SciNim Getting Started", "book"):
+var book = initBookWithToc:
   section("Introduction", "index"): discard
   section("Basic topics", "basics/index"):
     entry("Common datatypes", "common_datatypes")
@@ -19,8 +19,4 @@ var book = newBookFromToc("SciNim Getting Started", "book"):
       entry("Julia Arrays from Nim", "nimjl_arrays")
     entry("Interfacing with R", "nim_with_R")
 
-
-
-book.git_repository_url = "https://github.com/SciNim/getting-started"
-book.plausible_analytics_url = "scinim.github.io/getting-started"
 nimibookCli(book)
