@@ -1,7 +1,7 @@
 import nimibook
 
 var book = initBookWithToc:
-  section("Introduction", "index"): discard
+  entry("Introduction", "index")
   section("Basic topics", "basics/index"):
     entry("Common datatypes", "common_datatypes")
     entry("Data wrangling with dataframes", "data_wrangling")
