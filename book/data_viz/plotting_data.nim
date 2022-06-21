@@ -44,7 +44,7 @@ it is called a *grammar* of graphics.
 nbCodeInBlock:
   ## ignore the dummy `df` here. This is to be able to compile the code (we throw away
   ## the `ggplot` result as we don't call `ggsave`)
-  let df = seqsToDf({"Energy" : @[1], "Counts" : @[2], "Type" : @["background"]})
+  let df = toDf({"Energy" : @[1], "Counts" : @[2], "Type" : @["background"]})
   discard ggplot(df, aes("Energy", "Counts", fill = "Type", color = "Type")) +
     geom_histogram(stat = "identity", position = "identity", alpha = 0.5, hdKind = hdOutline) +
     geom_point(binPosition = "center") +
@@ -267,7 +267,7 @@ Our construction in the following is a bit artificial of course.
 nbCode:
   import ggplotnim, random, sequtils
   randomize(42)
-  let df = seqsToDf({ "Energy" : cycle(linspace(0.0, 10.0, 25).toRawSeq, 2),
+  let df = toDf({ "Energy" : cycle(linspace(0.0, 10.0, 25).toRawSeq, 2),
                       "Counts" : concat(toSeq(0 ..< 25).mapIt(rand(10.0)),
                                         toSeq(0 ..< 25).mapIt(rand(10).float)),
                       "Type" : concat(newSeqWith(25, "background"),
