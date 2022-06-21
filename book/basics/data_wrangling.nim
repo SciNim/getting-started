@@ -21,6 +21,16 @@ In the specific case of Datamancer, the data structure is essentially an
 `OrderedTable[string, Column]`, where `Column` is a variant object storing one
 of 5 different `Tensor[T]` types.
 
+In order to use Datamancer, you must first import it. In addition to that, in this tutorial
+we will also import the [Arraymancer](https://github.com/mratsim/Arraymancer) tensor library,
+which we will use to demonstrate that you can create dataframes from Arraymancer tensors.
+
+"""
+nbCode:
+  import datamancer
+  import arraymancer
+nbText: """
+
 ## Construction of a `DataFrame`
 
 A `DataFrame` from the Datamancer library can be constructed in two different ways. Either
@@ -32,16 +42,14 @@ regular comma separated value file, the defaults are fine.
 
 """
 nbCode:
-  import datamancer
   # TODO: add some data files to use for the tutorial?
   # let df1 = readCsv("foo.csv")
   # echo df1
 nbText: """
 
-Or if one already has a mix of sequences and tensors of the same length:
+Alternatively, if one already has a mix of sequences and tensors of the same length:
 """
 nbCode:
-  import arraymancer
   let s1 = [1, 2, 3]
   let s2 = @["hello", "foo", "bar"]
   let s3 = @[1.5, 2.5, 3.5].toTensor
