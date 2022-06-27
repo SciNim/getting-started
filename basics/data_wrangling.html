@@ -241,22 +241,28 @@ as convenient and powerful as possible.</p>
 <p>In the specific case of Datamancer, the data structure is essentially an
 <code>OrderedTable[string, Column]</code>, where <code>Column</code> is a variant object storing one
 of 5 different <code>Tensor[T]</code> types.</p>
+<p>In order to use Datamancer, you must first import it. In addition to that, in this tutorial
+we will also import the <a href="https://github.com/mratsim/Arraymancer">Arraymancer</a> tensor library,
+which we will use to demonstrate that you can create dataframes from Arraymancer tensors.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  datamancer
+
+<span class="hljs-keyword">import</span>
+  arraymancer</code></pre>
 <h2>Construction of a <code>DataFrame</code></h2>
 <p>A <code>DataFrame</code> from the Datamancer library can be constructed in two different ways. Either
 from an input CSV file or from existing sequences or tensors.</p>
 <p>Construction from a CSV file is performed using the <code>readCsv</code> procedure. It provides multiple
 different options (different separators, skipping lines, header symbols, ...), but for a
-regular comma separated value file, the defaults are fine.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  datamancer</code></pre>
-<p>Or if one already has a mix of sequences and tensors of the same length:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  arraymancer
-
-<span class="hljs-keyword">let</span> s1 = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+regular comma separated value file, the defaults are fine. For example:</p>
+<pre><code class="language-nim">let df1 = readCsv(&quot;foo.csv&quot;)
+echo df1
+</code></pre>
+<p>Alternatively, if one already has a mix of sequences and tensors of the same length:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> s1 = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
 <span class="hljs-keyword">let</span> s2 = @[<span class="hljs-string">&quot;hello&quot;</span>, <span class="hljs-string">&quot;foo&quot;</span>, <span class="hljs-string">&quot;bar&quot;</span>]
 <span class="hljs-keyword">let</span> s3 = @[<span class="hljs-number">1.5</span>, <span class="hljs-number">2.5</span>, <span class="hljs-number">3.5</span>].toTensor
-<span class="hljs-keyword">let</span> df2 = seqsToDf(s1, s2, s3)
+<span class="hljs-keyword">let</span> df2 = toDf(s1, s2, s3)
 <span class="hljs-keyword">echo</span> df2
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Column names: &quot;</span>, df2.getKeys() <span class="hljs-comment">## getKeys only returns the column names</span></code></pre>
 <pre><samp>Dataframe with 3 columns and 3 rows:
@@ -283,7 +289,7 @@ the <code>pretty</code> procedure manually and handing the number of rows (-1 fo
 <code>df</code> is the data frame to view.</p>
 <p>If one wishes to name the columns differently from construction (they can be renamed later
 as well), it is done by:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df3 = seqsToDf({<span class="hljs-string">&quot;Id&quot;</span>: s1, <span class="hljs-string">&quot;Word&quot;</span>: s2, <span class="hljs-string">&quot;Number&quot;</span>: s3})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df3 = toDf({<span class="hljs-string">&quot;Id&quot;</span>: s1, <span class="hljs-string">&quot;Word&quot;</span>: s2, <span class="hljs-string">&quot;Number&quot;</span>: s3})
 <span class="hljs-keyword">echo</span> df3</code></pre>
 <pre><samp>Dataframe with 3 columns and 3 rows:
        Idx        Id      Word    Number
@@ -313,7 +319,7 @@ make sure is that accessing the data with the <em>correct</em> type is a no-op.<
 it allows us to perform type conversions directly, for instance reading an integer column
 as floats or any column as strings.</p>
 <p>The syntax is as follows:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>]})
 <span class="hljs-keyword">let</span> t1: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">int</span>] = df[<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-built_in">int</span>] <span class="hljs-comment">## this is a no-op</span>
 <span class="hljs-keyword">let</span> t2: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] = df[<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-built_in">float</span>] <span class="hljs-comment">## converts integers to floats</span>
 <span class="hljs-keyword">let</span> t3: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] = df[<span class="hljs-string">&quot;y&quot;</span>, <span class="hljs-built_in">float</span>] <span class="hljs-comment">## also a no-op</span>
@@ -330,7 +336,7 @@ conversions need to be performed).</p>
 <h2>Computing single column aggregations</h2>
 <p>As we saw in the previous section, accessing a tensor of a column is cheap. We can
 use that to perform aggregations on full columns:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>]})
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-built_in">int</span>].sum
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;y&quot;</span>, <span class="hljs-built_in">float</span>].mean</code></pre>
 <pre><samp>6
@@ -364,8 +370,7 @@ a subset of these going forward. This can be achieved using <code>select</code>:
 </samp></pre>
 <p>which drops every column not selected.</p>
 <p>The inverse is also possible using <code>drop</code>:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>],
-                   <span class="hljs-string">&quot;z&quot;</span>: @[<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>], <span class="hljs-string">&quot;z&quot;</span>: @[<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>]})
 <span class="hljs-keyword">echo</span> df.drop(<span class="hljs-string">&quot;x&quot;</span>)</code></pre>
 <pre><samp>Dataframe with 2 columns and 3 rows:
        Idx         y         z
@@ -378,7 +383,7 @@ a subset of these going forward. This can be achieved using <code>select</code>:
 <h3><code>rename</code> - Renaming a column</h3>
 <p><code>rename</code>, as the name implies, is used to rename columns. Usage is rather simple. We'll
 get our first glance at the <code>f{}</code> macro to generate a <code>FormulaNode</code> here:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>]})
 <span class="hljs-keyword">echo</span> df.rename(f{<span class="hljs-string">&quot;foo&quot;</span> &lt;- <span class="hljs-string">&quot;x&quot;</span>})</code></pre>
 <pre><samp>Dataframe with 2 columns and 3 rows:
        Idx         y       foo
@@ -397,8 +402,8 @@ used to break ties between the former.</p>
 <p>The sort order is handled in the same way as in Nim's standard library, i.e. using
 an <code>order</code> argument that takes either <code>SortOrder.Ascending</code> or <code>SortOrder.Descending</code>.
 The default order is ascending order.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">4</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">2.3</span>, <span class="hljs-number">7.1</span>, <span class="hljs-number">3.3</span>, <span class="hljs-number">1.0</span>],
-                   <span class="hljs-string">&quot;z&quot;</span>: @[<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-string">&quot;a&quot;</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">4</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">2.3</span>, <span class="hljs-number">7.1</span>, <span class="hljs-number">3.3</span>, <span class="hljs-number">1.0</span>],
+               <span class="hljs-string">&quot;z&quot;</span>: @[<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-string">&quot;a&quot;</span>]})
 <span class="hljs-keyword">echo</span> df.arrange(<span class="hljs-string">&quot;x&quot;</span>)         <span class="hljs-comment">## sort by `x` in ascending order (default)</span>
 <span class="hljs-keyword">echo</span> df.arrange(<span class="hljs-string">&quot;x&quot;</span>, order = <span class="hljs-type">SortOrder</span>.<span class="hljs-type">Descending</span>) <span class="hljs-comment">## sort in descending order</span>
 <span class="hljs-keyword">echo</span> df.arrange([<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;z&quot;</span>])  <span class="hljs-comment">## sort by two columns, first `x` then `z` to break ties</span></code></pre>
@@ -433,8 +438,8 @@ to use. If no argument is given uniqueness is determined based on <em>all</em> e
 columns. This is not always the most desired option of course, which is why <code>unique</code>
 accepts a variable number of columns. Then only uniqueness among these columns is
 considered.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>, <span class="hljs-number">7.0</span>, <span class="hljs-number">8.0</span>, <span class="hljs-number">9.0</span>],
-                   <span class="hljs-string">&quot;z&quot;</span>: @[<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-string">&quot;e&quot;</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>, <span class="hljs-number">7.0</span>, <span class="hljs-number">8.0</span>, <span class="hljs-number">9.0</span>],
+               <span class="hljs-string">&quot;z&quot;</span>: @[<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-string">&quot;e&quot;</span>]})
 <span class="hljs-keyword">echo</span> df.unique()             <span class="hljs-comment">## consider uniqueness of all columns, nothing removed</span>
 <span class="hljs-keyword">echo</span> df.unique(<span class="hljs-string">&quot;x&quot;</span>)          <span class="hljs-comment">## only consider `x`, only keeps keeps 1st, 2nd, last row</span>
 <span class="hljs-keyword">echo</span> df.unique([<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;z&quot;</span>])   <span class="hljs-comment">## considers `x` and `z`, one more unique (4th row)</span></code></pre>
@@ -471,7 +476,7 @@ operator <code>&lt;-</code> we now use the &quot;x depends on y&quot; operator <
 <p>Further, to refer to a column in the computation we perform we will use accented
 quotes. This is all the complexity of that macro we will discuss in this introduction.</p>
 <p>Let's compute the sum of two columns to get a feel:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>]})
 <span class="hljs-keyword">echo</span> df.mutate(f{<span class="hljs-string">&quot;x+y&quot;</span> ~ `x` + `y`})</code></pre>
 <pre><samp>Dataframe with 3 columns and 3 rows:
        Idx         x         y       x+y
@@ -482,7 +487,7 @@ quotes. This is all the complexity of that macro we will discuss in this introdu
 
 </samp></pre>
 <p>Of course we can use constants and local Nim symbols as well:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]})
 <span class="hljs-keyword">echo</span> df.mutate(f{<span class="hljs-string">&quot;x+5&quot;</span> ~ `x` + <span class="hljs-number">5</span>})
 <span class="hljs-keyword">let</span> y = <span class="hljs-number">2.0</span>
 <span class="hljs-keyword">echo</span> df.mutate(f{<span class="hljs-string">&quot;x + local y&quot;</span> ~ `x` + y})</code></pre>
@@ -509,7 +514,7 @@ of the column is deduced based on the types in the rest of the formula. <code>5<
 <code>x</code> is read as a <code>float</code>. See the Datamancer documentation on details and how to
 specify the types manually.</p>
 <p>And as stated we can also overwrite columns:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]})
 <span class="hljs-keyword">echo</span> df.mutate(f{<span class="hljs-string">&quot;x&quot;</span> ~ `x` + `x`})</code></pre>
 <pre><samp>Dataframe with 1 columns and 3 rows:
        Idx         x
@@ -534,7 +539,7 @@ this purpose. Otherwise it is equivalent to <code>mutate</code>.</p>
 <p>These mentioned formulas can of course also return boolean values. In combination
 with the <code>filter</code> procedure this allows us to remove rows of a data frame that
 fail to pass a condition (or a &quot;predicate&quot;).</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-string">&quot;e&quot;</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;d&quot;</span>, <span class="hljs-string">&quot;e&quot;</span>]})
 <span class="hljs-keyword">echo</span> df.filter(f{`x` &lt; <span class="hljs-number">3</span> <span class="hljs-keyword">or</span> `y` == <span class="hljs-string">&quot;e&quot;</span>})</code></pre>
 <pre><samp>Dataframe with 2 columns and 3 rows:
        Idx         x         y
@@ -549,7 +554,7 @@ fail to pass a condition (or a &quot;predicate&quot;).</p>
 simple single column operations, but does not scale well. That's what <code>summarize</code> is
 for. Here we use the last operator used in the <code>f{}</code> macro, namely the reduction
 <code>&lt;&lt;</code> operator:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">5</span>, <span class="hljs-number">10</span>, <span class="hljs-number">15</span>, <span class="hljs-number">20</span>, <span class="hljs-number">25</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;x&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>], <span class="hljs-string">&quot;y&quot;</span>: @[<span class="hljs-number">5</span>, <span class="hljs-number">10</span>, <span class="hljs-number">15</span>, <span class="hljs-number">20</span>, <span class="hljs-number">25</span>]})
 <span class="hljs-keyword">echo</span> df.summarize(f{<span class="hljs-built_in">float</span>: mean(`x`)}) <span class="hljs-comment">## compute mean, auto creates a column name</span>
 <span class="hljs-keyword">echo</span> df.summarize(f{<span class="hljs-built_in">float</span>: <span class="hljs-string">&quot;mean(x)&quot;</span> &lt;&lt; mean(`x`)}) <span class="hljs-comment">## same but with a custom name</span>
 <span class="hljs-keyword">echo</span> df.summarize(f{<span class="hljs-string">&quot;mean(x)+sum(y)&quot;</span> &lt;&lt; mean(`x`) + sum(`y`)})</code></pre>
@@ -591,8 +596,8 @@ frame. These sub data frames are those of duplicate entries in the columns that 
 grouped by. It essentially yields everything as a sub data frame that would be reduced
 to a single row if using <code>unique</code> on the same columns as grouped by.</p>
 <p>This should become clearer with an example:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>],
-                   <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>]}).group_by(<span class="hljs-string">&quot;Class&quot;</span>)
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>],
+               <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>]}).group_by(<span class="hljs-string">&quot;Class&quot;</span>)
 <span class="hljs-keyword">for</span> t, subDf <span class="hljs-keyword">in</span> groups(df):
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Sub data frame: &quot;</span>, t
   <span class="hljs-keyword">echo</span> subDf</code></pre>
@@ -630,8 +635,8 @@ group.</p>
 <ul>
 <li><code>summarize</code></li>
 </ul>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>],
-                   <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>],
+               <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]})
 <span class="hljs-keyword">echo</span> df.group_by(<span class="hljs-string">&quot;Class&quot;</span>).summarize(f{<span class="hljs-built_in">int</span>: <span class="hljs-string">&quot;sum(Num)&quot;</span> &lt;&lt; sum(`<span class="hljs-type">Num</span>`)})</code></pre>
 <pre><samp>Dataframe with 2 columns and 3 rows:
          Idx       Class    sum(Num)
@@ -645,8 +650,8 @@ group.</p>
 <ul>
 <li><code>filter</code>:</li>
 </ul>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>],
-                   <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>],
+               <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]})
 <span class="hljs-keyword">echo</span> df.group_by(<span class="hljs-string">&quot;Class&quot;</span>).filter(f{sum(`<span class="hljs-type">Num</span>`) &lt;= <span class="hljs-number">9</span>})</code></pre>
 <pre><samp>Dataframe with 2 columns and 6 rows:
        Idx     Class       Num
@@ -664,8 +669,8 @@ that uses a reducing formula as input would usually not make too much sense anyw
 <ul>
 <li><code>mutate</code>:</li>
 </ul>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>],
-                   <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>],
+               <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]})
 <span class="hljs-keyword">echo</span> df.group_by(<span class="hljs-string">&quot;Class&quot;</span>).mutate(f{<span class="hljs-string">&quot;Num - mean&quot;</span> ~ `<span class="hljs-type">Num</span>` - mean(`<span class="hljs-type">Num</span>`)})</code></pre>
 <pre><samp>Dataframe with 3 columns and 9 rows:
            Idx         Class           Num    Num - mean
@@ -699,15 +704,15 @@ in the corresponding columns. Let's look at:</p>
 <li>the same data frame in wide format</li>
 </ul>
 <p>for clarity:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> dfLong = seqsToDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>],
-                       <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> dfLong = toDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>],
+                   <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]})
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Long format:</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>, dfLong
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;----------------------------------------&quot;</span>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Grouping by `Class`:&quot;</span>
 <span class="hljs-keyword">for</span> _, subDf <span class="hljs-keyword">in</span> groups(dfLong.group_by(<span class="hljs-string">&quot;Class&quot;</span>)):
   <span class="hljs-keyword">echo</span> subDf
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;----------------------------------------&quot;</span>
-<span class="hljs-keyword">let</span> dfWide = seqsToDf({<span class="hljs-string">&quot;A&quot;</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">8</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;B&quot;</span>: [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;C&quot;</span>: [<span class="hljs-number">5</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>]})
+<span class="hljs-keyword">let</span> dfWide = toDf({<span class="hljs-string">&quot;A&quot;</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">8</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;B&quot;</span>: [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;C&quot;</span>: [<span class="hljs-number">5</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>]})
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Wide format:</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>, dfWide</code></pre>
 <pre><samp>Long format:
 Dataframe with 2 columns and 9 rows:
@@ -770,7 +775,7 @@ long format one. It takes the columns to be &quot;gathered&quot;, the name of th
 the &quot;keys&quot; (the column from which a value came) and a name for the column of the &quot;values&quot;
 that were &quot;gathered&quot;. We can use it to recover the (&quot;Class&quot;, &quot;Num&quot;) data frame from
 the last one:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;A&quot;</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">8</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;B&quot;</span>: [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;C&quot;</span>: [<span class="hljs-number">5</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;A&quot;</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">8</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;B&quot;</span>: [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;C&quot;</span>: [<span class="hljs-number">5</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>]})
 <span class="hljs-keyword">echo</span> df.gather(df.getKeys(), <span class="hljs-comment">## get all keys to gather</span>
                key = <span class="hljs-string">&quot;Class&quot;</span>, <span class="hljs-comment">## the name of the `key` column</span>
                value = <span class="hljs-string">&quot;Num&quot;</span>)</code></pre>
@@ -794,10 +799,9 @@ is currently still missing. It will be added soon)</p>
 <h3><code>innerJoin</code> - joining two data frames by a common column</h3>
 <p>As the last common example of data frame operations, we shall consider joining two
 data frames by a common column.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df1 = seqsToDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>, <span class="hljs-string">&quot;E&quot;</span>],
-                    <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>]})
-<span class="hljs-keyword">let</span> df2 = seqsToDf({<span class="hljs-string">&quot;Class&quot;</span>: [<span class="hljs-string">&quot;E&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>],
-                    <span class="hljs-string">&quot;Ids&quot;</span>: @[<span class="hljs-number">123</span>, <span class="hljs-number">124</span>, <span class="hljs-number">125</span>, <span class="hljs-number">126</span>, <span class="hljs-number">127</span>]})
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df1 = toDf({<span class="hljs-string">&quot;Class&quot;</span>: @[<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>, <span class="hljs-string">&quot;E&quot;</span>], <span class="hljs-string">&quot;Num&quot;</span>: @[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>]})
+<span class="hljs-keyword">let</span> df2 = toDf({<span class="hljs-string">&quot;Class&quot;</span>: [<span class="hljs-string">&quot;E&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>],
+                <span class="hljs-string">&quot;Ids&quot;</span>: @[<span class="hljs-number">123</span>, <span class="hljs-number">124</span>, <span class="hljs-number">125</span>, <span class="hljs-number">126</span>, <span class="hljs-number">127</span>]})
 <span class="hljs-keyword">echo</span> innerJoin(df1, df2, by = <span class="hljs-string">&quot;Class&quot;</span>)</code></pre>
 <pre><samp>Dataframe with 3 columns and 5 rows:
        Idx     Class       Num       Ids

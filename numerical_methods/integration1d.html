@@ -269,7 +269,7 @@ a more detailed plotting tutorial can be found <a href="../data_viz/plotting_dat
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> ctxPlot = newNumContext[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]()
 <span class="hljs-keyword">let</span> xPlot = numericalnim.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1000</span>)
 <span class="hljs-keyword">let</span> yPlot = xPlot.mapIt(f(it, ctxPlot))
-<span class="hljs-keyword">let</span> dfPlot = seqsToDf(xPlot, yPlot)
+<span class="hljs-keyword">let</span> dfPlot = toDf(xPlot, yPlot)
 ggplot(dfPlot, aes(<span class="hljs-string">&quot;xPlot&quot;</span>, <span class="hljs-string">&quot;yPlot&quot;</span>)) + geom_line() + ggsave(<span class="hljs-string">&quot;images/humps.png&quot;</span>)</code></pre>
 <pre><samp>StatusSuccess output of write_to_png
 </samp></pre>
@@ -327,12 +327,12 @@ timeIt <span class="hljs-string">&quot;AdaSimpson&quot;</span>:
 timeIt <span class="hljs-string">&quot;AdaGauss&quot;</span>:
   keep adaptiveGauss(f, a, b, tol = tol)</code></pre>
 <pre><samp>name ............................... min time      avg time    std dv   runs
-Trapz .............................. 0.006 ms      0.007 ms    ±0.001  x1000
-Simpson ............................ 0.007 ms      0.007 ms    ±0.000  x1000
-GaussQuad .......................... 0.014 ms      0.014 ms    ±0.000  x1000
-Romberg ............................ 0.009 ms      0.009 ms    ±0.000  x1000
-AdaSimpson ......................... 0.043 ms      0.044 ms    ±0.001  x1000
-AdaGauss ........................... 0.009 ms      0.009 ms    ±0.001  x1000
+Trapz .............................. 0.005 ms      0.006 ms    ±0.001  x1000
+Simpson ............................ 0.005 ms      0.005 ms    ±0.000  x1000
+GaussQuad .......................... 0.010 ms      0.011 ms    ±0.001  x1000
+Romberg ............................ 0.007 ms      0.007 ms    ±0.001  x1000
+AdaSimpson ......................... 0.031 ms      0.032 ms    ±0.001  x1000
+AdaGauss ........................... 0.007 ms      0.007 ms    ±0.001  x1000
 </samp></pre>
 <p>As we can see, all methods except AdaSimpson were roughly equally fast. So if I were to choose
 a winner, it would be <code>adaptiveGauss</code> because it was the most accurate while still being among
@@ -360,7 +360,7 @@ Let's get coding!</p>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:   &quot;</span>, sum(abs(exact.toTensor - yTrapz.toTensor))
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error: &quot;</span>, sum(abs(exact.toTensor - ySimpson.toTensor))
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Gauss Error:   &quot;</span>, sum(abs(exact.toTensor - yGauss.toTensor))
-<span class="hljs-keyword">let</span> df = seqsToDf(x, exact, yTrapz, ySimpson, yGauss)
+<span class="hljs-keyword">let</span> df = toDf(x, exact, yTrapz, ySimpson, yGauss)
 <span class="hljs-keyword">let</span> dfLong = df.gather([<span class="hljs-string">&quot;exact&quot;</span>, <span class="hljs-string">&quot;yTrapz&quot;</span>, <span class="hljs-string">&quot;ySimpson&quot;</span>, <span class="hljs-string">&quot;yGauss&quot;</span>],
                        key = <span class="hljs-string">&quot;Method&quot;</span>, value = <span class="hljs-string">&quot;y&quot;</span>)
 ggplot(dfLong, aes(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>, color = <span class="hljs-string">&quot;Method&quot;</span>)) + geom_line() +
@@ -420,7 +420,7 @@ plotting the sampled points, a Hermite Spline interpolation of them and the orig
 <span class="hljs-keyword">let</span> yDense = xDense.mapIt(f(it, <span class="hljs-literal">nil</span>))
 <span class="hljs-keyword">var</span> sampledSpline = newHermiteSpline(xSample, ySample)
 <span class="hljs-keyword">var</span> ySpline = sampledSpline.eval(xDense)
-<span class="hljs-keyword">var</span> dfSample = seqsToDf(xSample, ySample, xDense, yDense, ySpline)
+<span class="hljs-keyword">var</span> dfSample = toDf(xSample, ySample, xDense, yDense, ySpline)
 ggplot(dfSample) + geom_point(aes(<span class="hljs-string">&quot;xSample&quot;</span>, <span class="hljs-string">&quot;ySample&quot;</span>, color = <span class="hljs-string">&quot;Sampled&quot;</span>)) +
     geom_line(aes(<span class="hljs-string">&quot;xDense&quot;</span>, <span class="hljs-string">&quot;ySpline&quot;</span>, color = <span class="hljs-string">&quot;Sampled&quot;</span>)) +
     geom_line(aes(<span class="hljs-string">&quot;xDense&quot;</span>, <span class="hljs-string">&quot;yDense&quot;</span>, color = <span class="hljs-string">&quot;Dense&quot;</span>)) +
@@ -472,7 +472,7 @@ that changes things!</p>
 ySample = xSample.mapIt(f(it, <span class="hljs-literal">nil</span>))
 sampledSpline = newHermiteSpline(xSample, ySample)
 ySpline = sampledSpline.eval(xDense)
-dfSample = seqsToDf(xSample, ySample, xDense, yDense, ySpline)
+dfSample = toDf(xSample, ySample, xDense, yDense, ySpline)
 ggplot(dfSample) + geom_point(aes(<span class="hljs-string">&quot;xSample&quot;</span>, <span class="hljs-string">&quot;ySample&quot;</span>, color = <span class="hljs-string">&quot;Sampled&quot;</span>)) +
     geom_line(aes(<span class="hljs-string">&quot;xDense&quot;</span>, <span class="hljs-string">&quot;ySpline&quot;</span>, color = <span class="hljs-string">&quot;Sampled&quot;</span>)) +
     geom_line(aes(<span class="hljs-string">&quot;xDense&quot;</span>, <span class="hljs-string">&quot;yDense&quot;</span>, color = <span class="hljs-string">&quot;Dense&quot;</span>)) +
@@ -526,7 +526,7 @@ only <code>cumtrapz</code> and <code>cumsimpson</code> are available and that yo
 <span class="hljs-keyword">let</span> ySimpson = cumsimpson(y, x)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:   &quot;</span>, sum(abs(exact.toTensor - yTrapz.toTensor))
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error: &quot;</span>, sum(abs(exact.toTensor - ySimpson.toTensor))
-<span class="hljs-keyword">let</span> df = seqsToDf(x, exact, yTrapz, ySimpson)
+<span class="hljs-keyword">let</span> df = toDf(x, exact, yTrapz, ySimpson)
 <span class="hljs-keyword">let</span> dfLong = df.gather([<span class="hljs-string">&quot;exact&quot;</span>, <span class="hljs-string">&quot;yTrapz&quot;</span>, <span class="hljs-string">&quot;ySimpson&quot;</span>], key = <span class="hljs-string">&quot;Method&quot;</span>,
                        value = <span class="hljs-string">&quot;y&quot;</span>)
 ggplot(dfLong, aes(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>, color = <span class="hljs-string">&quot;Method&quot;</span>)) + geom_line() +

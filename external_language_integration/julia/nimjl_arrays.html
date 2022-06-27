@@ -423,13 +423,13 @@ localTensor.apply_inline:
 <span class="hljs-keyword">echo</span> localTensor
 <span class="hljs-keyword">var</span> localTensor2 = localArray.to(<span class="hljs-type">Tensor</span>[<span class="hljs-built_in">int</span>], rowMajor)
 <span class="hljs-keyword">assert</span>(localTensor == localTensor2)</code></pre>
-<pre><samp>[3 4 2 5 1; 3 1 3 3 2; 5 2 1 5 5; 5 1 3 3 2; 1 1 1 2 2]
+<pre><samp>[4 5 2 5 1; 5 2 4 4 3; 3 1 1 2 4; 3 3 5 3 1; 5 5 4 1 3]
 Tensor[system.int] of shape &quot;[5, 5]&quot; on backend &quot;Cpu&quot;
-|3      4     2     5     1|
-|3      1     3     3     2|
-|5      2     1     5     5|
-|5      1     3     3     2|
-|1      1     1     2     2|
+|4      5     2     5     1|
+|5      2     4     4     3|
+|3      1     1     2     4|
+|3      3     5     3     1|
+|5      5     4     1     3|
 </samp></pre>
 <p>Both Tensors have identical indexed values but the buffer are different according to the memory layout argument.</p>
 <p>When passing Tensor directly as values in a <code>jlCall</code> / <code>Julia.</code> expression, a <code>JlArray[T]</code> will be constructed by buffer; so you should be aware about the memory layout of the buffer.</p>

@@ -240,7 +240,7 @@
 
 <span class="hljs-keyword">let</span> x1 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
 <span class="hljs-keyword">let</span> y1 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">9.0</span>]
-<span class="hljs-keyword">let</span> df1 = seqsToDf(x1, y1)
+<span class="hljs-keyword">let</span> df1 = toDf(x1, y1)
 ggplot(df1, aes(<span class="hljs-string">&quot;x1&quot;</span>, <span class="hljs-string">&quot;y1&quot;</span>)) + geom_line() + ggsave(<span class="hljs-string">&quot;images/line_plot.png&quot;</span>)</code></pre>
 <pre><samp>StatusSuccess output of write_to_png
 </samp></pre>
@@ -260,7 +260,7 @@ visible in this book when using dark themes.</p>
 
 <span class="hljs-keyword">let</span> x2 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
 <span class="hljs-keyword">let</span> y2 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">9.0</span>]
-<span class="hljs-keyword">let</span> df2 = seqsToDf(x2, y2)
+<span class="hljs-keyword">let</span> df2 = toDf(x2, y2)
 ggplot(df2, aes(<span class="hljs-string">&quot;x2&quot;</span>, <span class="hljs-string">&quot;y2&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/scatter_plot.png&quot;</span>)</code></pre>
 <pre><samp>StatusSuccess output of write_to_png
 </samp></pre>

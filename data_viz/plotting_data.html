@@ -260,7 +260,7 @@ as long as you speak its language.</p>
 it is called a <em>grammar</em> of graphics.</p>
 <pre><code class="nim hljs"><span class="hljs-comment">## ignore the dummy `df` here. This is to be able to compile the code (we throw away</span>
 <span class="hljs-comment">## the `ggplot` result as we don't call `ggsave`)</span>
-<span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;Energy&quot;</span>: @[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;Counts&quot;</span>: @[<span class="hljs-number">2</span>], <span class="hljs-string">&quot;Type&quot;</span>: @[<span class="hljs-string">&quot;background&quot;</span>]})
+<span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;Energy&quot;</span>: @[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;Counts&quot;</span>: @[<span class="hljs-number">2</span>], <span class="hljs-string">&quot;Type&quot;</span>: @[<span class="hljs-string">&quot;background&quot;</span>]})
 <span class="hljs-keyword">discard</span> ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>)) +
     geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>,
                    hdKind = hdOutline) +
@@ -452,7 +452,7 @@ integer numbers</li>
   ggplotnim, random, sequtils
 
 randomize(<span class="hljs-number">42</span>)
-<span class="hljs-keyword">let</span> df = seqsToDf({<span class="hljs-string">&quot;Energy&quot;</span>: cycle(linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">10.0</span>, <span class="hljs-number">25</span>).toRawSeq, <span class="hljs-number">2</span>), <span class="hljs-string">&quot;Counts&quot;</span>: concat(
+<span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;Energy&quot;</span>: cycle(linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">10.0</span>, <span class="hljs-number">25</span>).toRawSeq, <span class="hljs-number">2</span>), <span class="hljs-string">&quot;Counts&quot;</span>: concat(
     toSeq(<span class="hljs-number">0</span> ..&lt; <span class="hljs-number">25</span>).mapIt(rand(<span class="hljs-number">10.0</span>)), toSeq(<span class="hljs-number">0</span> ..&lt; <span class="hljs-number">25</span>).mapIt(rand(<span class="hljs-number">10</span>).<span class="hljs-built_in">float</span>)), <span class="hljs-string">&quot;Type&quot;</span>: concat(
     newSeqWith(<span class="hljs-number">25</span>, <span class="hljs-string">&quot;background&quot;</span>), newSeqWith(<span class="hljs-number">25</span>, <span class="hljs-string">&quot;candidates&quot;</span>))})
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Input data frame: &quot;</span>
