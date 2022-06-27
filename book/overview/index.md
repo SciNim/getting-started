@@ -1,9 +1,3 @@
-import nimib, nimibook
-
-nbInit()
-nbUseNimibook
-
-nbText: """
 # Overview of the scientific computing ecosystem
 
 This chapter aims to provide a rough overview of the ecosystem for scientific computing
@@ -22,51 +16,22 @@ channel!
 
 ## Fundamental data handling libraries
 
-The libraries listed here all provide basic data types that are helpful in general.
+The libraries listed here all provide basic data types that are
+helpful in general (multidimensional arrays & data frames).
 
-### [Arraymancer](https://github.com/mratsim/arraymancer)
-
-[Arraymancer](https://github.com/mratsim/arraymancer) provides a generic `Tensor[T]` type,
-similar to a Numpy `ndarray`. On top it defines operations from indexing, broadcasting
-and apply/map/fold/reduce operations to linear algebra and much more:
-"""
-nbCode:
-  import arraymancer
-  let t = arange(0, 9).reshape([3, 3]) ## typical tensor constructors
-  echo t +. 1 ## broadcasting operations
-nbText: """
-
-### [Neo](https://github.com/andreaferretti/neo)
-
-[Neo](https://github.com/andreaferretti/neo) provides primitives for linear algebra. This means
-it implements vectors and matrices, either with static or dynamic sizes.
-
-### [Datamancer](https://github.com/scinim/datamancer)
-
-[Datamancer](https://github.com/scinim/datamancer) builds on top of Arraymancer to provide
-a `DataFrame` runtime based implementation. Runtime based means the types of columns are
-determined at runtime instead of compile time (e.g. via a schema). The focus is on column
-based operations.
-"""
-nbCode:
-  import datamancer
-  let df = seqsToDf({"Age" : @[24, 32, 53], "Name" : @["Foo", "Bar", "Baz"]})
-  echo df
-
-nbText: """
-
-### [NimData](https://github.com/bluenote10/nimdata)
-
-[NimData](https://github.com/bluenote10/nimdata) provides another `DataFrame` implementation,
-which - compared to Datamancer - has a stricter CT safety focus. Its implementation is
-row based and the `DataFrame` type is determined at compile time. Operations are built on top
-of iterators for lazy evaluation.
-
-### [Flambeau](https://github.com/scinim/flambeau)
-
-[Flambeau](https://github.com/scinim/flambeau) is a [libtorch](https://pytorch.org/) wrapper. Thus,
-it provides both a `Tensor[T]` type (and the expected associated operations) as well as
-being a machine learning library.
+- [Arraymancer](https://github.com/mratsim/arraymancer) ⇐ provides a generic `Tensor[T]` type,
+  similar to a Numpy `ndarray`. On top it defines operations from indexing, broadcasting
+  and apply/map/fold/reduce operations to linear algebra and much more
+- [Neo](https://github.com/andreaferretti/neo) ⇐ provides primitives for linear algebra. This means
+  it implements vectors and matrices, either with static or dynamic sizes.
+- [Datamancer](https://github.com/scinim/datamancer) ⇐ builds on top of Arraymancer to provide
+  a runtime based `DataFrame` implementation. Runtime based means the types of columns are
+  determined at runtime instead of compile time (e.g. via a schema). The focus is on column
+  based operations.
+- [NimData](https://github.com/bluenote10/nimdata) ⇐ provides another `DataFrame` implementation,
+  which - compared to Datamancer - has a stricter CT safety focus. Its implementation is
+  row based and the `DataFrame` type is determined at compile time. Operations are built on top
+  of iterators for lazy evaluation.
 
 ## Data visualization
 
@@ -75,47 +40,19 @@ each with their own focus and thus pros and cons.
 
 Beyond the libraries listed in this section, keep in mind that your favorite
 Python, Julia and R plotting library is only a [nimpy](https://github.com/yglukhov/nimpy),
-[nimjl](https://github.com/Clonkk/nimjl) and [Rnim](https://github.com/SciNim/Rnim) call away!
+[nimjl](https://github.com/Clonkk/nimjl) and
+[Rnim](https://github.com/SciNim/Rnim) call away!
 
-### [ggplotnim](https://github.com/Vindaar/ggplotnim)
-
-[ggplotnim](https://github.com/Vindaar/ggplotnim) is a pure Nim library for data visualization
-that is highly inspired by [ggplot2](https://ggplot2.tidyverse.org) for R. It is a library using
-the "Grammar of Graphics" approach to build visualizations. Inputs are given as a `Datamancer`
-`DataFrame` and plot is built from different "geom" layers.
-
-Use this library if you want static graphics, suitable for scientific publications.
-
-"""
-nbCode:
-  import ggplotnim
-  let x = @[1, 2, 3, 4]
-  let y = @[2, 4, 8, 16]
-  let dfP = toDf({"x" : x, "y" : y}) ## toDf(x, y) would use the identifiers as keys, i.e. equivalent
-  ggplot(dfP, aes("x", "y")) + geom_point() + ggsave("images/simple_points.pdf")
-
-nbText: """
-Also see the introduction to data visualization using `ggplotnim` [here](https://scinim.github.io/getting-started/data_viz/plotting_data.html).
-
-### [nim-plotly](https://github.com/SciNim/nim-plotly)
-
-As the name implies [nim-plotly](https://github.com/SciNim/nim-plotly) is an interface to the
-JavaScript library [plotly.js](https://plotly.com/javascript/basic-charts/). It generates
-plotly compatible JSON, which by default is inserted into an HTML file that loads the JS library.
-
-As its essentially a data ↦ plotly JSON converter, it can easily be used to feed data to
-some interactive JS program to update plots in realtime and more.
-
-### gnuplot
-
-There are multiple gnuplot bindings available.
-- [gnuplot.nim](https://github.com/dvolk/gnuplot.nim)
-- [gnuplotlib](https://github.com/planetis-m/gnuplotlib)
-
-Both of these open a `gnuplot` process and feed data to it via `stdin`.
-
-### Other plotting libraries
-
+- [ggplotnim](https://github.com/Vindaar/ggplotnim) ⇐ pure Nim library
+  for data visualization that is highly inspired by
+  [ggplot2](https://ggplot2.tidyverse.org) for R. Also see the
+  introduction [here](https://scinim.github.io/getting-started/data_viz/plotting_data.html).
+- [nim-plotly](https://github.com/SciNim/nim-plotly) ⇐ an interface to the JavaScript library
+  [plotly.js](https://plotly.com/javascript/basic-charts/); generates plotly compatible JSON
+- [gnuplot.nim](https://github.com/dvolk/gnuplot.nim) ⇐ one of two
+  available bindings to `gnuplot`
+- [gnuplotlib](https://github.com/planetis-m/gnuplotlib) ⇐ one of two
+  available bindings to `gnuplot`
 - [asciigraph](https://github.com/KeepCoolWithCoolidge/asciigraph) ⇐ plots data using unicode symbols to draw
   pretty graphs in the terminal
 - [gr.nim](https://github.com/mantielero/gr.nim) ⇐ wrapper of the [GR visualization framework](https://gr-framework.org/)
@@ -125,60 +62,30 @@ Both of these open a `gnuplot` process and feed data to it via `stdin`.
 Numerical algorithms for integration, interpolation, (numerical) differentiation and
 solving differential equations are of course fundamental for scientific computing.
 
-### [Numericalnim](https://github.com/SciNim/numericalnim)
-
-[Numericalnim](https://github.com/SciNim/numericalnim) is *the* most comprehensive
-library for numerical algorithms in Nim. It contains multiple algorithms each for the
-topics mentioned above.
-
-See for example the tutorial for numerical integration [here](https://scinim.github.io/getting-started/numerical_methods/integration1d.html)
-to get acquainted with the basic usage of the library.
-
-### [Polynumeric](https://github.com/SciNim/polynumeric)
-
-For purely polynomial operations, the [polynumeric](https://github.com/SciNim/polynumeric)
-is useful. It provides all common operations on polynomials one might need (integration,
-differentiation, root finding, fitting a polynomial and more). The advantage is that
-polynomial operations are simply and can be solved analytically (more efficient & more accurate
-than performing the equivalent operation using a numerical algorithm).
+- [Numericalnim](https://github.com/SciNim/numericalnim) ⇐ *the* most comprehensive
+  library for numerical algorithms in Nim. Also see the integration
+  tutorial [here](https://scinim.github.io/getting-started/numerical_methods/integration1d.html).
+- [Polynumeric](https://github.com/SciNim/polynumeric) ⇐ provides
+  common operations (derivatives, root finding, etc.) of polynomials
 
 ## Optimization
 
 Optimization (possibly non-linear) problems are a problem domain large enough to deserve
 their own section beyond the "numerical algorithm" section.
 
-### [Numericalnim](https://github.com/SciNim/numericalnim)
-
-[Numericalnim](https://github.com/SciNim/numericalnim) itself also recently added algorithms
-for non-linear optimization. These include Levenberg-Marquardt for non-linear curve fitting
-and (L)BFGS for general optimization problems.
-
-### [fitl](https://github.com/c-blake/fitl)
-
-[fitl](https://github.com/c-blake/fitl) contains a pure Nim linear least squares solver (so
-no LAPACK dependency!) and provides many goodness-of-fit tests.
-
-### [nimnlopt](https://github.com/Vindaar/nimnlopt)
-
-[nimnlopt](https://github.com/Vindaar/nimnlopt) is a wrapper of the [NLopt](https://nlopt.readthedocs.io/en/latest/)
-C library. It includes a large number of algorithms for non-linear optimization problems.
-The algorithms can be separated into 4 different classes:
-- gradient & non gradient based methods
-- global & local methods
-where each algorithm is either local or global and either needs derivatives or does not.
-
-It supports custom constraints for the optimization and arbitrary bounds for each parameter.
-
-### [nim-mpfit](https://github.com/Vindaar/nim-mpfit)
-
-[nim-mpfit](https://github.com/Vindaar/nim-mpfit) is a wrapper of the C library [cmpfit](https://pages.physics.wisc.edu/~craigm/idl/cmpfit.html),
-which is an implementation of the Levenberg-Marquardt algorithm for non-linear least squares
-problems (i.e. non-linear curve fitting).
-
-### [gsl-nim](https://github.com/YesDrX/gsl-nim)
-
-A wrapper for the [GNU Scientific Library](https://www.gnu.org/software/gsl/), which probably satisfies
-all your numerical optimization needs (and much more), if you can live with the GSL dependence and raw C API.
+- [Numericalnim](https://github.com/SciNim/numericalnim) ⇐ provides some algorithms
+  for non-linear optimization. These include Levenberg-Marquardt for non-linear curve fitting
+  and (L)BFGS for general optimization problems.
+- [fitl](https://github.com/c-blake/fitl) ⇐ contains a pure Nim linear least squares solver (so
+  no LAPACK dependency!) and provides many goodness-of-fit tests
+- [nimnlopt](https://github.com/Vindaar/nimnlopt) ⇐ wrapper of the [NLopt](https://nlopt.readthedocs.io/en/latest/)
+  C library. It includes a large number of algorithms for non-linear
+  optimization problems (gradient / non gradient & local / global
+  methods) with support for constraints.
+- [nim-mpfit](https://github.com/Vindaar/nim-mpfit) ⇐ wrapper of the C library [cmpfit](https://pages.physics.wisc.edu/~craigm/idl/cmpfit.html), an implementation of the Levenberg-Marquardt algorithm for non-linear least squares problems (i.e. non-linear curve fitting).
+- [gsl-nim](https://github.com/YesDrX/gsl-nim) ⇐ wrapper for the [GNU
+Scientific Library](https://www.gnu.org/software/gsl/), which probably
+satisfies all your numerical optimization needs (and much more), if you can live with the GSL dependence and raw C API.
 
 ## (Binary) data storage & serialization libraries
 
@@ -248,7 +155,9 @@ These libraries all provide specific data types suited to certain kind of operat
 - [sitmo](https://github.com/jxy/sitmo) ⇐ Nim implementation of the Sitmo parallel RNG
 - [stdlib random](https://nim-lang.github.io/Nim/random.html) ⇐ random number generation of the Nim standard library
 - [nim-random](https://github.com/oprypin/nim-random) ⇐ alternative to the Nim stdlib random number library
-- [nim-mentat](https://github.com/ruivieira/nim-mentat) ⇐ implements exponentially weighted moving averages
+- [nim-mentat](https://github.com/ruivieira/nim-mentat) ⇐ implements
+  exponentially weighted moving averages
+- [fitl](https://github.com/c-blake/fitl) ⇐ contains a submodule `dists` for random sampling, mixing of distributions, (inverse) CDFs
 
 ## Machine learning
 
@@ -300,25 +209,27 @@ These libraries implement different [special functions](https://en.wikipedia.org
 
 ## Primitive compute wrappers
 
-- [nimcuda](https://github.com/andreaferretti/nimcuda)
-- [nimlapack](https://github.com/andreaferretti/nimlapack)
-- [nimblas](https://github.com/andreaferretti/nimblas)
-- [nimcl](https://github.com/andreaferretti/nimcl)
+- [nimcuda](https://github.com/andreaferretti/nimcuda) ⇐ wrapper for CUDA
+- [nimblas](https://github.com/andreaferretti/nimblas) ⇐ wrapper for BLAS
+- [nimlapack](https://github.com/andreaferretti/nimlapack) ⇐ wrapper for LAPACK
+- [nimcl](https://github.com/andreaferretti/nimcl) ⇐ wrapper for OpenCL
 
-## Multithreading & asynchronous processing
+## Multithreading, multiprocessing & asynchronous processing
 
-- [weave](https://github.com/mratsim/weave)
-- [taskpools](https://github.com/status-im/nim-taskpools)
+- [weave](https://github.com/mratsim/weave) ⇐ very low overhead, high performance multithreading runtime
+- [taskpools](https://github.com/status-im/nim-taskpools) ⇐ lightweight threadpool implementation
 - [threadpools](https://github.com/yglukhov/threadpools) ⇐ Custom threadpool implementation
 - [threading](https://github.com/nim-lang/threading) ⇐ New pieces for multithreading in times of ARC/ORC
 - [asynctools](https://github.com/cheatfate/asynctools) ⇐ Various async tools for usage with Nim's stdlib `async` macro
-- [asyncthreadpool](https://github.com/yglukhov/asyncthreadpool) ⇐ An awaitable threadpool implementation
+- [asyncthreadpool](https://github.com/yglukhov/asyncthreadpool) ⇐ An
+  awaitable threadpool implementation
+- [cligen](https://github.com/c-blake/cligen) ⇐ contains a `procpool` submodule for easy multi*processing*
 
 ## Biology
 
 - [hts-nim](https://github.com/brentp/hts-nim) ⇐ A wrapper for [htslib](https://github.com/samtools/htslib) for Nim for parsing of
   genomics data files
-- [bionim](https://github.com/SciNim/bionim) ⇐  collection of data structures and algorithms for bioinformatics
+- [bionim](https://github.com/SciNim/bionim) ⇐ collection of data structures and algorithms for bioinformatics
 - [bio](https://github.com/SciNim/bio) ⇐ a library for working with biological sequences
 
 ## Physics & astronomy
@@ -326,13 +237,16 @@ These libraries implement different [special functions](https://en.wikipedia.org
 - [unchained](https://github.com/SciNim/Unchained) ⇐ library for CT checking of physical units and
   automatic conversion between units
 - [qex](https://github.com/jcosborn/qex/) ⇐ lattice QCD library
-- [mclimit](https://github.com/SciNim/mclimit) ⇐ Nim port of the ROOT TLimit class for confidence level computations (limits) for experiments with small statistics
+- [mclimit](https://github.com/SciNim/mclimit) ⇐ Nim port of the ROOT TLimit class for confidence level computations (limits) for experiments with small statistics
 - [nim-constants](https://github.com/SciNim/nim-constants) ⇐ contains many physical and mathematical constants
 - [astroNimy](https://github.com/dizzyliam/astroNimy) ⇐ astronomical image processing library
 - [orbits](https://github.com/treeform/orbits) ⇐ library for orbital mechanics calculations
 - [nim-root](https://github.com/watson-ij/nim-root) ⇐ partial wrapper for [CERN's ROOT](https://root.cern.ch)
 - [MDevolve](https://github.com/jxy/MDevolve) ⇐ integrator framework for molecular dynamic evolutions
-- [polypbren](https://github.com/guibar64/polypbren) ⇐ program to compute renormalized parameters of charged colloids
+- [polypbren](https://github.com/guibar64/polypbren) ⇐ program to
+  compute renormalized parameters of charged colloids
+- [xrayAttenuation](https://github.com/SciNim/xrayAttenuation) ⇐ for
+  calculations of X-ray transmissions through materials & X-ray reflectivity under grazing angles
 
 ## Mathematics
 
@@ -383,24 +297,13 @@ for an introduction to the C / C++ FFI.
 For more details on how to use the language specific bindings, see the section
 about it [here](https://scinim.github.io/getting-started/external_language_integration/index.html)
 
+### Direct language bridges
+- [nimjl](https://github.com/Clonkk/nimjl) ⇐ bridge to Julia
+- [nimpy](https://github.com/yglukhov/nimpy) ⇐ bridge to Python
+- [Rnim](https://github.com/SciNim/Rnim) ⇐ bridge to R
+
 ### Tools to wrap C / C++
 
 - [c2nim](https://github.com/nim-lang/c2nim) ⇐ the default Nim tool to generate Nim wrappers of C header files
 - [futhark](https://github.com/PMunch/futhark) ⇐ automatic imports of C header files in Nim code
 - [nimterop](https://github.com/nimterop/nimterop) ⇐ library to simplify wrapping of C/C++ using [tree-sitter](http://tree-sitter.github.io/tree-sitter/)
-
-### Julia
-
-- [nimjl](https://github.com/Clonkk/nimjl)
-
-### Python
-
-- [nimpy](https://github.com/yglukhov/nimpy)
-
-### R
-
-- [Rnim](https://github.com/SciNim/Rnim)
-
-"""
-
-nbSave

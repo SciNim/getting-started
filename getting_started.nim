@@ -2,7 +2,7 @@ import nimibook
 
 var book = newBookFromToc("SciNim Getting Started", "book"):
   section("Introduction", "index"): discard
-  section("Ecosystem overview", "overview/index"): discard
+  section("Ecosystem overview", "overview/index.md"): discard
   section("Basic topics", "basics/index"):
     entry("Common datatypes", "common_datatypes")
     entry("Data wrangling with dataframes", "data_wrangling")
