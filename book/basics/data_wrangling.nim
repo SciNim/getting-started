@@ -21,6 +21,16 @@ In the specific case of Datamancer, the data structure is essentially an
 `OrderedTable[string, Column]`, where `Column` is a variant object storing one
 of 5 different `Tensor[T]` types.
 
+In order to use Datamancer, you must first import it. In addition to that, in this tutorial
+we will also import the [Arraymancer](https://github.com/mratsim/Arraymancer) tensor library,
+which we will use to demonstrate that you can create dataframes from Arraymancer tensors.
+
+"""
+nbCode:
+  import datamancer
+  import arraymancer
+nbText: """
+
 ## Construction of a `DataFrame`
 
 A `DataFrame` from the Datamancer library can be constructed in two different ways. Either
@@ -28,24 +38,20 @@ from an input CSV file or from existing sequences or tensors.
 
 Construction from a CSV file is performed using the `readCsv` procedure. It provides multiple
 different options (different separators, skipping lines, header symbols, ...), but for a
-regular comma separated value file, the defaults are fine.
+regular comma separated value file, the defaults are fine. For example:
 
+```nim
+let df1 = readCsv("foo.csv")
+echo df1
+```
+
+Alternatively, if one already has a mix of sequences and tensors of the same length:
 """
 nbCode:
-  import datamancer
-  # TODO: add some data files to use for the tutorial?
-  # let df1 = readCsv("foo.csv")
-  # echo df1
-nbText: """
-
-Or if one already has a mix of sequences and tensors of the same length:
-"""
-nbCode:
-  import arraymancer
   let s1 = [1, 2, 3]
   let s2 = @["hello", "foo", "bar"]
   let s3 = @[1.5, 2.5, 3.5].toTensor
-  let df2 = seqsToDf(s1, s2, s3)
+  let df2 = toDf(s1, s2, s3)
   echo df2
   echo "Column names: ", df2.getKeys() ## getKeys only returns the column names
 nbText: """
@@ -68,7 +74,7 @@ If one wishes to name the columns differently from construction (they can be ren
 as well), it is done by:
 """
 nbCode:
-  let df3 = seqsToDf({"Id" : s1, "Word" : s2, "Number" : s3})
+  let df3 = toDf({"Id" : s1, "Word" : s2, "Number" : s3})
   echo df3
 nbText: """
 
@@ -100,7 +106,7 @@ as floats or any column as strings.
 The syntax is as follows:
 """
 nbCodeInBlock:
-  let df = seqsToDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
+  let df = toDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
   let t1: Tensor[int] = df["x", int] ## this is a no-op
   let t2: Tensor[float] = df["x", float] ## converts integers to floats
   let t3: Tensor[float] = df["y", float] ## also a no-op
@@ -122,7 +128,7 @@ As we saw in the previous section, accessing a tensor of a column is cheap. We c
 use that to perform aggregations on full columns:
 """
 nbCodeInBlock:
-  let df = seqsToDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
+  let df = toDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
   echo df["x", int].sum
   echo df["y", float].mean
 nbText: """
@@ -159,7 +165,7 @@ which drops every column not selected.
 The inverse is also possible using `drop`:
 """
 nbCodeInBlock:
-  let df = seqsToDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0], "z" : @["a", "b", "c"]})
+  let df = toDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0], "z" : @["a", "b", "c"]})
   echo df.drop("x")
 nbText: """
 
@@ -169,7 +175,7 @@ nbText: """
 get our first glance at the `f{}` macro to generate a `FormulaNode` here:
 """
 nbCodeInBlock:
-  let df = seqsToDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
+  let df = toDf({"x" : @[1, 2, 3], "y" : @[4.0, 5.0, 6.0]})
   echo df.rename(f{"foo" <- "x"})
 nbText: """
 So we can see that we simply assign `<-` the old name "x" to the new name "foo".
@@ -186,7 +192,7 @@ an `order` argument that takes either `SortOrder.Ascending` or `SortOrder.Descen
 The default order is ascending order.
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "x" : @[4, 2, 7, 4], "y" : @[2.3, 7.1, 3.3, 1.0],
+  let df = toDf({ "x" : @[4, 2, 7, 4], "y" : @[2.3, 7.1, 3.3, 1.0],
                       "z" : @["b", "c", "d", "a"]})
   echo df.arrange("x") ## sort by `x` in ascending order (default)
   echo df.arrange("x", order = SortOrder.Descending) ## sort in descending order
@@ -202,7 +208,7 @@ accepts a variable number of columns. Then only uniqueness among these columns i
 considered.
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "x" : @[1, 2, 2, 2, 4], "y" : @[5.0, 6.0, 7.0, 8.0, 9.0],
+  let df = toDf({ "x" : @[1, 2, 2, 2, 4], "y" : @[5.0, 6.0, 7.0, 8.0, 9.0],
                       "z" : @["a", "b", "b", "d", "e"]})
   echo df.unique() ## consider uniqueness of all columns, nothing removed
   echo df.unique("x") ## only consider `x`, only keeps keeps 1st, 2nd, last row
@@ -222,13 +228,13 @@ quotes. This is all the complexity of that macro we will discuss in this introdu
 Let's compute the sum of two columns to get a feel:
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "x" : @[1, 2, 3], "y" : @[10, 11, 12] })
+  let df = toDf({ "x" : @[1, 2, 3], "y" : @[10, 11, 12] })
   echo df.mutate(f{"x+y" ~ `x` + `y`})
 nbText: """
 Of course we can use constants and local Nim symbols as well:
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "x" : @[1, 2, 3]})
+  let df = toDf({ "x" : @[1, 2, 3]})
   echo df.mutate(f{"x+5" ~ `x` + 5 })
   let y = 2.0
   echo df.mutate(f{"x + local y" ~ `x` + y})
@@ -244,7 +250,7 @@ specify the types manually.
 And as stated we can also overwrite columns:
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "x" : @[1, 2, 3] })
+  let df = toDf({ "x" : @[1, 2, 3] })
   echo df.mutate(f{"x" ~ `x` + `x`})
 nbText: """
 
@@ -269,7 +275,7 @@ with the `filter` procedure this allows us to remove rows of a data frame that
 fail to pass a condition (or a "predicate").
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "x" : @[1, 2, 3, 4, 5], "y" : @["a", "b", "c", "d", "e"] })
+  let df = toDf({ "x" : @[1, 2, 3, 4, 5], "y" : @["a", "b", "c", "d", "e"] })
   echo df.filter(f{ `x` < 3 or `y` == "e" })
 nbText: """
 
@@ -281,7 +287,7 @@ for. Here we use the last operator used in the `f{}` macro, namely the reduction
 `<<` operator:
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "x" : @[1, 2, 3, 4, 5], "y" : @[5, 10, 15, 20, 25] })
+  let df = toDf({ "x" : @[1, 2, 3, 4, 5], "y" : @[5, 10, 15, 20, 25] })
   echo df.summarize(f{float:  mean(`x`) }) ## compute mean, auto creates a column name
   echo df.summarize(f{float: "mean(x)" << mean(`x`) }) ## same but with a custom name
   echo df.summarize(f{"mean(x)+sum(y)" << mean(`x`) + sum(`y`) })
@@ -316,7 +322,7 @@ to a single row if using `unique` on the same columns as grouped by.
 This should become clearer with an example:
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C"],
+  let df = toDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C"],
                       "Num" : @[1, 5, 3, 4, 8, 7, 2] })
     .group_by("Class")
   for t, subDf in groups(df):
@@ -336,7 +342,7 @@ A few examples:
 - `summarize`
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
+  let df = toDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
                       "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
   echo df.group_by("Class").summarize(f{int: "sum(Num)" << sum(`Num`)})
 nbText: """
@@ -344,7 +350,7 @@ nbText: """
 - `filter`:
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
+  let df = toDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
                       "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
   echo df.group_by("Class").filter(f{ sum(`Num`) <= 9 })
 nbText: """
@@ -353,7 +359,7 @@ nbText: """
 - `mutate`:
 """
 nbCodeInBlock:
-  let df = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
+  let df = toDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
                       "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
   echo df.group_by("Class").mutate(f{"Num - mean" ~ `Num` - mean(`Num`)})
 nbText: """
@@ -379,7 +385,7 @@ in the corresponding columns. Let's look at:
 for clarity:
 """
 nbCodeInBlock:
-  let dfLong = seqsToDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
+  let dfLong = toDf({ "Class" : @["A", "C", "B", "B", "A", "C", "C", "A", "B"],
                           "Num" : @[1, 5, 3, 4, 8, 7, 2, 0, 0] })
   echo "Long format:\n", dfLong
   echo "----------------------------------------"
@@ -387,7 +393,7 @@ nbCodeInBlock:
   for _, subDf in groups(dfLong.group_by("Class")):
     echo subDf
   echo "----------------------------------------"
-  let dfWide = seqsToDf({"A" : [1, 8, 0], "B" : [3, 4, 0], "C" : [5, 7, 2]})
+  let dfWide = toDf({"A" : [1, 8, 0], "B" : [3, 4, 0], "C" : [5, 7, 2]})
   echo "Wide format:\n", dfWide
 nbText: """
 As we can see, the difference between wide and long format is the way the `groub_by` results
@@ -409,7 +415,7 @@ that were "gathered". We can use it to recover the ("Class", "Num") data frame f
 the last one:
 """
 nbCodeInBlock:
-  let df = seqsToDf({"A" : [1, 8, 0], "B" : [3, 4, 0], "C" : [5, 7, 2]})
+  let df = toDf({"A" : [1, 8, 0], "B" : [3, 4, 0], "C" : [5, 7, 2]})
   echo df.gather(df.getKeys(), ## get all keys to gather
                  key = "Class", ## the name of the `key` column
                  value = "Num")
@@ -425,9 +431,9 @@ As the last common example of data frame operations, we shall consider joining t
 data frames by a common column.
 """
 nbCodeInBlock:
-  let df1 = seqsToDf({ "Class" : @["A", "B", "C", "D", "E"],
+  let df1 = toDf({ "Class" : @["A", "B", "C", "D", "E"],
                        "Num" : @[1, 5, 3, 4, 6] })
-  let df2 = seqsToDf({ "Class" : ["E", "B", "A", "D", "C"],
+  let df2 = toDf({ "Class" : ["E", "B", "A", "D", "C"],
                        "Ids" : @[123, 124, 125, 126, 127] })
   echo innerJoin(df1, df2, by = "Class")
 nbText: """

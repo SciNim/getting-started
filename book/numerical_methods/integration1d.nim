@@ -56,7 +56,7 @@ a more detailed plotting tutorial can be found [here](../data_viz/plotting_data.
     let xPlot = numericalnim.linspace(0, 1, 1000)
     let yPlot = xPlot.mapIt(f(it, ctxPlot))
 
-    let dfPlot = seqsToDf(xPlot, yPlot)
+    let dfPlot = toDf(xPlot, yPlot)
     ggplot(dfPlot, aes("xPlot", "yPlot")) +
       geom_line() +
       ggsave("images/humps.png")
@@ -159,7 +159,7 @@ Let's get coding!
     echo "Simpson Error: ", sum(abs(exact.toTensor - ySimpson.toTensor))
     echo "Gauss Error:   ", sum(abs(exact.toTensor - yGauss.toTensor))
 
-    let df = seqsToDf(x, exact, yTrapz, ySimpson, yGauss)
+    let df = toDf(x, exact, yTrapz, ySimpson, yGauss)
     # Rewrite df in long format for plotting
     let dfLong = df.gather(["exact", "yTrapz", "ySimpson", "yGauss"], key="Method", value="y")
     ggplot(dfLong, aes("x", "y", color="Method")) +
@@ -229,7 +229,7 @@ block discretePart:
     var sampledSpline = newHermiteSpline(xSample, ySample)
     var ySpline = sampledSpline.eval(xDense)
 
-    var dfSample = seqsToDf(xSample, ySample, xDense, yDense, ySpline)
+    var dfSample = toDf(xSample, ySample, xDense, yDense, ySpline)
     ggplot(dfSample) +
       #geom_point(data = dfSample.filter(f{Value -> bool: not `xSample`.isNull.toBool}), aes = aes("xSample", "ySample", color = "Sampled")) +
       geom_point(aes("xSample", "ySample", color="Sampled")) +
@@ -283,7 +283,7 @@ that changes things!
     sampledSpline = newHermiteSpline(xSample, ySample)
     ySpline = sampledSpline.eval(xDense)
 
-    dfSample = seqsToDf(xSample, ySample, xDense, yDense, ySpline)
+    dfSample = toDf(xSample, ySample, xDense, yDense, ySpline)
     ggplot(dfSample) +
       geom_point(aes("xSample", "ySample", color="Sampled")) +
       geom_line(aes("xDense", "ySpline", color="Sampled")) +
@@ -338,7 +338,7 @@ only `cumtrapz` and `cumsimpson` are available and that you pass in `y` and `x` 
     echo "Trapz Error:   ", sum(abs(exact.toTensor - yTrapz.toTensor))
     echo "Simpson Error: ", sum(abs(exact.toTensor - ySimpson.toTensor))
 
-    let df = seqsToDf(x, exact, yTrapz, ySimpson)
+    let df = toDf(x, exact, yTrapz, ySimpson)
     # Rewrite df in long format for plotting
     let dfLong = df.gather(["exact", "yTrapz", "ySimpson"], key="Method", value="y")
     ggplot(dfLong, aes("x", "y", color="Method")) +
