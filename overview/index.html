@@ -1,0 +1,591 @@
+<!DOCTYPE HTML>
+<html lang="en-us" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using nimibook -->
+        <meta charset="UTF-8">
+        <title>overview/index.md</title>
+
+        <!-- Custom HTML head -->
+        <!-- custom head content -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="a book built with nimibook">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+        <link rel="stylesheet" href="../assets/css/variables.css">
+        <link rel="stylesheet" href="../assets/css/general.css">
+        <link rel="stylesheet" href="../assets/css/chrome.css">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../assets/FontAwesome/css/font-awesome.min.css">
+
+        <!-- Highlight.js Stylesheets - I could use nimib native highlight but let's keep it for styling... -->
+        <link rel="stylesheet" href="../assets/css/highlight.css">
+        <link rel="stylesheet" href="../assets/css/tomorrow-night.css">
+        <link rel="stylesheet" href="../assets/css/ayu-highlight.css">
+
+        <!-- Custom theme stylesheets - why the "../"? -->
+
+
+        <!-- plausible analytics (new in nimibook) -->
+        <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "..//assets";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                                <ol class="chapter">
+                  <li class="chapter-item expanded ">
+                    <a href="../index.html" tabindex="0">
+                      <strong aria-hidden="true">1.</strong> Introduction
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../overview/index.html" class="active" tabindex="0">
+                      <strong aria-hidden="true">2.</strong> Ecosystem overview
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/index.html" tabindex="0">
+                      <strong aria-hidden="true">3.</strong> Basic topics
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/common_datatypes.html" tabindex="0">
+                      <strong aria-hidden="true">3.1.</strong> Common datatypes
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/data_wrangling.html" tabindex="0">
+                      <strong aria-hidden="true">3.2.</strong> Data wrangling with dataframes
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/basic_plotting.html" tabindex="0">
+                      <strong aria-hidden="true">3.3.</strong> Plotting
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../basics/units_basics.html" tabindex="0">
+                      <strong aria-hidden="true">3.4.</strong> Units
+                    </a>
+                  </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../numerical_methods/index.html" tabindex="0">
+                      <strong aria-hidden="true">4.</strong> Numerical methods
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../numerical_methods/curve_fitting.html" tabindex="0">
+                      <strong aria-hidden="true">4.1.</strong> Curve fitting
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../numerical_methods/integration1d.html" tabindex="0">
+                      <strong aria-hidden="true">4.2.</strong> Integration (1D)
+                    </a>
+                  </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../data_viz/index.html" tabindex="0">
+                      <strong aria-hidden="true">5.</strong> Data visualization
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../data_viz/plotting_data.html" tabindex="0">
+                      <strong aria-hidden="true">5.1.</strong> Plotting data
+                    </a>
+                  </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/index.html" tabindex="0">
+                      <strong aria-hidden="true">6.</strong> Interfacing with other language
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/nim_with_py.html" tabindex="0">
+                      <strong aria-hidden="true">6.1.</strong> Nimpy - The Nim Python bridge
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/julia/basics.html" tabindex="0">
+                      <strong aria-hidden="true">6.2.</strong> Nimjl - The Nim Julia bridge
+                    </a>
+                  </li>
+                  <li>
+                  <ol class="section">
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/julia/nimjl_conversions.html" tabindex="0">
+                      <strong aria-hidden="true">6.2.1.</strong> Advanced types
+                    </a>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/julia/nimjl_arrays.html" tabindex="0">
+                      <strong aria-hidden="true">6.2.2.</strong> Julia Arrays from Nim
+                    </a>
+                  </li>
+                  </ol>
+                  </li>
+                  <li class="chapter-item expanded ">
+                    <a href="../external_language_integration/nim_with_R.html" tabindex="0">
+                      <strong aria-hidden="true">6.3.</strong> Interfacing with R
+                    </a>
+                  </li>
+                </ol>
+<!-- I could use also an unescaped context value -->
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <!-- custom header content -->                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">SciNim Getting Started</h1>
+
+                    <div class="right-buttons">
+                        <a href="https://github.com/SciNim/getting-started" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1>Overview of the scientific computing ecosystem</h1>
+<p>This chapter aims to provide a rough overview of the ecosystem for scientific computing
+with the aim to present the available packages with an overview of what they can be
+used for.</p>
+<p>In general, keep the <a href="https://nimble.directory/">Nimble directory</a> handy to search for
+Nim packages from your browser.</p>
+<p>Note that due to the way this page is laid out, some packages might appear multiple times
+under different sections.</p>
+<p>Further: if you feel any existing library is missing on this page, <em>please</em> either create
+a PR to this page, open an issue or simply write a message in the Matrix/Discord Nim science
+channel!</p>
+<h2>Fundamental data handling libraries</h2>
+<p>The libraries listed here all provide basic data types that are
+helpful in general (multidimensional arrays &amp; data frames).</p>
+<ul>
+<li><a href="https://github.com/mratsim/arraymancer">Arraymancer</a> ⇐ provides a generic <code>Tensor[T]</code> type,
+similar to a Numpy <code>ndarray</code>. On top it defines operations from indexing, broadcasting
+and apply/map/fold/reduce operations to linear algebra and much more</li>
+<li><a href="https://github.com/andreaferretti/neo">Neo</a> ⇐ provides primitives for linear algebra. This means
+it implements vectors and matrices, either with static or dynamic sizes.</li>
+<li><a href="https://github.com/scinim/datamancer">Datamancer</a> ⇐ builds on top of Arraymancer to provide
+a runtime based <code>DataFrame</code> implementation. Runtime based means the types of columns are
+determined at runtime instead of compile time (e.g. via a schema). The focus is on column
+based operations.</li>
+<li><a href="https://github.com/bluenote10/nimdata">NimData</a> ⇐ provides another <code>DataFrame</code> implementation,
+which - compared to Datamancer - has a stricter CT safety focus. Its implementation is
+row based and the <code>DataFrame</code> type is determined at compile time. Operations are built on top
+of iterators for lazy evaluation.</li>
+</ul>
+<h2>Data visualization</h2>
+<p>There are multiple libraries for data visualization (&quot;plotting&quot;) available,
+each with their own focus and thus pros and cons.</p>
+<p>Beyond the libraries listed in this section, keep in mind that your favorite
+Python, Julia and R plotting library is only a <a href="https://github.com/yglukhov/nimpy">nimpy</a>,
+<a href="https://github.com/Clonkk/nimjl">nimjl</a> and
+<a href="https://github.com/SciNim/Rnim">Rnim</a> call away!</p>
+<ul>
+<li><a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a> ⇐ pure Nim library
+for data visualization that is highly inspired by
+<a href="https://ggplot2.tidyverse.org">ggplot2</a> for R. Also see the
+introduction <a href="https://scinim.github.io/getting-started/data_viz/plotting_data.html">here</a>.</li>
+<li><a href="https://github.com/SciNim/nim-plotly">nim-plotly</a> ⇐ an interface to the JavaScript library
+<a href="https://plotly.com/javascript/basic-charts/">plotly.js</a>; generates plotly compatible JSON</li>
+<li><a href="https://github.com/dvolk/gnuplot.nim">gnuplot.nim</a> ⇐ one of two
+available bindings to <code>gnuplot</code></li>
+<li><a href="https://github.com/planetis-m/gnuplotlib">gnuplotlib</a> ⇐ one of two
+available bindings to <code>gnuplot</code></li>
+<li><a href="https://github.com/KeepCoolWithCoolidge/asciigraph">asciigraph</a> ⇐ plots data using unicode symbols to draw
+pretty graphs in the terminal</li>
+<li><a href="https://github.com/mantielero/gr.nim">gr.nim</a> ⇐ wrapper of the <a href="https://gr-framework.org/">GR visualization framework</a></li>
+</ul>
+<h2>Numerical algorithms</h2>
+<p>Numerical algorithms for integration, interpolation, (numerical) differentiation and
+solving differential equations are of course fundamental for scientific computing.</p>
+<ul>
+<li><a href="https://github.com/SciNim/numericalnim">Numericalnim</a> ⇐ <em>the</em> most comprehensive
+library for numerical algorithms in Nim. Also see the integration
+tutorial <a href="https://scinim.github.io/getting-started/numerical_methods/integration1d.html">here</a>.</li>
+<li><a href="https://github.com/SciNim/polynumeric">Polynumeric</a> ⇐ provides
+common operations (derivatives, root finding, etc.) of polynomials</li>
+</ul>
+<h2>Optimization</h2>
+<p>Optimization (possibly non-linear) problems are a problem domain large enough to deserve
+their own section beyond the &quot;numerical algorithm&quot; section.</p>
+<ul>
+<li><a href="https://github.com/SciNim/numericalnim">Numericalnim</a> ⇐ provides some algorithms
+for non-linear optimization. These include Levenberg-Marquardt for non-linear curve fitting
+and (L)BFGS for general optimization problems.</li>
+<li><a href="https://github.com/c-blake/fitl">fitl</a> ⇐ contains a pure Nim linear least squares solver (so
+no LAPACK dependency!) and provides many goodness-of-fit tests</li>
+<li><a href="https://github.com/Vindaar/nimnlopt">nimnlopt</a> ⇐ wrapper of the <a href="https://nlopt.readthedocs.io/en/latest/">NLopt</a>
+C library. It includes a large number of algorithms for non-linear
+optimization problems (gradient / non gradient &amp; local / global
+methods) with support for constraints.</li>
+<li><a href="https://github.com/Vindaar/nim-mpfit">nim-mpfit</a> ⇐ wrapper of the C library <a href="https://pages.physics.wisc.edu/~craigm/idl/cmpfit.html">cmpfit</a>, an implementation of the Levenberg-Marquardt algorithm for non-linear least squares problems (i.e. non-linear curve fitting).</li>
+<li><a href="https://github.com/YesDrX/gsl-nim">gsl-nim</a> ⇐ wrapper for the <a href="https://www.gnu.org/software/gsl/">GNU
+Scientific Library</a>, which probably</li>
+</ul>
+<p>satisfies all your numerical optimization needs (and much more), if you can live with the GSL dependence and raw C API.</p>
+<h2>(Binary) data storage &amp; serialization libraries</h2>
+<ul>
+<li><a href="https://github.com/Vindaar/nimhdf5">nimhfd5</a> ⇐ high level bindings for the HDF5 library</li>
+<li><a href="https://github.com/SciNim/netcdf">netcdf</a> ⇐ wrapper for NetCDF library</li>
+<li><a href="https://github.com/SciNim/mcpl">mcpl</a> ⇐ wrapper for MCPL library</li>
+<li>Arrow
+<ul>
+<li><a href="https://github.com/SciNim/freccia">freccia</a> ⇐ pure Nim library for Apache Arrow format</li>
+<li><a href="https://github.com/emef/nimarrow_glib">nimarrow_glib</a> ⇐ wrapper of libarrow</li>
+</ul>
+</li>
+<li><a href="https://github.com/c-blake/nio">nio</a> ⇐ also includes operations for binary data handling</li>
+<li><a href="https://github.com/ziotom78/nimcfitsio">nimcfitsio</a> ⇐ wrapper for the CFITSIO library, typically used
+in astronomy</li>
+<li><a href="https://github.com/andreaferretti/nim-teafiles">nim-teafiles</a> ⇐ library to read <a href="http://discretelogics.com/teafiles/">TeaFiles</a>,
+a format for fast read/write access to time series data</li>
+<li><a href="https://github.com/andreaferretti/csvtools">CSVtools</a> ⇐ library for typed iterators on CSV files</li>
+<li><a href="https://github.com/ayman-albaz/nim-duckdb">DuckDB</a> ⇐ DuckDB wrapper for Nim. DuckDB is a DB focused on fast data analysis</li>
+</ul>
+<h2>Linear algebra</h2>
+<p>A list of libraries for linear algebra operations. These libraries typically provide their own matrix and vector
+types and define common (and not so common) operations on them.</p>
+<ul>
+<li><a href="https://github.com/andreaferretti/neo">Neo</a> ⇐ linear algebra library with support for dense and sparse
+matrices. Wraps BLAS &amp; LAPACK and also has GPU support</li>
+<li><a href="https://github.com/planetis-m/manu">Manu</a> ⇐ pure Nim library for operations on real, dense matrices (solving linear
+equations, determinants, matrix inverses &amp; decompositions, ...)</li>
+<li><a href="https://github.com/mratsim/arraymancer">Arraymancer</a> ⇐ Arraymancer also provides many linear algebra routines</li>
+<li><a href="https://github.com/YesDrX/gsl-nim">gsl-nim</a> ⇐ GSL provides
+<a href="https://www.gnu.org/software/gsl/doc/html/linalg.html">many linear algebra</a> routines</li>
+</ul>
+<h2>Algebra</h2>
+<ul>
+<li><a href="https://github.com/andreaferretti/emmy">emmy</a> ⇐ Algebraic structures and operations on them</li>
+<li><a href="https://github.com/MichalMarsalek/nim-algebra">nim-algebra</a> ⇐ implements many routines for rings, fields and groups</li>
+</ul>
+<h2>Symbolic operations</h2>
+<p>Libraries dealing with symbolic instead of numeric operations.</p>
+<ul>
+<li><a href="https://github.com/SciNim/astgrad">astgrad</a> ⇐ symbolic derivatives based on Nim AST</li>
+<li><a href="https://github.com/hugogranstrom/symbolicnim">symbolicnim</a> ⇐ pure Nim library for symbolic computations</li>
+<li><a href="https://github.com/SciNim/symengine.nim">symengine</a> ⇐ wrapper for C++ library for symbolic computations</li>
+</ul>
+<h2>Number types</h2>
+<p>These libraries all provide specific data types suited to certain kind of operations.</p>
+<ul>
+<li>decimal libraries
+<ul>
+<li><a href="https://github.com/status-im/nim-decimal">nim-decimal</a> ⇐ decimal library wrapping C lib <code>mpdecimal</code></li>
+<li><a href="https://github.com/JohnAD/decimal128">decimal128</a> ⇐ pure Nim decimal library, missing some features</li>
+</ul>
+</li>
+<li>multi-precision integers (bigints)
+<ul>
+<li><a href="https://github.com/SciNim/bignum">bignum</a> ⇐ wrapper of GMP providing arbitrary precision ints &amp; rationals, does not wrap <code>mpfr</code> (so no multi precision floats)</li>
+<li><a href="https://github.com/nim-lang/bigints">bigints</a> ⇐ pure Nim bigint library</li>
+<li><a href="https://github.com/SciNim/theo">theo</a> ⇐ optimized bigint library, WIP</li>
+</ul>
+</li>
+<li><a href="https://gitlab.com/lbartoletti/fpn">fpn</a> ⇐ fixed point number library in pure Nim</li>
+<li><a href="https://nim-lang.github.io/Nim/rationals.html">stdlib rationals</a> ⇐ Nim standard library module  for rational numbers</li>
+<li><a href="https://nim-lang.github.io/Nim/complex.html">stdlib complex</a> ⇐ Nim standard library module for complex numbers</li>
+</ul>
+<h2>Statistics, sampling and random number generation</h2>
+<ul>
+<li><a href="https://github.com/ayman-albaz/statistical-tests">statistical-tests</a></li>
+<li><a href="https://github.com/ayman-albaz/linear-models">linear-models</a></li>
+<li><a href="https://github.com/ayman-albaz/distributions">distributions</a></li>
+<li><a href="https://nim-lang.github.io/Nim/stats.html">stdlib stats</a> ⇐ basic statistics module from the stdlib. Supports moments up to
+kurtosis &amp; provides basic regression support</li>
+<li><a href="https://github.com/andreaferretti/alea">alea</a> ⇐ library for sampling from many different distribiutons. Allows to wrap custom (e.g. stdlib) RNGs</li>
+<li><a href="https://github.com/jxy/sitmo">sitmo</a> ⇐ Nim implementation of the Sitmo parallel RNG</li>
+<li><a href="https://nim-lang.github.io/Nim/random.html">stdlib random</a> ⇐ random number generation of the Nim standard library</li>
+<li><a href="https://github.com/oprypin/nim-random">nim-random</a> ⇐ alternative to the Nim stdlib random number library</li>
+<li><a href="https://github.com/ruivieira/nim-mentat">nim-mentat</a> ⇐ implements
+exponentially weighted moving averages</li>
+<li><a href="https://github.com/c-blake/fitl">fitl</a> ⇐ contains a submodule <code>dists</code> for random sampling, mixing of distributions, (inverse) CDFs</li>
+</ul>
+<h2>Machine learning</h2>
+<ul>
+<li><a href="https://github.com/SciNim/flambeau">Flambeau</a> ⇐ as a wrapper to <a href="https://pytorch.org/cppdocs/installing.html">libtorch</a> provides
+access to state-of-the-art ML features</li>
+<li><a href="https://github.com/mratsim/arraymancer">Arraymancer</a> ⇐ Arraymancer implements a DSL to define neural networks
+(see the <a href="https://github.com/mratsim/Arraymancer/tree/master/examples">examples</a>) and provides other, more primitive
+ML tools (PCA, ...)</li>
+<li><a href="https://github.com/can-lehmann/exprgrad">exprgrad</a> ⇐ Experimental deep learning framework, based on an
+easily extensible LLVM compiled differentiable programming language</li>
+<li><a href="https://github.com/Michedev/DecisionTreeNim">DecisionTreeNim</a> ⇐ implements decision trees &amp; random forests</li>
+</ul>
+<h2>Natural language processing</h2>
+<ul>
+<li><a href="https://github.com/dizzyliam/tome">tome</a> ⇐ provides tokenization and parts of speech (POS) tagging</li>
+<li><a href="https://github.com/treeform/word2vec">word2vec</a> ⇐ <a href="https://en.wikipedia.org/wiki/Word2vec">Word2vec</a> implementation in Nim</li>
+<li><a href="https://github.com/Nim-NLP/fastText">fastText</a> ⇐ library to perform predictions of <a href="https://github.com/facebookresearch/fastText">fastText</a> models</li>
+<li><a href="https://github.com/xflywind/scim">scim</a> ⇐ library for helpful tools for speech recognition based on arraymancer</li>
+</ul>
+<h2>Spatial data structures, distance measures &amp; clustering algorithms</h2>
+<ul>
+<li><a href="https://github.com/jblindsay/kdtree">kdtree</a> ⇐ k-d tree implementation in pure Nim</li>
+<li><a href="https://github.com/stefansalewski/RTree">RTree</a> ⇐ R- and R*-Tree implementations in pure Nim</li>
+<li><a href="https://github.com/Nycto/QuadtreeNim">QuadtreeNim</a> ⇐ Quadtree implementation implementation in pure Nim</li>
+<li><a href="https://github.com/ayman-albaz/distances">distances</a> ⇐ library to compute distances under different metrics
+with support for standard sequences, arraymancer &amp; neo types</li>
+<li><a href="https://github.com/mratsim/arraymancer">arraymancer</a> ⇐ arraymancer contains a k-d tree implementation, multiple
+distance metrics (incl. user defined custom metrics) plus k-means &amp; DBSCAN clustering algorithms</li>
+<li><a href="https://github.com/treeform/spacy">spacy</a> ⇐ collection of different spatial data structures</li>
+<li><a href="https://github.com/Nycto/DelaunayNim">DelaunayNim</a> ⇐ library to compute the <a href="https://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay triangulation</a> of a set of points</li>
+<li><a href="https://github.com/ruivieira/nim-mentat">nim-mentat</a> ⇐ implements Balanced Box-Decomposition trees</li>
+</ul>
+<h2>Special functions</h2>
+<p>These libraries implement different <a href="https://en.wikipedia.org/wiki/Special_functions">special functions</a>.</p>
+<ul>
+<li><a href="https://nim-lang.github.io/Nim/math.html">stdlib math</a> ⇐ The Nim standard library <code>math</code> module contains all libraries
+you find in <code>math.h</code>.</li>
+<li><a href="https://github.com/c-blake/spfun">spfun</a> ⇐ library for many special functions used in stats, physics, ...</li>
+<li><a href="https://github.com/YesDrX/gsl-nim">gsl-nim</a> ⇐ The GSL probably provides
+<a href="https://www.gnu.org/software/gsl/doc/html/specfunc.html">any special function</a> you may need</li>
+<li><a href="https://github.com/ayman-albaz/special-functions">special-functions</a> ⇐ contains many special functions, which are not part of the stdlib module</li>
+</ul>
+<h2>FFT</h2>
+<ul>
+<li><a href="https://github.com/SciNim/nimfftw3">nimfftw3</a> ⇐ FFTW3 wrapper</li>
+<li><a href="https://github.com/SciNim/impulse">impulse</a> ⇐ pocket FFT wrapper, in principle a repository for signal processing primitives</li>
+<li><a href="https://github.com/m13253/nim-kissfft">kissFFT</a> ⇐ kissFFT wrapper</li>
+</ul>
+<h2>Primitive compute wrappers</h2>
+<ul>
+<li><a href="https://github.com/andreaferretti/nimcuda">nimcuda</a> ⇐ wrapper for CUDA</li>
+<li><a href="https://github.com/andreaferretti/nimblas">nimblas</a> ⇐ wrapper for BLAS</li>
+<li><a href="https://github.com/andreaferretti/nimlapack">nimlapack</a> ⇐ wrapper for LAPACK</li>
+<li><a href="https://github.com/andreaferretti/nimcl">nimcl</a> ⇐ wrapper for OpenCL</li>
+</ul>
+<h2>Multithreading, multiprocessing &amp; asynchronous processing</h2>
+<ul>
+<li><a href="https://github.com/mratsim/weave">weave</a> ⇐ very low overhead, high performance multithreading runtime</li>
+<li><a href="https://github.com/status-im/nim-taskpools">taskpools</a> ⇐ lightweight threadpool implementation</li>
+<li><a href="https://github.com/yglukhov/threadpools">threadpools</a> ⇐ Custom threadpool implementation</li>
+<li><a href="https://github.com/nim-lang/threading">threading</a> ⇐ New pieces for multithreading in times of ARC/ORC</li>
+<li><a href="https://github.com/cheatfate/asynctools">asynctools</a> ⇐ Various async tools for usage with Nim's stdlib <code>async</code> macro</li>
+<li><a href="https://github.com/yglukhov/asyncthreadpool">asyncthreadpool</a> ⇐ An
+awaitable threadpool implementation</li>
+<li><a href="https://github.com/c-blake/cligen">cligen</a> ⇐ contains a <code>procpool</code> submodule for easy multi<em>processing</em></li>
+</ul>
+<h2>Biology</h2>
+<ul>
+<li><a href="https://github.com/brentp/hts-nim">hts-nim</a> ⇐ A wrapper for <a href="https://github.com/samtools/htslib">htslib</a> for Nim for parsing of
+genomics data files</li>
+<li><a href="https://github.com/SciNim/bionim">bionim</a> ⇐ collection of data structures and algorithms for bioinformatics</li>
+<li><a href="https://github.com/SciNim/bio">bio</a> ⇐ a library for working with biological sequences</li>
+</ul>
+<h2>Physics &amp; astronomy</h2>
+<ul>
+<li><a href="https://github.com/SciNim/Unchained">unchained</a> ⇐ library for CT checking of physical units and
+automatic conversion between units</li>
+<li><a href="https://github.com/jcosborn/qex/">qex</a> ⇐ lattice QCD library</li>
+<li><a href="https://github.com/SciNim/mclimit">mclimit</a> ⇐ Nim port of the ROOT TLimit class for confidence level computations (limits) for experiments with small statistics</li>
+<li><a href="https://github.com/SciNim/nim-constants">nim-constants</a> ⇐ contains many physical and mathematical constants</li>
+<li><a href="https://github.com/dizzyliam/astroNimy">astroNimy</a> ⇐ astronomical image processing library</li>
+<li><a href="https://github.com/treeform/orbits">orbits</a> ⇐ library for orbital mechanics calculations</li>
+<li><a href="https://github.com/watson-ij/nim-root">nim-root</a> ⇐ partial wrapper for <a href="https://root.cern.ch">CERN's ROOT</a></li>
+<li><a href="https://github.com/jxy/MDevolve">MDevolve</a> ⇐ integrator framework for molecular dynamic evolutions</li>
+<li><a href="https://github.com/guibar64/polypbren">polypbren</a> ⇐ program to
+compute renormalized parameters of charged colloids</li>
+<li><a href="https://github.com/SciNim/xrayAttenuation">xrayAttenuation</a> ⇐ for
+calculations of X-ray transmissions through materials &amp; X-ray reflectivity under grazing angles</li>
+</ul>
+<h2>Mathematics</h2>
+<ul>
+<li><a href="https://github.com/remigijusj/perms-nim">perms-nim</a> ⇐ library for permutation group calculations and factorization algorithms</li>
+</ul>
+<h2>Other useful libraries</h2>
+<ul>
+<li><a href="https://github.com/SciNim/scinim">scinim</a> ⇐ library of general scientific things that are
+either primitives or too small to have their own library</li>
+<li><a href="https://github.com/SciNim/Measuremancer">Measuremancer</a> ⇐ library for automatic error propagation
+of measurement uncertainties</li>
+<li><a href="https://github.com/YesDrX/gsl-nim">gsl-nim</a> ⇐ wrapper for GSL (GNU Scientific Library)</li>
+<li><a href="https://github.com/dom96/nim-opencv">nim-opencv</a> ⇐ Nim wrapper for <a href="https://en.wikipedia.org/wiki/OpenCV">OpenCV</a></li>
+<li><a href="https://github.com/zero-functional/zero-functional">zero-functional</a> ⇐ library for zero cost chaining of
+functional primitves (map, apply, fold, ...). Fuses multiple operations into a single loop.</li>
+<li><a href="https://github.com/hamidb80/iterrr">iterrr</a> ⇐ another library for zero cost chaining, similar to <code>zero-functional</code>. Aims to be
+easier to extend.</li>
+<li><a href="https://github.com/dizzyliam/flower">flower</a> ⇐ pure Nim bloom filter, probabilistic data structure to check if
+elements are in a set (&quot;possibly in set&quot; vs. &quot;definitely not in set&quot;). Supports arbitrary Nim types in single filter.</li>
+<li>pattern matching:
+<ul>
+<li><a href="https://github.com/nim-lang/fusion/blob/master/src/fusion/matching.rst">pattern matching in fusion</a> ⇐ pattern
+matching for Nim. Possibly the most feature rich pattern matching library for Nim. Future developments might
+be found <a href="https://github.com/haxscramper/hmatching">here</a></li>
+<li><a href="https://github.com/andreaferretti/patty">patty</a></li>
+<li><a href="https://github.com/alehander92/gara">gara</a></li>
+</ul>
+</li>
+<li><a href="https://github.com/mratsim/Synthesis">Synthesis</a> ⇐ DSL to generate statically checked state machines</li>
+<li><a href="https://github.com/stisa/jupyternim">jupyternim</a> ⇐ Jupyter kernel for Nim</li>
+<li><a href="https://github.com/c-blake/cligen">cligen</a> ⇐ elegant library to write CLI interfaces</li>
+<li><a href="https://github.com/Vindaar/LatexDSL">LatexDSL</a> ⇐ DSL to generate CT checked latex strings, supporting Nim variable interpolation</li>
+<li><a href="https://github.com/Yardanico/nim-mathexpr">nim-mathexpr</a> ⇐ mathematical string expression evaluator library</li>
+<li><a href="https://codeberg.org/BarrOff/nim-pari">nim-pari</a> ⇐ wrapper for the <a href="https://pari.math.u-bordeaux.fr/">PARI</a> C library underlying
+the PARI/GP computer algebra system</li>
+<li><a href="https://github.com/andreaferretti/memo">memo</a> ⇐ macro library to allow memoization of function calls (automatic caching of
+function calls)</li>
+<li><a href="https://github.com/treeform/forematics">forematics</a> ⇐ Nim implementation of a <a href="http://us.metamath.org/">Metamath</a> verifier</li>
+<li><a href="https://github.com/Niminem/DeepLearningNim">DeepLearningNim</a> ⇐ example of building a DQN with arraymancer</li>
+</ul>
+<h2>Educational resources</h2>
+<ul>
+<li><a href="https://github.com/kerrycobb/nim-bayes">nim-bayes</a> ⇐ Tutorial about Bayesien Inference of a linear model in Nim</li>
+</ul>
+<h2>Language bindings</h2>
+<p>First of all Nim itself of course provides direct support to wrap C and C++ libraries
+using its FFI. See the Nim manual <a href="https://nim-lang.github.io/Nim/manual.html#foreign-function-interface">here</a>
+for an introduction to the C / C++ FFI.</p>
+<p>For more details on how to use the language specific bindings, see the section
+about it <a href="https://scinim.github.io/getting-started/external_language_integration/index.html">here</a></p>
+<h3>Direct language bridges</h3>
+<ul>
+<li><a href="https://github.com/Clonkk/nimjl">nimjl</a> ⇐ bridge to Julia</li>
+<li><a href="https://github.com/yglukhov/nimpy">nimpy</a> ⇐ bridge to Python</li>
+<li><a href="https://github.com/SciNim/Rnim">Rnim</a> ⇐ bridge to R</li>
+</ul>
+<h3>Tools to wrap C / C++</h3>
+<ul>
+<li><a href="https://github.com/nim-lang/c2nim">c2nim</a> ⇐ the default Nim tool to generate Nim wrappers of C header files</li>
+<li><a href="https://github.com/PMunch/futhark">futhark</a> ⇐ automatic imports of C header files in Nim code</li>
+<li><a href="https://github.com/nimterop/nimterop">nimterop</a> ⇐ library to simplify wrapping of C/C++ using <a href="http://tree-sitter.github.io/tree-sitter/">tree-sitter</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../basics/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../basics/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+
+
+
+        <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
