@@ -2,6 +2,7 @@ import nimibook
 
 var book = initBookWithToc:
   entry("Introduction", "index.md")
+  entry("Ecosystem overview", "overview/index.md")
   section("Basic topics", "basics/index.md"):
     entry("Common datatypes", "common_datatypes")
     entry("Data wrangling with dataframes", "data_wrangling")
