@@ -1,8 +1,7 @@
 import nimib, nimibook
 
-nbInit()
-nbUseNimibook
-nbDoc.useLatex
+nbInit(theme = useNimibook)
+nb.useLatex
 
 nbText: """
 # Using and checking units with [Unchained](https://github.com/SciNim/Unchained)

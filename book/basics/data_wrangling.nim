@@ -5,8 +5,7 @@ import nimib except Value
 import nimibook
 import datamancer
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 nbText: """
 # Data wrangling using the `DataFrame` from [Datamancer](https://github.com/SciNim/Datamancer)

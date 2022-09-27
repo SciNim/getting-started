@@ -1,8 +1,7 @@
 import nimib, nimibook
 import std/os
 
-nbInit()
-nbUseNimibook
+nbInit(theme = useNimibook)
 
 nbText: """Previously, we've seen how the basics of Nimjl works; now let's explore how to work with non-trivial types when calling functions.
 

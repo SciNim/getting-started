@@ -1,10 +1,8 @@
 import nimib except Value
 import nimibook
 
-nbInit()
-nbUseNimibook()
-nbDoc.useLatex
-nbDoc.context["mathjax_support"] = true
+nbInit(theme = useNimibook)
+nb.useLatex
 
 nbText: md"""
 # 1D Numerical Integration
