@@ -12,6 +12,7 @@ var book = initBookWithToc:
     entry("Curve fitting", "curve_fitting")
     entry("Integration (1D)", "integration1d")
     entry("ODEs", "ode")
+    entry("Optimization", "optimization")
   section("Data visualization", "data_viz/index.md"):
     entry("Plotting data", "plotting_data")
   section("Interfacing with other language", "external_language_integration/index.md"):
