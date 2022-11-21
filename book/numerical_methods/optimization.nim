@@ -112,17 +112,14 @@ There are several options you can provide to the solver. Here's a summary of som
 These are provided by creating a options object. Each method has its own initializer, for example:
 """
 
-#[ nbCodeInBlock:
+nbCodeInBlock:
   let theta0 = [-0.5, 2.0].toTensor()
 
-  let steepestOption = steepestDescentOptions(alpha=1e-3, fastMode=true)
+  let steepestOption = steepestDescentOptions[float](alpha=1e-3, fastMode=true)
   let steepestSolution = steepestDescent(f, theta0, options=steepestOption)
 
-  let lbfgsOption = lbfgsOptions(lineSearchCriterion=Wolfe)
-  let lbfgsSolution = lbfgs(f, theta0, options=lbfgsOption) ]#
+  let lbfgsOption = lbfgsOptions[float](lineSearchCriterion=Wolfe)
+  let lbfgsSolution = lbfgs(f, theta0, options=lbfgsOption)
 
-
-# Options
-# Analytical gradient
 
 nbSave
