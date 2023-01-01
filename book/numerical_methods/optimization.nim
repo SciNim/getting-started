@@ -121,5 +121,9 @@ nbCodeInBlock:
   let lbfgsOption = lbfgsOptions[float](lineSearchCriterion=Wolfe)
   let lbfgsSolution = lbfgs(f, theta0, options=lbfgsOption)
 
+nbText: hlMd"""
+## Further reading
+We also have an article on [curve fitting](https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html).
+"""
 
 nbSave
