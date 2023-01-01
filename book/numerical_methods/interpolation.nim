@@ -181,7 +181,63 @@ It looks pretty similar to the original function so I'd say it did a good job.
 block Part3:
   nbText: hlMd"""
 ## ND interpolation
+With the addition of Radial basis function (RBF) interpolation, `numericalnim` now offers an
+interpolation method that works for **scattered** data of **arbitrary dimensions**. 
+The conceptual explanation for how RBF interpolation works is that a Gaussian is placed at
+each of the data points. These are then each scaled such that the sum of all the Gaussians
+pass through all the data points exactly.
 
+Further, the implemented method employs localization using Partition of Unity. This is a
+method that exploits the fact that a Gaussian decays very quickly. Hence we shouldn't 
+have to take into account points far away from the point we are interested in. So internally
+a grid structure is created such that points are only affected by their neighbors. This both
+speeds up the code but does also make it more numerically stable.
+
+The format of the inputs that is expected is the positions as a `Tensor` of of shape `(nPoints, nDims)`
+and the function values (can be multi-valued) of shape `(nPoints, nValues)`. In the general case
+the points aren't gridded but if you want to create points on a grid you can do it with the
+`meshgrid` function. It takes in a `vararg` of `Tensor[float]`, one `Tensor` for each dimension containing the
+grid values in that dimension. An example is: 
+"""
+
+  nbCode:
+    let x = meshgrid(arraymancer.linspace(-1.0, 1.0, 5), arraymancer.linspace(-1.0, 1.0, 5), arraymancer.linspace(-1.0, 1.0, 5))
+    echo x[0..10, _]
+  
+  nbText: hlMd"""
+which will create a 3D grid with 5 points between -1 and 1 in each of the dimensions.
+
+Now let's define a function we going to interpolate:
+$$f(x, y, z) = \sin(x) \sin(y) \sin(z)$$
+Here's the code for implementing it:
+"""
+
+  nbCode:
+    proc f(x: Tensor[float]): Tensor[float] =
+      product(sin(x), axis=1)
+      
+    let y = f(x)
+
+  nbText: hlMd"""
+Now we can construct the interpolator as such:  
+"""
+
+  nbCode:
+    let interp = newRbf(x, y)
+
+  nbText: "Evaluation is done by calling `eval` with the evaluation point(s):"
+
+  nbCode:
+    let xEval = [[0.5, 0.5, 0.5], [0.6, 0.5, 0.3], [0.75, -0.23, 0.46]].toTensor
+    echo interp.eval(xEval).squeeze
+    echo f(xEval).squeeze
+
+  nbText: hlMd"""
+As we can see by comparing the exact solution with the interpolant, they are pretty close to each other.
+
+## Conclusion
+As we have seen, you can do all sorts of interpolations in Nim with just a few lines of code. 
+Have a nice day!
 """
 
 nbSave
