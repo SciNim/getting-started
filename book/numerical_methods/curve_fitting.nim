@@ -35,6 +35,10 @@ nbText: """
 
 nbText: hlMd"""
 ## Curve fitting using `numericalnim`
+[Curve fitting](https://en.wikipedia.org/wiki/Curve_fitting) is the task of finding the "best" parameters for a given function,
+such that it minimizes the error on the given data. The simplest example being,
+finding the slope and intersection of a line $y = ax + b$ using such that it minimizes the squared errors
+between the data points and the line.
 [numericalnim](https://github.com/SciNim/numericalnim) implements the [Levenberg-Marquardt algorithm](https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm)(`levmarq`)
 for solving non-linear least squares problems. One such problem is curve fitting, which aims to find the parameters that (locally) minimizes
 the error between the data and the fitted curve.
@@ -46,10 +50,13 @@ nbCode:
   import numericalnim, ggplotnim, arraymancer, std / [math, sequtils]
 
 nbText: hlMd"""
+In some cases you know the actual form of the function you want to fit,
+but in other cases you may have to guess and try multiple different ones.
+In this tutorial we will assume we know the form but it works the same regardless.
 The test curve we will sample points from is
 $$f(t) = \alpha + sin(\beta t + \gamma) e^{-\delta t}$$
 with $\alpha = 0.5, \beta = 6, \gamma = 0.1, \delta = 1$. This will be a decaying sinus wave with an offset.
-We will add a bit a Gaussian noise to it as well:
+We will add a bit a noise to it as well:
 """
 
 nbCode:

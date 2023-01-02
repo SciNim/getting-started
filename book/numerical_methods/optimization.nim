@@ -44,6 +44,13 @@ nbCode:
 
 nbText: hlMd"""
 where `theta` is a vector containing all the input arguments, `x` and `y` in this case.
+
+The optimization methods `numericalnim` offers are:
+- [steepestDescent](https://en.wikipedia.org/wiki/Gradient_descent)
+- [newton](https://en.wikipedia.org/wiki/Newton%27s_method)
+- [bfgs](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm)
+- [lbfgs](https://en.wikipedia.org/wiki/Limited-memory_BFGS)
+
 Now we are ready to try out the different methods, the only thing we need to provide is a start guess.
 To make it a bit of a challenge, let us start on the other side of the hill at $(-0.5, 2)$.
 """
@@ -54,6 +61,8 @@ nbCodeInBlock:
   echo "Steepest: ", solutionSteepest
   let solutionNewton = newton(f, theta0)
   echo "Newton: ", solutionNewton
+  let solutionBfgs = bfgs(f, theta0)
+  echo "BFGS: ", solutionBfgs
   let solutionLbfgs = lbfgs(f, theta0)
   echo "LBFGS: ", solutionLbfgs
 
@@ -61,13 +70,15 @@ nbCodeInBlock:
     keep steepestDescent(f, theta0)
   benchy.timeIt "Newton":
     keep newton(f, theta0)
+  benchy.timeIt "BFGS":
+    keep bfgs(f, theta0)
   benchy.timeIt "LBFGS":
     keep lbfgs(f, theta0)
 
 nbText: hlMd"""
-As we can see, Newton and LBFGS found the exact solution and they did it fast.
+As we can see, Newton, BFGS and LBFGS found the exact solution and they did it fast.
 Steepest descent didn't find as good a solution and took by far the longest time.
-Steepest descent has an order of convergence of $O(N)$, Newton has $O(N^2)$ and LBFGS
+Steepest descent has an order of convergence of $O(N)$, Newton has $O(N^2)$ and (L)BFGS
 has one somewhere in-between. So typically Newton will require the least amount of steps.
 But it also has the most expensive step to perform. For a small problem like this,
 it is not a problem, but say that you have more than a thousand variables in $\theta$,
@@ -77,7 +88,8 @@ and the time per step.
 ## Analytical gradient
 In the example above we did not provide an analytical gradient, so instead numerical gradients was calculated.
 This is typically slower than providing the gradient as a function as `f` has to be called multiple times
-and the steps are not as accurate. To supply a analytical gradient is to create a function of the following form:
+and the steps are not as accurate. All the above-mentioned methods supports this.
+To supply a analytical gradient is to create a function of the following form:
 """
 
 nbCode:
@@ -98,16 +110,21 @@ nbCodeInBlock:
   let solutionLbfgs = lbfgs(f, theta0, analyticGradient=fGradient)
   echo "LBFGS (analytic): ", solutionLbfgs
 
+  benchy.timeIt "LBFGS (numerical)":
+    keep lbfgs(f, theta0)
+  benchy.timeIt "LBFGS (analytical)":
+    keep lbfgs(f, theta0, analyticGradient=fGradient)
+
 nbText: hlMd"""
 No surprise that it also managed to find the correct solution.
 
 ## Options
 There are several options you can provide to the solver. Here's a summary of some of them:
-- tol: The error tolerance for when to stop.
-- alpha: The step size to use.
-- fastMode: Use a lower-order approximation of the derivatives to exchange accuracy for speed.
-- maxIterations: The maximum number of iterations to run the solver for until stopping.
-- lineSearchCriterion: Different methods of linesearch (Armijo, Wolfe, WolfeStrong, NoLineSearch).
+- `tol`: The error tolerance for when to stop.
+- `alpha`: The step size to use.
+- `fastMode`: Use a lower-order approximation of the derivatives to exchange accuracy for speed.
+- `maxIterations`: The maximum number of iterations to run the solver for until stopping.
+- `lineSearchCriterion`: Different methods of linesearch (Armijo, Wolfe, WolfeStrong, NoLineSearch).
 
 These are provided by creating a options object. Each method has its own initializer, for example:
 """
@@ -123,7 +140,8 @@ nbCodeInBlock:
 
 nbText: hlMd"""
 ## Further reading
-We also have an article on [curve fitting](https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html).
+We also have an article on [curve fitting](https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html) which
+allows you to optimize parameters to minimize the error between a curve and data points.
 """
 
 nbSave

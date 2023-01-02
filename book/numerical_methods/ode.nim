@@ -6,6 +6,9 @@ import std / [strformat]
 nbInit(theme = useNimibook)
 nb.useLatex
 
+let fixedODE = @["heun2", "rk4"]
+let adaptiveODE = @["rk21", "tsit54"]
+
 nbText: hlMd"""
 # Solve ordinary differential equations in Nim
 
@@ -19,7 +22,8 @@ nbCode:
   import ggplotnim, numericalnim, benchy, std / [math, sequtils]
 
 nbText: hlMd"""
-The ODE we will solve today is:
+We will use an ODE with a known solution to be able to compare our numerical solution with
+the analytical one. The ODE we will solve is:
 $$y' = y (1 - y)$$
 $$y(0) = 0.1$$
 which has the solution of a sigmoid:

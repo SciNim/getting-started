@@ -49,9 +49,9 @@ Let's get interpolating! We first define the function and sample from it:
 
   nbText: hlMd"""
 Now we are ready to create the interpolator! For 1D there are these options available:
-- Linear: `newLinear1D`
-- Cubic spline: `newCubicSpline` (only supports floats)
-- Hermite spline: `newHermiteSpline`
+- [Linear](https://en.wikipedia.org/wiki/Linear_interpolation): `newLinear1D`
+- [Cubic spline](https://en.wikipedia.org/wiki/Spline_interpolation): `newCubicSpline` (only supports floats)
+- [Hermite spline](https://en.wikipedia.org/wiki/Cubic_Hermite_spline): `newHermiteSpline`
 
 They all have the same API accepting `seq`s of x- and y-values.
 The Hermite spline can optionally supply the derivatives at each point as well.
@@ -98,14 +98,14 @@ block Part2:
   nbText: hlMd"""
 ## 2D interpolation
 For 2D interpolation, `numericalnim` offers 3 methods for gridded data:
-- `newNearestNeighbour2D`
-- `newBilinearSpline`
-- `newBicubicSpline`
+- [Nearest neighbour](https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation): `newNearestNeighbour2D`
+- [Bilinear](https://en.wikipedia.org/wiki/Bilinear_interpolation): `newBilinearSpline`
+- [Bicubic](https://en.wikipedia.org/wiki/Bicubic_interpolation): `newBicubicSpline`
 
 and 2 methods for scattered data:
 
-- `newBarycentric2D`
-- `newRbf`
+- [Barycentric](https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates.html): `newBarycentric2D`
+- [Radial basis function](https://en.wikipedia.org/wiki/Radial_basis_function_interpolation): `newRbf`
 The RBF method isn't unique to 2D and works for any dimension, see the next section for more on that.
 For this tutorial, we will focus on the Bicubic spline but NearestNeighbour and Bilinear spline have the same API.
 Let's first choose a suitable function to interpolate:
@@ -157,25 +157,43 @@ all the points on it, it's enough to only provide the limits as two tuples.
     echo interp.eval(0.0, 0.0)
 
   nbText: hlMd"""
-We can now plot the function to see how much it resembles the original function:  
+We can now plot the function to see how much it resembles the original function (the dots are the sampled points):  
 """
 
   block:
     let coords = meshgrid(arraymancer.linspace(-1.0, 0.999, 100), arraymancer.linspace(-1.0, 0.999, 100))
+    let sampleCoords = meshgrid(arraymancer.linspace(-1.0, 1.0, 5), arraymancer.linspace(-1.0, 1.0, 5))
     var z = zeros[float](coords.shape[0])
+    var exact = zeros[float](coords.shape[0])
     for i in 0 ..< coords.shape[0]:
       z[i] = interp.eval(coords[i, 0], coords[i, 1])
-    let df = toDf({"x": coords[_,0].squeeze, "y": coords[_,1].squeeze, "z": z})
+      exact[i] = f(coords[i, 0], coords[i, 1])
+    let df = toDf({"x": coords[_,0].squeeze, "y": coords[_,1].squeeze, "z": z, "error": abs(exact - z),
+      "xSample": sampleCoords[_,0].squeeze, "ySample": sampleCoords[_,1].squeeze})
     ggplot(df, aes("x", "y", fill = "z")) +
       geom_raster() +
+      geom_point(aes("xSample", "ySample"), color = "#F92672") +
       xlim(-1, 1) +
       ylim(-1, 1) +
+      ggtitle("Interpolator result") +
       ggsave("images/2d_interp_eval.png")
+
+    ggplot(df, aes("x", "y", fill="error")) +
+      geom_raster() +
+      geom_point(aes("xSample", "ySample"), color = "#F92672") +
+      xlim(-1, 1) +
+      ylim(-1, 1) +
+      ggtitle("Error") +
+      ggsave("images/2d_interp_error.png")
     
   nbImage("images/2d_interp_eval.png")
+  nbImage("images/2d_interp_error.png")
 
   nbText: hlMd"""
 It looks pretty similar to the original function so I'd say it did a good job.
+We have also plotted the error in the second image. We can see that the
+interpolant is the most accurate close to the sampled points and the least 
+accurate between them. 
 """
 
 block Part3:
@@ -238,6 +256,11 @@ As we can see by comparing the exact solution with the interpolant, they are pre
 ## Conclusion
 As we have seen, you can do all sorts of interpolations in Nim with just a few lines of code. 
 Have a nice day!
+
+## Further reading
+[Curve fitting](https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html) is a method you can use
+if you know the parametric form of the function of the data you want to interpolate.
 """
+
 
 nbSave
