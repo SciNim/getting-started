@@ -1,13 +1,13 @@
 import nimib except Value
 import nimibook
-import std / [strformat]
+import std / [strformat, strutils]
 
 
 nbInit(theme = useNimibook)
 nb.useLatex
 
-let fixedODE = @["heun2", "rk4"]
-let adaptiveODE = @["rk21", "tsit54"]
+let fixedODESubset = @["heun2", "rk4"]
+let adaptiveODESubset = @["rk21", "tsit54"]
 
 nbText: hlMd"""
 # Solve ordinary differential equations in Nim
@@ -77,13 +77,11 @@ for example the timestep `dt` used for fixed step-size methods and `dtMax` and `
 The only thing left is to choose which method we want to use. The fixed step-size methods are:
 """
 
-for m in fixedODE:
-  nbText: "- " & m
+nbText("- " & fixedODE.join("\n- "))
 
 nbText: "And the adaptive methods are:"
 
-for m in adaptiveODE:
-  nbText: "- " & m
+nbText("- " & adaptiveODE.join("\n- "))
 
 nbText: hlMd"""
 That is a lot to choose from, but its hard to go wrong with any of the adaptive methods `dopri54, tsit54 & vern65`. So let's use `tsit54`!
@@ -110,13 +108,13 @@ nbCodeInBlock:
 
 nbImage("images/tsit54_solution.png")
 
-nbText: """
+nbText: hlMd"""
 As we can see, the graphs are very similar so it seems to work :D.
 
-Now you might be curios how well all other methods performed, and here you have it:
+Now you might be curios how well a few of the other methods performed, and here you have it:
 """
 
-for m in concat(fixedODE, adaptiveODE):
+for m in concat(fixedODESubset, adaptiveODESubset):
   let (t, y) = solveOde(dy, y0, tspan, odeOptions, integrator=m)
   let error = abs(y[^1] - exact(t[^1]))
   nbText: &"- {m}: {error:e}"
@@ -128,9 +126,11 @@ the execution time. Let's look at that and see if it bring any further insights:
 """
 
 nbCodeInBlock:
-  for m in concat(fixedODE, adaptiveODE):
+  for m in concat(fixedODESubset, adaptiveODESubset):
     benchy.timeIt m:
       keep solveOde(dy, y0, tspan, odeOptions, integrator=m)
+
+nb.blk.code = ""
 
 nbText: hlMd"""
 As we can see, the adaptive methods are orders of magnitude faster while achieving roughly the same errors.
@@ -199,7 +199,7 @@ nbText: """
 The error is nice and low. The error for the other methods are along with the timings:
 """
 
-for m in concat(fixedODE, adaptiveODE):
+for m in concat(fixedODESubset, adaptiveODESubset):
   let t0 = 0.0
   let tEnd = 20.0
   let y0 = @[@[0.0], @[1.0]].toTensor # initial condition
@@ -218,9 +218,11 @@ block:
   let tspan = linspace(t0, tEnd, 50)
   let odeOptions = newODEoptions(tStart = t0)
   nbCode:
-    for m in concat(fixedODE, adaptiveODE):
+    for m in concat(fixedODESubset, adaptiveODESubset):
       benchy.timeIt m:
         keep solveOde(dv, y0, tspan, odeOptions, ctx=ctx, integrator=m)
+
+  nb.blk.code = ""
 
 nbText: "We can once again see that the high-order adaptive methods are both more accurate and faster than the fixed-order ones."
 
