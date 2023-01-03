@@ -8,7 +8,7 @@ nb.useLatex
 
 nbText: hlMd"""
 # Optimize functions in Nim
-Optimization is a common task, you have a function, $f(\theta)$ and would like to find the parameters, $\theta_{min}$,
+Optimization is a common task, you have a function, $f(\theta)$ and would like to find the parameters, $\theta_{\text{min}}$,
 that either minimize or maximize the function. We will use [numericalnim](https://github.com/SciNim/numericalnim)
 in this tutorial to minimize the [Rosenbrock banana 🍌 function](https://en.wikipedia.org/wiki/Rosenbrock_function):
 

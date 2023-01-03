@@ -23,7 +23,7 @@ block Part1:
   nbText: hlMd"""
 ## 1D Interpolation
 This is the simplest case of interpolation and `numericalnim` can handle both evenly spaced and variable spacing in 1D.
-We will use the function $f(x) = sin(3x) (x-2)^2$ for our benchmarks:
+We will use the function $$f(x) = \sin(3x) (x-2)^2$$ for our benchmarks:
 """
 
   block:
@@ -209,12 +209,12 @@ Further, the implemented method employs localization using Partition of Unity. T
 method that exploits the fact that a Gaussian decays very quickly. Hence we shouldn't 
 have to take into account points far away from the point we are interested in. So internally
 a grid structure is created such that points are only affected by their neighbors. This both
-speeds up the code but does also make it more numerically stable.
+speeds up the code and also makes it more numerically stable.
 
 The format of the inputs that is expected is the positions as a `Tensor` of of shape `(nPoints, nDims)`
 and the function values (can be multi-valued) of shape `(nPoints, nValues)`. In the general case
 the points aren't gridded but if you want to create points on a grid you can do it with the
-`meshgrid` function. It takes in a `vararg` of `Tensor[float]`, one `Tensor` for each dimension containing the
+`meshgrid` function. It takes in a `varargs` of `Tensor[float]`, one `Tensor` for each dimension containing the
 grid values in that dimension. An example is: 
 """
 
@@ -225,7 +225,7 @@ grid values in that dimension. An example is:
   nbText: hlMd"""
 which will create a 3D grid with 5 points between -1 and 1 in each of the dimensions.
 
-Now let's define a function we going to interpolate:
+Now let's define a function we are going to interpolate:
 $$f(x, y, z) = \sin(x) \sin(y) \sin(z)$$
 Here's the code for implementing it:
 """

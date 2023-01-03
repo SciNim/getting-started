@@ -12,7 +12,7 @@ let adaptiveODESubset = @["rk21", "tsit54"]
 nbText: hlMd"""
 # Solve ordinary differential equations in Nim
 
-Ordinary differential equations (ODEs) describe so many aspects of nature but many of them does not have
+Ordinary differential equations (ODEs) describe so many aspects of nature, but many of them do not have
 simple solutions you can solve using pen and paper. That is where numerical solutions come in. They allow
 us to solve these equations approximately. We will use [numericalnim](https://github.com/SciNim/numericalnim)
 for this. The required imports are:
@@ -144,7 +144,7 @@ $$y'' = -y$$
 $$y(0) = 0$$
 $$y'(0) = 1$$
 This has the simple solution
-$$y(t) = sin(t)$$
+$$y(t) = \sin(t)$$
 but it is not on the form `y' = ...` that `numericalnim` wants, so we have to rewrite it.
 We introduce a new variable $z = y'$ and then we can rewrite the equation like:
 $$y'' = (y')' = z' = -y$$
