@@ -54,9 +54,9 @@ In some cases you know the actual form of the function you want to fit,
 but in other cases you may have to guess and try multiple different ones.
 In this tutorial we will assume we know the form but it works the same regardless.
 The test curve we will sample points from is
-$$f(t) = \alpha + sin(\beta t + \gamma) e^{-\delta t}$$
-with $\alpha = 0.5, \beta = 6, \gamma = 0.1, \delta = 1$. This will be a decaying sinus wave with an offset.
-We will add a bit a noise to it as well:
+$$f(t) = \alpha + \sin(\beta t + \gamma) e^{-\delta t}$$
+with $\alpha = 0.5, \beta = 6, \gamma = 0.1, \delta = 1$. This will be a decaying sine wave with an offset.
+We will add a bit of noise to it as well:
 """
 
 nbCode:
@@ -89,8 +89,8 @@ nbImage("images/levmarq_rawdata.png")
 
 nbText: hlMd"""
 Here we have the original function along with the sampled points with noise.
-Now we have to create a proc that `levmarq` expects. Specifically does it
-want all the parameters in a `Tensor` instead of by themselves: 
+Now we have to create a proc that `levmarq` expects. Specifically it
+wants all the parameters in a `Tensor` instead of by themselves: 
 """
 
 nbCode:
