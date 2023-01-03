@@ -49,6 +49,9 @@ The required imports are:
 nbCode:
   import numericalnim, ggplotnim, arraymancer, std / [math, sequtils]
 
+import std / random
+randomize(1337)
+
 nbText: hlMd"""
 In some cases you know the actual form of the function you want to fit,
 but in other cases you may have to guess and try multiple different ones.
@@ -136,6 +139,55 @@ nbImage("images/levmarq_comparision.png")
 
 nbText: hlMd"""
 As we can see, the fitted curve is quite close to the original one.
+
+## Errors & Uncertainties
+We might also want to quantify exactly how good of a fit the computed weights give.
+One measure commonly used is [$\chi^2$](https://en.m.wikipedia.org/wiki/Pearson%27s_chi-squared_test):
+$$\chi^2 = \sum_i \frac{(y_i - \hat{y}(x_i))^2}{\sigma_i^2}$$ 
+where $y_i$ and $x_i$ are the measurements, $\hat{y}$ is the fitted curve and $\sigma_i$
+is the standard deviation (uncertainty/error) of each of the measurements. We will use the
+noise size we used when generating the samples here, but in general you will have to
+figure out yourself what errors are in your situation. It may for example be the resolution
+of your measurements or you may have to approximate it using the data itself. 
+
+We now create the error vector and sample the fitted curve:
 """
+
+nbCode:
+  let yError = ones_like(y) * noise
+  let yCurve = t.map_inline:
+    fitFunc(solution, x)
+
+nbText: """
+Now we can calculate the $\chi^2$:
+"""
+
+nbCode:
+  var chi2 = 0.0
+  for i in 0 ..< y.len:
+    chi2 += ((y[i] - yCurve[i]) / yError[i]) ^ 2
+  echo "χ² = ", chi2
+
+nbText: hlMd"""
+Great! Now we have a measure of how good the fit is, but what if we add more points?
+Then we will get a better fit, but we will also get more points to sum over.
+And what if we choose another curve to fit with more parameters?
+Then we may be able to get a better fit but we risk overfitting.
+[Reduced $\chi^2$](https://en.m.wikipedia.org/wiki/Reduced_chi-squared_statistic)
+is a measure which adjusts $\chi^2$ to take these factors into account.
+The formula is:
+$$\chi^2_{\nu} = \frac{\chi^2}{n_{\text{obs}} - m_{\text{params}}}$$
+where $n_{\text{obs}}$ is the number of observations and $m_{\text{params}}$
+is the number of parameters in the curve. The difference between them is denote
+the degree of freedom (dof).
+This is simplified, the mean $\chi^2$
+score adjusted to penalize too complex curves.
+
+Let's calculate it!
+"""
+
+nbCode:
+  let reducedChi2 = chi2 / (y.len - solution.len).float
+  echo "Reduced χ² = ", reducedChi2
 
 nbSave
