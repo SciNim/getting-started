@@ -190,4 +190,16 @@ nbCode:
   let reducedChi2 = chi2 / (y.len - solution.len).float
   echo "Reduced χ² = ", reducedChi2
 
+nbText: hlMd"""
+As a rule of thumb, values around 1 are desirable. If it is much larger
+than 1, it indicates a bad fit. And if it is much smaller than 1 it means
+that the fit is much better than the uncertainties suggested. This could
+either mean that it has overfitted or that the errors were overestimated.
+In our example I suspect the later is the case as the actual standard
+deviation of the error is smaller than the maximum value that we used here.
+
+### Parameter uncertainties
+TODO
+"""
+
 nbSave
