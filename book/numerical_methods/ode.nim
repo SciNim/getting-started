@@ -77,11 +77,41 @@ for example the timestep `dt` used for fixed step-size methods and `dtMax` and `
 The only thing left is to choose which method we want to use. The fixed step-size methods are:
 """
 
-nbText("- " & fixedODE.join("\n- "))
+let references = {
+  "heun2": "https://en.wikipedia.org/wiki/Heun%27s_method",
+  "ralston2": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Ralston's_method",
+  "kutta3": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Kutta's_third-order_method",
+  "heun3": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Heun's_third-order_method",
+  "ralston3": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Ralston's_third-order_method",
+  "ssprk3": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Third-order_Strong_Stability_Preserving_Runge-Kutta_(SSPRK3)",
+  "ralston4": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Ralston's_fourth-order_method",
+  "kutta4": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#3/8-rule_fourth-order_method",
+  "rk4": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Classic_fourth-order_method",
+  "rk21": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Heun%E2%80%93Euler",
+  "bs32": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Bogacki%E2%80%93Shampine",
+  "dopri54": "https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods#Dormand%E2%80%93Prince",
+  "tsit54": "http://users.uoa.gr/~tsitourasc/RK54_new_v2.pdf",
+  "vern65": "https://www.sfu.ca/~jverner/"
+}.toTable
+
+proc referenceList(list: openArray[string]): string =
+  result = ""
+  for m in list:
+    result &= "- "
+    result &= (
+      if m in references:
+        &"[{m}]({references[m]})"
+      else:
+        m
+    )
+    result &= '\n'
+
+
+nbText(referenceList(fixedODE))
 
 nbText: "And the adaptive methods are:"
 
-nbText("- " & adaptiveODE.join("\n- "))
+nbText(referenceList(adaptiveODE))
 
 nbText: hlMd"""
 That is a lot to choose from, but its hard to go wrong with any of the adaptive methods `dopri54, tsit54 & vern65`. So let's use `tsit54`!
