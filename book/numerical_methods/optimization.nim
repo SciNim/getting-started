@@ -110,11 +110,6 @@ nbCodeInBlock:
   let solutionLbfgs = lbfgs(f, theta0, analyticGradient=fGradient)
   echo "LBFGS (analytic): ", solutionLbfgs
 
-  benchy.timeIt "LBFGS (numerical)":
-    keep lbfgs(f, theta0)
-  benchy.timeIt "LBFGS (analytical)":
-    keep lbfgs(f, theta0, analyticGradient=fGradient)
-
 nbText: hlMd"""
 No surprise that it also managed to find the correct solution.
 

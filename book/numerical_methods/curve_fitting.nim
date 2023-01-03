@@ -71,7 +71,8 @@ nbCode:
   let t = arraymancer.linspace(0.0, 3.0, 20)
   let yClean = t.map_inline:
     f(alpha, beta, gamma, delta, x)
-  let y = yClean + randomTensor(t.shape[0], 0.05)
+  let noise = 0.025
+  let y = yClean + randomTensor(t.shape[0], 2*noise) -. noise
 
 let tDense = arraymancer.linspace(0.0, 3.0, 200)
 let yDense = tDense.map_inline:
@@ -124,10 +125,11 @@ block:
   let ySol = tDense.map_inline:
     fitFunc(solution, x)
 
-  var df = toDf({"t": tDense, "original": yDense, "fitted": ySol})
+  var df = toDf({"t": tDense, "original": yDense, "fitted": ySol, "tPoint": t, "yPoint": y})
   df = df.gather(@["original", "fitted"], key="Class", value = "y")
   df.ggplot(aes("t", "y", color="Class")) +
     geom_line() +
+    geom_point(aes("tPoint", "yPoint")) +
     ggsave("images/levmarq_comparision.png")
 
 nbImage("images/levmarq_comparision.png")
