@@ -115,12 +115,25 @@ nbCode:
 
 nbText: "Now we are ready to do the actual fitting:"
 
-nbCode:
+nbCodeInBlock:
   let solution = levmarq(fitFunc, initialGuess, t, y)
   echo solution
 
 nbText: hlMd"""
-As we can see, the found parameters are very close to the actual ones.
+As we can see, the found parameters are very close to the actual ones. But maybe we can do better,
+`levmarq` accepts an `options` parameter which is the same as the one described in [Optimization](./optimization.html)
+with the addition of the `lambda0` parameter. We can reduce the `tol` and see if we get an even better fit:
+"""
+
+nbCode:
+  let options = levmarqOptions(tol=1e-15)
+  let solution = levmarq(fitFunc, initialGuess, t, y, options=options)
+  echo solution
+
+nbText: hlMd"""
+As we can see, there isn't really any difference. So we can conclude that the
+found solution has in fact converged. 
+
 Here's a plot comparing the fitted and original function:
 """
 
@@ -199,7 +212,72 @@ In our example I suspect the later is the case as the actual standard
 deviation of the error is smaller than the maximum value that we used here.
 
 ### Parameter uncertainties
-TODO
+To find the uncertainties of the fitted parameters, we have to calculate
+the covariance matrix:
+$$\Sigma = \sigma^2 H^{-1}$$
+where $\sigma^2$ is the standard deviation of the residuals and $H$ is
+the Hessian of the objective function (we used $\chi^2$). 
+We must first construct the objective function as a function of the
+parameters that outputs a scalar score. We will construct it the same
+way we have done above:
 """
+
+nbCode:
+  proc objectiveFunc(params: Tensor[float]): float =
+    let yCurve = t.map_inline:
+      fitFunc(params, x)
+    result = sum(((y - yCurve) /. yError) ^. 2)
+
+nbText: hlMd"""
+Now we approximate $\sigma^2$ by the reduced $\chi^2$ at the fitted parameters:
+"""
+
+nbCode:
+  let sigma2 = objectiveFunc(solution) / (y.len - solution.len).float
+  echo "σ² = ", sigma2
+
+nbText: """
+The Hessian at the solution can be calculated numerically using `tensorHessian`:
+"""
+
+nbCode:
+  let H = tensorHessian(objectiveFunc, solution)
+  echo "H = ", H
+
+nbText: "Now we calculate the covariance matrix as described above:"
+
+nbCode:
+  proc eye(n: int): Tensor[float] =
+    result = zeros[float](n, n)
+    for i in 0 ..< n:
+      result[i,i] = 1
+
+  proc inv(t: Tensor[float]): Tensor[float] =
+    result = solve(t, eye(t.shape[0]))
+
+  let cov = sigma2 * H.inv()
+  echo "Σ = ", cov
+
+nbText: "The diagonal elements of the covariance matrix is the uncertainty in our parameters:"
+
+nbCode:
+  proc getDiag(t: Tensor[float]): Tensor[float] =
+    let n = t.shape[0]
+    result = newTensor[float](n)
+    for i in 0 ..< n:
+      result[i] = t[i,i]
+
+  let paramUncertainty = cov.getDiag()
+  echo "Uncertainties: ", paramUncertainty
+
+nbText: """
+All in all, these are the values and uncertainties we got for each of the parameters:
+"""
+
+nbCode:
+  echo "α = ", solution[0], " ± ", paramUncertainty[0]
+  echo "β = ", solution[1], " ± ", paramUncertainty[1]
+  echo "γ = ", solution[2], " ± ", paramUncertainty[2]
+  echo "δ = ", solution[3], " ± ", paramUncertainty[3]
 
 nbSave
