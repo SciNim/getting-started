@@ -172,14 +172,19 @@ nbCode:
     fitFunc(solution, x)
 
 nbText: """
-Now we can calculate the $\chi^2$:
+Now we can calculate the $\chi^2$ using numericalnim's `chi2` proc:
 """
 
 nbCode:
+  let chi = chi2(y, yCurve, yError)
+  echo "χ² = ", chi
+
+
+#[ nbCodeInBlock:
   var chi2 = 0.0
   for i in 0 ..< y.len:
     chi2 += ((y[i] - yCurve[i]) / yError[i]) ^ 2
-  echo "χ² = ", chi2
+  echo "χ² = ", chi2 ]#
 
 nbText: hlMd"""
 Great! Now we have a measure of how good the fit is, but what if we add more points?
@@ -200,8 +205,8 @@ Let's calculate it!
 """
 
 nbCode:
-  let reducedChi2 = chi2 / (y.len - solution.len).float
-  echo "Reduced χ² = ", reducedChi2
+  let reducedChi = chi / (y.len - solution.len).float
+  echo "Reduced χ² = ", reducedChi
 
 nbText: hlMd"""
 As a rule of thumb, values around 1 are desirable. If it is much larger
@@ -215,16 +220,47 @@ the covariance matrix:
 $$\Sigma = \sigma^2 H^{-1}$$
 where $\sigma^2$ is the standard deviation of the residuals and $H$ is
 the Hessian of the objective function (we used $\chi^2$). 
-We must first construct the objective function as a function of the
-parameters that outputs a scalar score. We will construct it the same
-way we have done above:
+`numericalnim` can compute the covariance matrix for us using `paramUncertainties`:
 """
 
 nbCode:
+  let cov = paramUncertainties(solution, fitFunc, t, y, yError, returnFullCov=true)
+  echo cov
+
+nbText: """
+That is the full covariance matrix, but we are only interested in the diagonal elements.
+By default `returnFullCov` is false and then we get a 1D Tensor with the diagonal instead:
+"""
+
+nbCode:
+  let variances = paramUncertainties(solution, fitFunc, t, y, yError)
+  echo variances
+
+nbText: """
+It's important to note that these values are the **variances** of the parameters.
+So if we want the standard deviations we will have to take the square root:
+"""
+
+nbCode:
+  let paramUncertainty = sqrt(variances)
+  echo "Uncertainties: ", paramUncertainty
+
+nbText: """
+All in all, these are the values and uncertainties we got for each of the parameters:
+"""
+
+nbCode:
+  echo "α = ", solution[0], " ± ", paramUncertainty[0]
+  echo "β = ", solution[1], " ± ", paramUncertainty[1]
+  echo "γ = ", solution[2], " ± ", paramUncertainty[2]
+  echo "δ = ", solution[3], " ± ", paramUncertainty[3]
+
+
+#[ nbCode:
   proc objectiveFunc(params: Tensor[float]): float =
     let yCurve = t.map_inline:
       fitFunc(params, x)
-    result = sum(((y - yCurve) /. yError) ^. 2)
+    result = chi2(y, yCurve, yError) #sum(((y - yCurve) /. yError) ^. 2)
 
 nbText: hlMd"""
 Now we approximate $\sigma^2$ by the reduced $\chi^2$ at the fitted parameters:
@@ -271,6 +307,10 @@ nbCode:
   let paramUncertainty = sqrt(cov.getDiag())
   echo "Uncertainties: ", paramUncertainty
 
+nbCodeInBlock:
+  let uncertainties = sqrt(paramUncertainties(solution, fitFunc, y, t, yError))
+  echo "Uncertainties: ", uncertainties
+
 nbText: """
 All in all, these are the values and uncertainties we got for each of the parameters:
 """
@@ -279,7 +319,7 @@ nbCode:
   echo "α = ", solution[0], " ± ", paramUncertainty[0]
   echo "β = ", solution[1], " ± ", paramUncertainty[1]
   echo "γ = ", solution[2], " ± ", paramUncertainty[2]
-  echo "δ = ", solution[3], " ± ", paramUncertainty[3]
+  echo "δ = ", solution[3], " ± ", paramUncertainty[3] ]#
 
 nbText: hlMd"""
 ## Further reading
