@@ -75,7 +75,7 @@ nbCode:
   let yClean = t.map_inline:
     f(alpha, beta, gamma, delta, x)
   let noise = 0.025
-  let y = yClean + randomTensor(t.shape[0], 2*noise) -. noise
+  let y = yClean + randomNormalTensor(t.shape[0], 0.0, noise)
 
 let tDense = arraymancer.linspace(0.0, 3.0, 200)
 let yDense = tDense.map_inline:
@@ -191,8 +191,8 @@ is a measure which adjusts $\chi^2$ to take these factors into account.
 The formula is:
 $$\chi^2_{\nu} = \frac{\chi^2}{n_{\text{obs}} - m_{\text{params}}}$$
 where $n_{\text{obs}}$ is the number of observations and $m_{\text{params}}$
-is the number of parameters in the curve. The difference between them is denote
-the degree of freedom (dof).
+is the number of parameters in the curve. The difference between them is denoted
+the degrees of freedom (dof).
 This is simplified, the mean $\chi^2$
 score adjusted to penalize too complex curves.
 
@@ -208,8 +208,6 @@ As a rule of thumb, values around 1 are desirable. If it is much larger
 than 1, it indicates a bad fit. And if it is much smaller than 1 it means
 that the fit is much better than the uncertainties suggested. This could
 either mean that it has overfitted or that the errors were overestimated.
-In our example I suspect the later is the case as the actual standard
-deviation of the error is smaller than the maximum value that we used here.
 
 ### Parameter uncertainties
 To find the uncertainties of the fitted parameters, we have to calculate
@@ -258,7 +256,10 @@ nbCode:
   let cov = sigma2 * H.inv()
   echo "Σ = ", cov
 
-nbText: "The diagonal elements of the covariance matrix is the uncertainty in our parameters:"
+nbText: """
+The diagonal elements of the covariance matrix is the uncertainty (variance) in our parameters,
+so we take the square root of them to get the standard deviation:
+"""
 
 nbCode:
   proc getDiag(t: Tensor[float]): Tensor[float] =
@@ -267,7 +268,7 @@ nbCode:
     for i in 0 ..< n:
       result[i] = t[i,i]
 
-  let paramUncertainty = cov.getDiag()
+  let paramUncertainty = sqrt(cov.getDiag())
   echo "Uncertainties: ", paramUncertainty
 
 nbText: """
