@@ -135,7 +135,8 @@ nbCodeInBlock:
 
 nbText: hlMd"""
 ## Further reading
-We also have an article on [curve fitting](https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html) which
+- [numericalnim's documentation on optimization](https://scinim.github.io/numericalnim/numericalnim/optimize.html)
+- We also have an article on [curve fitting](https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html) which
 allows you to optimize parameters to minimize the error between a curve and data points.
 """
 

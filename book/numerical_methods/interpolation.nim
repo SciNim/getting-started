@@ -258,8 +258,11 @@ As we have seen, you can do all sorts of interpolations in Nim with just a few l
 Have a nice day!
 
 ## Further reading
-[Curve fitting](https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html) is a method you can use
+- [numericalnim's documentation on interpolation](https://scinim.github.io/numericalnim/numericalnim/interpolate.html)
+- [numericalnim's documentation on RBFs](https://scinim.github.io/numericalnim/numericalnim/rbf.html)
+- [Curve fitting](https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html) is a method you can use
 if you know the parametric form of the function of the data you want to interpolate.
+
 """
 
 

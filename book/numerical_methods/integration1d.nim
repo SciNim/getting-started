@@ -345,4 +345,9 @@ only `cumtrapz` and `cumsimpson` are available and that you pass in `y` and `x` 
 
   nbImage("images/discreteHumpsComparaision.png")
 
+nbText: hlMd"""
+## Further reading
+- [numericalnim's documentation on integration](https://scinim.github.io/numericalnim/numericalnim/integrate.html)
+"""
+
 nbSave()

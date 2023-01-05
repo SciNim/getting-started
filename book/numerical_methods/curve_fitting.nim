@@ -281,4 +281,9 @@ nbCode:
   echo "γ = ", solution[2], " ± ", paramUncertainty[2]
   echo "δ = ", solution[3], " ± ", paramUncertainty[3]
 
+nbText: hlMd"""
+## Further reading
+- [numericalnim's documentation on optimization](https://scinim.github.io/numericalnim/numericalnim/optimize.html)
+"""
+
 nbSave

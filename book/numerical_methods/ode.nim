@@ -254,6 +254,11 @@ block:
 
   nb.blk.code = ""
 
-nbText: "We can once again see that the high-order adaptive methods are both more accurate and faster than the fixed-order ones."
+nbText: hlMd"""
+We can once again see that the high-order adaptive methods are both more accurate and faster than the fixed-order ones.
+
+## Further reading
+- [numericalnim's documentation on ODEs](https://scinim.github.io/numericalnim/numericalnim/ode.html)
+"""
 
 nbSave
