@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using nimibook -->
         <meta charset="UTF-8">
-        <title>Basic topics - SciNim Getting Started</title>
+        <title>Optimization - SciNim Getting Started</title>
 
         <!-- Custom HTML head -->
 
@@ -28,7 +28,9 @@
         <!-- Custom theme stylesheets - why the "../"? -->
 
 
-        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -92,7 +94,7 @@
                     <strong aria-hidden="true">2.</strong> Ecosystem overview
                   </a></li>
                 <li class="chapter-item expanded ">
-                  <a href="../basics/index.html" class="active" tabindex="0">
+                  <a href="../basics/index.html" tabindex="0">
                     <strong aria-hidden="true">3.</strong> Basic topics
                   </a></li>
                   <li>
@@ -134,7 +136,7 @@
                     <strong aria-hidden="true">4.3.</strong> ODEs
                   </a></li>
                 <li class="chapter-item expanded ">
-                  <a href="../numerical_methods/optimization.html" tabindex="0">
+                  <a href="../numerical_methods/optimization.html" class="active" tabindex="0">
                     <strong aria-hidden="true">4.4.</strong> Optimization
                   </a></li>
                 <li class="chapter-item expanded ">
@@ -234,11 +236,119 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1>Basics</h1>
-<p>This first chapter of getting-started is meant as an overview over the most fundamental aspects
-usually used in scientific computing in Nim.</p>
-<p>This ranges from an introduction to the most used data types, using data frames and performing
-simple plots and more.</p>
+                        <h1>Optimize functions in Nim</h1>
+<p>Optimization is a common task, you have a function, $f(\theta)$ and would like to find the parameters, $\theta_{\text{min}}$,
+that either minimize or maximize the function. We will use <a href="https://github.com/SciNim/numericalnim">numericalnim</a>
+in this tutorial to minimize the <a href="https://en.wikipedia.org/wiki/Rosenbrock_function">Rosenbrock banana 🍌 function</a>:</p>
+<p>$$f(x, y) = (1 - x)^2 + 100(y - x^2)^2$$</p>
+<p>It looks like this with its minimum at $(x, y) = (1, 1)$:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> ggplotnim, numericalnim, benchy, std / [math]</code></pre>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> (x, y) = meshgridFlat(linspace(-<span class="hljs-number">2.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">100</span>).toTensor, linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">3.0</span>, <span class="hljs-number">100</span>).toTensor)
+<span class="hljs-comment"># Log z to reduce its range</span>
+<span class="hljs-keyword">let</span> z = log10((<span class="hljs-number">1.0</span> -. x) ^. <span class="hljs-number">2</span> + <span class="hljs-number">100.0</span> * (y - x ^. <span class="hljs-number">2</span>) ^. <span class="hljs-number">2</span>)
+<span class="hljs-keyword">let</span> df = toDf(x, y, z)
+ggplot(df, aes(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>, fill=<span class="hljs-string">&quot;z&quot;</span>)) +
+  geom_raster() +
+  ggsave(<span class="hljs-string">&quot;images/banana_function.png&quot;</span>)</code></pre>
+                        <figure>
+<img src="../images/banana_function.png" alt="">
+<figcaption></figcaption>
+</figure>
+                        <p>As you can see the function's shape resembles a banana, and the dark spot
+on the right-hand side is the minimum. The format that <code>numericalnim</code> expects of the function is:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(theta: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
+  <span class="hljs-keyword">let</span> x = theta[<span class="hljs-number">0</span>]
+  <span class="hljs-keyword">let</span> y = theta[<span class="hljs-number">1</span>]
+  (<span class="hljs-number">1.0</span> - x) ^ <span class="hljs-number">2</span> + <span class="hljs-number">100.0</span> * (y - x ^ <span class="hljs-number">2</span>) ^ <span class="hljs-number">2</span></code></pre>
+                        <p>where <code>theta</code> is a vector containing all the input arguments, <code>x</code> and <code>y</code> in this case.</p>
+<p>The optimization methods <code>numericalnim</code> offers are:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Gradient_descent">steepestDescent</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Newton%27s_method">newton</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm">bfgs</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Limited-memory_BFGS">lbfgs</a></li>
+</ul>
+<p>Now we are ready to try out the different methods, the only thing we need to provide is a start guess.
+To make it a bit of a challenge, let us start on the other side of the hill at $(-0.5, 2)$.</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
+<span class="hljs-keyword">let</span> solutionSteepest = steepestDescent(f, theta0)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Steepest: &quot;</span>, solutionSteepest
+<span class="hljs-keyword">let</span> solutionNewton = newton(f, theta0)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Newton: &quot;</span>, solutionNewton
+<span class="hljs-keyword">let</span> solutionBfgs = bfgs(f, theta0)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;BFGS: &quot;</span>, solutionBfgs
+<span class="hljs-keyword">let</span> solutionLbfgs = lbfgs(f, theta0)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;LBFGS: &quot;</span>, solutionLbfgs
+
+benchy.timeIt <span class="hljs-string">&quot;Steepest&quot;</span>:
+  keep steepestDescent(f, theta0)
+benchy.timeIt <span class="hljs-string">&quot;Newton&quot;</span>:
+  keep newton(f, theta0)
+benchy.timeIt <span class="hljs-string">&quot;BFGS&quot;</span>:
+  keep bfgs(f, theta0)
+benchy.timeIt <span class="hljs-string">&quot;LBFGS&quot;</span>:
+  keep lbfgs(f, theta0)</code></pre><pre class="nb-output"><samp>Steepest: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
+    0.99157    0.983176
+Newton: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
+    1     1
+BFGS: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
+    1     1
+LBFGS: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
+    1     1
+   min time    avg time  std dv   runs name
+  97.224 ms   97.456 ms  ±0.174    x52 Steepest
+   0.172 ms    0.210 ms  ±0.075  x1000 Newton
+   2.739 ms    2.931 ms  ±0.073  x1000 BFGS
+   5.412 ms    5.573 ms  ±0.082   x898 LBFGS</samp></pre>
+                        <p>As we can see, Newton, BFGS and LBFGS found the exact solution and they did it fast.
+Steepest descent didn't find as good a solution and took by far the longest time.
+Steepest descent has an order of convergence of $O(N)$, Newton has $O(N^2)$ and (L)BFGS
+has one somewhere in-between. So typically Newton will require the least amount of steps.
+But it also has the most expensive step to perform. For a small problem like this,
+it is not a problem, but say that you have more than a thousand variables in $\theta$,
+then it will start to become slow. Typically LBFGS is a good trade-off between number of steps
+and the time per step.</p>
+<h2>Analytical gradient</h2>
+<p>In the example above we did not provide an analytical gradient, so instead numerical gradients was calculated.
+This is typically slower than providing the gradient as a function as <code>f</code> has to be called multiple times
+and the steps are not as accurate. All the above-mentioned methods supports this.
+To supply a analytical gradient is to create a function of the following form:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> fGradient(theta: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] =
+  <span class="hljs-keyword">let</span> x = theta[<span class="hljs-number">0</span>]
+  <span class="hljs-keyword">let</span> y = theta[<span class="hljs-number">1</span>]
+  <span class="hljs-literal">result</span> = newTensor[<span class="hljs-built_in">float</span>](<span class="hljs-number">2</span>)
+  <span class="hljs-literal">result</span>[<span class="hljs-number">0</span>] = -<span class="hljs-number">2</span> * (<span class="hljs-number">1</span> - x) + <span class="hljs-number">100</span> * <span class="hljs-number">2</span> * (y - x*x) * -<span class="hljs-number">2</span> * x
+  <span class="hljs-literal">result</span>[<span class="hljs-number">1</span>] = <span class="hljs-number">100</span> * <span class="hljs-number">2</span> * (y - x*x)</code></pre>
+                        <p>It takes the parameters as input and returns a Tensor of the same size with the gradient with respect to each parameter.
+It can then be supplied like this:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
+<span class="hljs-keyword">let</span> solutionLbfgs = lbfgs(f, theta0, analyticGradient=fGradient)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;LBFGS (analytic): &quot;</span>, solutionLbfgs</code></pre><pre class="nb-output"><samp>LBFGS (analytic): Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
+    1     1</samp></pre>
+                        <p>No surprise that it also managed to find the correct solution.</p>
+<h2>Options</h2>
+<p>There are several options you can provide to the solver. Here's a summary of some of them:</p>
+<ul>
+<li><code>tol</code>: The error tolerance for when to stop.</li>
+<li><code>alpha</code>: The step size to use.</li>
+<li><code>fastMode</code>: Use a lower-order approximation of the derivatives to exchange accuracy for speed.</li>
+<li><code>maxIterations</code>: The maximum number of iterations to run the solver for until stopping.</li>
+<li><code>lineSearchCriterion</code>: Different methods of linesearch (Armijo, Wolfe, WolfeStrong, NoLineSearch).</li>
+</ul>
+<p>These are provided by creating a options object. Each method has its own initializer, for example:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
+
+<span class="hljs-keyword">let</span> steepestOption = steepestDescentOptions[<span class="hljs-built_in">float</span>](alpha=<span class="hljs-number">1e-3</span>, fastMode=<span class="hljs-literal">true</span>)
+<span class="hljs-keyword">let</span> steepestSolution = steepestDescent(f, theta0, options=steepestOption)
+
+<span class="hljs-keyword">let</span> lbfgsOption = lbfgsOptions[<span class="hljs-built_in">float</span>](lineSearchCriterion=<span class="hljs-type">Wolfe</span>)
+<span class="hljs-keyword">let</span> lbfgsSolution = lbfgs(f, theta0, options=lbfgsOption)</code></pre>
+                        <h2>Further reading</h2>
+<ul>
+<li><a href="https://scinim.github.io/numericalnim/numericalnim/optimize.html">numericalnim's documentation on optimization</a></li>
+<li>We also have an article on <a href="https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html">curve fitting</a> which
+allows you to optimize parameters to minimize the error between a curve and data points.</li>
+</ul>
                         <script defer>/* Generated by the Nim Compiler v1.6.10 */
 var framePtr = null;
 var excHandler = 0;
@@ -257,11 +367,11 @@ var objectID_620757154 = [0];
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../overview/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../numerical_methods/ode.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../basics/common_datatypes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../numerical_methods/interpolation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -271,11 +381,11 @@ var objectID_620757154 = [0];
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../overview/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../numerical_methods/ode.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../basics/common_datatypes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../numerical_methods/interpolation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

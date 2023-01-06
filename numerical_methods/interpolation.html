@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using nimibook -->
         <meta charset="UTF-8">
-        <title>Units - SciNim Getting Started</title>
+        <title>Interpolation - SciNim Getting Started</title>
 
         <!-- Custom HTML head -->
 
@@ -112,7 +112,7 @@
                     <strong aria-hidden="true">3.3.</strong> Plotting
                   </a></li>
                 <li class="chapter-item expanded ">
-                  <a href="../basics/units_basics.html" class="active" tabindex="0">
+                  <a href="../basics/units_basics.html" tabindex="0">
                     <strong aria-hidden="true">3.4.</strong> Units
                   </a></li>
                   </ol>
@@ -140,7 +140,7 @@
                     <strong aria-hidden="true">4.4.</strong> Optimization
                   </a></li>
                 <li class="chapter-item expanded ">
-                  <a href="../numerical_methods/interpolation.html" tabindex="0">
+                  <a href="../numerical_methods/interpolation.html" class="active" tabindex="0">
                     <strong aria-hidden="true">4.5.</strong> Interpolation
                   </a></li>
                   </ol>
@@ -236,134 +236,160 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1>Using and checking units with <a href="https://github.com/SciNim/Unchained">Unchained</a></h1>
-<p>Units are crucial in physics, without them we wouldn't have any consistent way of comparing two measurements.
-You don't solve an equation without checking units afterwards as a safety-check. But when it comes to coding
-physical formulas, units are often ignored or in best cases in a comment somewhere. This can be solved by using
-unit libraries like <code>Unchained</code>. What puts <code>Unchained</code> apart from many other libraries is that it does the majority
-of the work at compile-time so that you know that if the code compiles, then the units are correct.</p>
-<p>Many other libraries check this at runtime, and they only complain when they run the piece of code they want to check
-the units of. As an added bonus, doing most of the work when compiling the code will make the code run faster as there will at most
-be a conversion factor injected.</p>
-<h2>Motivating example</h2>
-<p>One example of a real disaster caused by conversion errors is the Mars Climate Orbiter that NASA sent to the red planet in 1999.
-It crashed. Why? Because the navigators at JPL used metric units while the manufacturers had used imperial units. So when
-the navigators thought they read 1 N⋅s from the craft's sensors it was in fact 1 lbf⋅s.</p>
-<p>As an introduction to <code>Unchained</code>, let's find out what 1 lbf⋅s is in N⋅s to understand how much of a difference it made.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> unchained
+                        <h1>Interpolate discrete data in Nim</h1>
+<p>Very seldom when dealing with real data do you have an exact function you can evaluate at any point you would like.
+Often you have data in a finite number of discrete points instead. Two common ways to solve this problem is to either
+interpolate the data or if you know the form it should take you can do curve fitting. In this tutorial we will cover the
+interpolation approach in 1D, 2D and 3D for some cases.</p>
+<p>We will be using <a href="https://github.com/SciNim/numericalnim">numericalnim</a> for this and the imports we will need are:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> numericalnim, arraymancer, ggplotnim, std/[math, sequtils]</code></pre>
+                        <h2>1D Interpolation</h2>
+<p>This is the simplest case of interpolation and <code>numericalnim</code> can handle both evenly spaced and variable spacing in 1D.
+We will use the function $$f(x) = \sin(3x) (x-2)^2$$ for our benchmarks:</p>
+                        <figure>
+<img src="../images/1dinterpolation_f.png" alt="">
+<figcaption></figcaption>
+</figure>
+                        <p>Let's get interpolating! We first define the function and sample from it:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> = sin(<span class="hljs-number">3</span>*x) * (x - <span class="hljs-number">2</span>)^<span class="hljs-number">2</span>
 
-<span class="hljs-comment">## Define composite units</span>
-defUnit(<span class="hljs-type">N•s</span>)
-defUnit(lbf•s)
-
-<span class="hljs-comment">## Assign variables</span>
-<span class="hljs-keyword">let</span> lbfs = <span class="hljs-number">1.</span>lbf•s
-<span class="hljs-keyword">let</span> <span class="hljs-type">Ns</span> = lbfs.to(<span class="hljs-type">N•s</span>)
-
-<span class="hljs-keyword">echo</span> lbfs, <span class="hljs-string">&quot; equals &quot;</span>, <span class="hljs-type">Ns</span></code></pre><pre class="nb-output"><samp>1 lbf•s equals 4.44822 kg•m•s⁻¹</samp></pre>
-                        <p>As you can see, they thought the value they read was 4.4 times smaller than it really was!</p>
-<p>But what does the code do? Let's dissect it block-by-block:</p>
-<ol>
-<li>
-<p><code>defUnit(N•s)</code> - There are a ridiculous amount of combinations of base units.
-Therefore you must define composite units manually before you use them. More on this in a later section.</p>
-</li>
-<li>
-<p><code>let lbfs = 1.lbf•s</code> - We use the dot (<code>.</code>) to assign a unit to a number. In this case we assign a variable with the value &quot;1 lbf•s&quot;.</p>
-</li>
-<li>
-<p><code>let Ns = lbfs.to(N•s)</code> - We use the <code>to</code> proc to convert a variable from one unit to another.</p>
-</li>
-</ol>
-                        <h2>Defining and assigning units</h2>
-<p>The first thing you probably will want to do is to associate a value with a unit, for example 1 Newton. There are multiple ways
-to specify a unit, both short and long versions:</p>
-                        <pre><code class="nim hljs"><span class="hljs-comment">## Short version</span>
-<span class="hljs-keyword">let</span> n1 = <span class="hljs-number">1.</span><span class="hljs-type">N</span>
-<span class="hljs-comment">## Long version</span>
-<span class="hljs-keyword">let</span> n2 = <span class="hljs-number">1.</span><span class="hljs-type">Newton</span>
-<span class="hljs-comment">## Short version with prefix (milli)</span>
-<span class="hljs-keyword">let</span> n3 = <span class="hljs-number">1.</span>mN
-<span class="hljs-comment">## Long version with prefix</span>
-<span class="hljs-keyword">let</span> n4 = <span class="hljs-number">1.</span><span class="hljs-type">MilliNewton</span></code></pre>
-                        <p>That was easy enough, and being able to use prefixes makes for a saner user experience. Forgetting to multiply by the
-correct prefix factor is a very common mistake after all. This is solved by including prefixes directly in the library,
-so you don't have to deal with them manually.</p>
-<p>When it comes to composite types it gets a bit more complicated though. For example if we want to use a unit <code>kg•m•s⁻¹</code> we
-have a few more things to consider. First and foremost, composite types must either be defined in a <code>defUnit</code> or be used in a
-dot expression (eg <code>10.kg•m•s⁻¹</code>) <em>before</em> it can be used in other parts of the code. Here are a few valid and invalid cases:</p>
-                        <pre><code class="nim hljs"><span class="hljs-comment">## Correct way of doing it!</span>
-defUnit(kg•m•s⁻¹)
-<span class="hljs-keyword">proc</span> unitProc(k: kg•m•s⁻¹) =
-  <span class="hljs-keyword">echo</span> k</code></pre>
-                        <pre><code class="language-nim">## Incorrect way of doing it! Missing `defUnit`
-proc unitProc(k: kg•m•s⁻¹) =
-  echo k
-</code></pre>
-                        <p>There is also the <code>UnitLess</code> type which represents a quantity without a unit like for example a count or a percentage.
-It is used like the other units with the addition that <code>UnitLess</code> numbers can be passed to procs accepting <code>float</code>.
-This is done through converters behind the scenes, so you don't have to manually convert between the two:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> = x*x + x + <span class="hljs-number">1</span>
-<span class="hljs-keyword">let</span> ul = <span class="hljs-number">100.</span><span class="hljs-type">UnitLess</span>
-<span class="hljs-keyword">echo</span> f(ul)
-<span class="hljs-comment">## This will fail beacuse `x` isn't UnitLess:</span>
-<span class="hljs-comment">## let x = 100.kg</span>
-<span class="hljs-comment">## echo f(x)</span></code></pre><pre class="nb-output"><samp>10101.0</samp></pre>
-                        <p>To get the unit of a variable you can use <code>typeof</code> and checking units is done using <code>is</code>:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> mass = <span class="hljs-number">10.</span>kg
-<span class="hljs-keyword">echo</span> typeof(mass) <span class="hljs-keyword">is</span> kg</code></pre><pre class="nb-output"><samp>true</samp></pre>
-                        <h3>Different ways to write units</h3>
-<p>As you might have noticed, we used a few unicode characters in the code above (•, ⁻¹). Most keyboard don't have these symbols on them but
-there are ways to work around that. On Linux you could check if your distro supports the &quot;Compose key&quot; which lets you use sensible
-key combinations to type symbols. For example <code>²</code> can be written using <code>Compose + ^ + 2</code>, it makes sense!</p>
-<p>On Windows there is WinCompose which tries to emulate the compose key. There is also the Emoji/Symbols popup menu
-when you press <code>Windows + .</code> where you can find a multitude of symbols.</p>
-<p>If you don't want to use these kind of (totally awesome) tools,
-you can also write the types in backticks (<code>`</code>) and use <code>*</code> and <code>^</code>
-instead (<code>/</code> is not allowed, use negative exponents instead).
-Here are a few examples of equivalent ways of writing the same unit:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> unicodeUnit = <span class="hljs-number">1.</span>kg•m•s⁻¹
-<span class="hljs-keyword">let</span> textUnit = <span class="hljs-number">1.</span>`kg*m*s^-<span class="hljs-number">1</span>`
-<span class="hljs-keyword">echo</span> unicodeUnit == textUnit</code></pre><pre class="nb-output"><samp>true</samp></pre>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> unicodeUnit = <span class="hljs-number">1.</span><span class="hljs-type">N•s</span>
-<span class="hljs-keyword">let</span> textUnit = <span class="hljs-number">1.</span>`<span class="hljs-type">N</span>*s`
-<span class="hljs-keyword">echo</span> unicodeUnit == textUnit</code></pre><pre class="nb-output"><samp>true</samp></pre>
-                        <h3>Arithmetics with units</h3>
-<p>Units can of course be used in formulas. The supported operators are <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> and <code>^</code> (Note: <code>^</code> only work with integer exponents!).
-You don't have to <code>defUnit</code> the resulting unit of an operation, it's done automatically.
-There are a few rules worth remembering, some more obvious than others:</p>
+<span class="hljs-keyword">let</span> x = linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">4.2</span>, <span class="hljs-number">10</span>)
+<span class="hljs-keyword">let</span> y = x.map(f)</code></pre>
+                        <p>Now we are ready to create the interpolator! For 1D there are these options available:</p>
 <ul>
-<li>
-<p>You can only add and subtract units of the same quantity (hopefully pretty obvious).
-Example: <code>1.kg + 1.lbs</code> works. <code>1.kg + 1.m</code> doesn't work.</p>
-</li>
-<li>
-<p>You can multiply and divide units of different quantities. Example: <code>1.kg * 1.m</code> works.</p>
-</li>
-<li>
-<p>If it is ambiguious what the resulting unit should be, they are converted to base SI units. Example: <code>1.kg + 1.lbs</code> will result in <code>1.45359 KiloGram</code>.</p>
-</li>
-<li>
-<p>Conversion from prefixed to non-prefixed units only happen if multiple different units or prefixes of the same quantity are mixed.
-Example: <code>1.mm * 1.kg</code> results in <code>1 KiloGram•MilliMeter</code> while <code>1.mm * 1.cm</code> results in <code>1e-005 Meter²</code>.</p>
-</li>
-<li>
-<p>Division by same quantities gives a <code>UnitLess</code> result. Example: <code>1.cm / 1.m</code> gives <code>0.01 UnitLess</code>.</p>
-</li>
+<li><a href="https://en.wikipedia.org/wiki/Linear_interpolation">Linear</a>: <code>newLinear1D</code></li>
+<li><a href="https://en.wikipedia.org/wiki/Spline_interpolation">Cubic spline</a>: <code>newCubicSpline</code> (only supports floats)</li>
+<li><a href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline">Hermite spline</a>: <code>newHermiteSpline</code></li>
 </ul>
-<p>Let's see some actual code now! You are probably familiar with the harmonic oscillator:
-$$y(t) = A \cos (ω t + φ)$$
-where $ω$ is the frequency in $rad ⋅ s^{-1}$, $φ$ is an angle and $A$ is the maximum amplitude in $cm$.
-Let's get coding now!</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> math</code></pre>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> y(t: <span class="hljs-type">Second</span>): <span class="hljs-type">CentiMeter</span> =
-  <span class="hljs-keyword">let</span> ω = <span class="hljs-number">100.</span>rad•s⁻¹ <span class="hljs-comment">## or 100.`rad*s^-1`</span>
-  <span class="hljs-keyword">let</span> <span class="hljs-type">A</span> = <span class="hljs-number">10.</span>cm
-  <span class="hljs-keyword">let</span> φ = <span class="hljs-type">Pi</span>.rad
-  <span class="hljs-keyword">let</span> argument = ω * t + φ
-  <span class="hljs-literal">result</span> = <span class="hljs-type">A</span> * cos(argument)
+<p>They all have the same API accepting <code>seq</code>s of x- and y-values.
+The Hermite spline can optionally supply the derivatives at each point as well.
+We will be using the Hermite spline without the derivatives, they will be approximated
+using finite differences for us.</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = newHermiteSpline(x, y)</code></pre>
+                        <p>Now that we have constructed the interpolator, we can evaluate it using <code>eval</code>.
+It accepts either a single input or a <code>seq</code> of inputs:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> interp.eval(<span class="hljs-number">1.0</span>)
+<span class="hljs-keyword">echo</span> interp.eval(@[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>])</code></pre><pre class="nb-output"><samp>0.2080277072449881
+@[0.2080277072449881, 0.01739123273517499]</samp></pre>
+                        <p>We can now evaluate it on a denser set of points and compare it to the original function:</p>
+                        <figure>
+<img src="../images/compare_interp.png" alt="">
+<figcaption></figcaption>
+</figure>
+                        <p>As we can see, the interpolant does a decent job of approximating the function.
+It is worse where the function is changing a lot and closer to the original
+in the middle where there is less happening.</p>
+                        <h2>2D interpolation</h2>
+<p>For 2D interpolation, <code>numericalnim</code> offers 3 methods for gridded data:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Nearest-neighbor_interpolation">Nearest neighbour</a>: <code>newNearestNeighbour2D</code></li>
+<li><a href="https://en.wikipedia.org/wiki/Bilinear_interpolation">Bilinear</a>: <code>newBilinearSpline</code></li>
+<li><a href="https://en.wikipedia.org/wiki/Bicubic_interpolation">Bicubic</a>: <code>newBicubicSpline</code></li>
+</ul>
+<p>and 2 methods for scattered data:</p>
+<ul>
+<li><a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates.html">Barycentric</a>: <code>newBarycentric2D</code></li>
+<li><a href="https://en.wikipedia.org/wiki/Radial_basis_function_interpolation">Radial basis function</a>: <code>newRbf</code>
+The RBF method isn't unique to 2D and works for any dimension, see the next section for more on that.</li>
+</ul>
+<p>For this tutorial, we will focus on the Bicubic spline but NearestNeighbour and Bilinear spline have the same API.
+Let's first choose a suitable function to interpolate:
+$$f(x, y) = e^{-(x^2 + y^2)}$$
+This will be a Gaussian centered around <code>(0, 0)</code>, here's a heatmap showing the function:</p>
+                        <figure>
+<img src="../images/2d_interp_func.png" alt="">
+<figcaption></figcaption>
+</figure>
+                        <p>Now we are ready to sample our function. The inputs expected are the limits in $x$ and $y$ along
+with the function values in grid as a Tensor. So if we have a 3x3 grid of data points, the Tensor
+should have shape 3x3 as well. Because the data is known to be on a grid, you don't have to give
+all the points on it, it's enough to only provide the limits as two tuples.</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
+  exp(-(x*x + y*y))
 
-<span class="hljs-keyword">echo</span> y(<span class="hljs-number">0.</span>s)</code></pre><pre class="nb-output"><samp>-10 cm</samp></pre>
+<span class="hljs-keyword">let</span> xlim = (-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>)
+<span class="hljs-keyword">let</span> ylim = (-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>)
+
+<span class="hljs-keyword">let</span> xs = linspace(xlim[<span class="hljs-number">0</span>], xlim[<span class="hljs-number">1</span>], <span class="hljs-number">5</span>)
+<span class="hljs-keyword">let</span> ys = linspace(ylim[<span class="hljs-number">0</span>], ylim[<span class="hljs-number">1</span>], <span class="hljs-number">5</span>)
+<span class="hljs-keyword">var</span> z = zeros[<span class="hljs-built_in">float</span>](xs.len, ys.len)
+<span class="hljs-keyword">for</span> i, x <span class="hljs-keyword">in</span> xs:
+  <span class="hljs-keyword">for</span> j, y <span class="hljs-keyword">in</span> ys:
+    z[i, j] = f(x, y)</code></pre>
+                        <p>Now we have sampled our function, let's construct the interpolator:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = newBicubicSpline(z, xlim, ylim)</code></pre>
+                        <p>The interpolator can now be evaluated using <code>eval</code>:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> interp.eval(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>)</code></pre><pre class="nb-output"><samp>1.0</samp></pre>
+                        <p>We can now plot the function to see how much it resembles the original function (the dots are the sampled points):</p>
+                        <figure>
+<img src="../images/2d_interp_eval.png" alt="">
+<figcaption></figcaption>
+</figure>
+                        <figure>
+<img src="../images/2d_interp_error.png" alt="">
+<figcaption></figcaption>
+</figure>
+                        <p>It looks pretty similar to the original function so I'd say it did a good job.
+We have also plotted the error in the second image. We can see that the
+interpolant is the most accurate close to the sampled points and the least
+accurate between them.</p>
+                        <h2>ND interpolation</h2>
+<p>With the addition of Radial basis function (RBF) interpolation, <code>numericalnim</code> now offers an
+interpolation method that works for <strong>scattered</strong> data of <strong>arbitrary dimensions</strong>.
+The conceptual explanation for how RBF interpolation works is that a Gaussian is placed at
+each of the data points. These are then each scaled such that the sum of all the Gaussians
+pass through all the data points exactly.</p>
+<p>Further, the implemented method employs localization using Partition of Unity. This is a
+method that exploits the fact that a Gaussian decays very quickly. Hence we shouldn't
+have to take into account points far away from the point we are interested in. So internally
+a grid structure is created such that points are only affected by their neighbors. This both
+speeds up the code and also makes it more numerically stable.</p>
+<p>The format of the inputs that is expected is the positions as a <code>Tensor</code> of shape <code>(nPoints, nDims)</code>
+and the function values (can be multi-valued) of shape <code>(nPoints, nValues)</code>. In the general case
+the points aren't gridded but if you want to create points on a grid you can do it with the
+<code>meshgrid</code> function. It takes in a <code>varargs</code> of <code>Tensor[float]</code>, one <code>Tensor</code> for each dimension containing the
+grid values in that dimension. An example is:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> x = meshgrid(arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>), arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>), arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>))
+<span class="hljs-keyword">echo</span> x[<span class="hljs-number">0.</span>.<span class="hljs-number">10</span>, _]</code></pre><pre class="nb-output"><samp>Tensor[system.float] of shape &quot;[11, 3]&quot; on backend &quot;Cpu&quot;
+|-1        -1      -1|
+|-0.5      -1      -1|
+|0         -1      -1|
+|0.5       -1      -1|
+|1         -1      -1|
+|-1      -0.5      -1|
+|-0.5    -0.5      -1|
+|0       -0.5      -1|
+|0.5     -0.5      -1|
+|1       -0.5      -1|
+|-1         0      -1|</samp></pre>
+                        <p>which will create a 3D grid with 5 points between -1 and 1 in each of the dimensions.</p>
+<p>Now let's define a function we are going to interpolate:
+$$f(x, y, z) = \sin(x) \sin(y) \sin(z)$$
+Here's the code for implementing it:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] =
+  product(sin(x), axis=<span class="hljs-number">1</span>)
+  
+<span class="hljs-keyword">let</span> y = f(x)</code></pre>
+                        <p>Now we can construct the interpolator as such:</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = newRbf(x, y)</code></pre>
+                        <p>Evaluation is done by calling <code>eval</code> with the evaluation point(s):</p>
+                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> xEval = [[<span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>], [<span class="hljs-number">0.6</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.3</span>], [<span class="hljs-number">0.75</span>, -<span class="hljs-number">0.23</span>, <span class="hljs-number">0.46</span>]].toTensor
+<span class="hljs-keyword">echo</span> interp.eval(xEval).squeeze
+<span class="hljs-keyword">echo</span> f(xEval).squeeze</code></pre><pre class="nb-output"><samp>Tensor[system.float] of shape &quot;[3]&quot; on backend &quot;Cpu&quot;
+    0.110195     0.0784921    -0.0651828
+Tensor[system.float] of shape &quot;[3]&quot; on backend &quot;Cpu&quot;
+    0.110195     0.0799985    -0.0689888</samp></pre>
+                        <p>As we can see by comparing the exact solution with the interpolant, they are pretty close to each other.</p>
+<h2>Conclusion</h2>
+<p>As we have seen, you can do all sorts of interpolations in Nim with just a few lines of code.
+Have a nice day!</p>
+<h2>Further reading</h2>
+<ul>
+<li><a href="https://scinim.github.io/numericalnim/numericalnim/interpolate.html">numericalnim's documentation on interpolation</a></li>
+<li><a href="https://scinim.github.io/numericalnim/numericalnim/rbf.html">numericalnim's documentation on RBFs</a></li>
+<li><a href="https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html">Curve fitting</a> is a method you can use
+if you know the parametric form of the function of the data you want to interpolate.</li>
+</ul>
                         <script defer>/* Generated by the Nim Compiler v1.6.10 */
 var framePtr = null;
 var excHandler = 0;
@@ -382,11 +408,11 @@ var objectID_620757154 = [0];
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../basics/basic_plotting.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../numerical_methods/optimization.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../numerical_methods/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../data_viz/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -396,11 +422,11 @@ var objectID_620757154 = [0];
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../basics/basic_plotting.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../numerical_methods/optimization.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../numerical_methods/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../data_viz/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
