@@ -150,7 +150,7 @@ for m in concat(fixedODESubset, adaptiveODESubset):
   nbText: &"- {m}: {error:e}"
 
 nbText: hlMd"""
-Most of the methods are quite even and some are lacking behind like `rk21` and `bs32`. Tweaking the
+We can see that the higher-order methods has a lower error compared to the lower-order ones. Tweaking the
 `odeOptions` would probably get them on-par with the others. There is one parameter we haven't talked about though,
 the execution time. Let's look at that and see if it bring any further insights:
 """

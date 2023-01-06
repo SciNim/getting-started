@@ -211,7 +211,7 @@ have to take into account points far away from the point we are interested in. S
 a grid structure is created such that points are only affected by their neighbors. This both
 speeds up the code and also makes it more numerically stable.
 
-The format of the inputs that is expected is the positions as a `Tensor` of of shape `(nPoints, nDims)`
+The format of the inputs that is expected is the positions as a `Tensor` of shape `(nPoints, nDims)`
 and the function values (can be multi-valued) of shape `(nPoints, nValues)`. In the general case
 the points aren't gridded but if you want to create points on a grid you can do it with the
 `meshgrid` function. It takes in a `varargs` of `Tensor[float]`, one `Tensor` for each dimension containing the

@@ -126,7 +126,7 @@ with the addition of the `lambda0` parameter. We can reduce the `tol` and see if
 """
 
 nbCode:
-  let options = levmarqOptions(tol=1e-15)
+  let options = levmarqOptions(tol=1e-10)
   let solution = levmarq(fitFunc, initialGuess, t, y, options=options)
   echo solution
 
