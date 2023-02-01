@@ -14,6 +14,7 @@ var book = initBookWithToc:
     entry("ODEs", "ode")
     entry("Optimization", "optimization")
     entry("Interpolation", "interpolation")
+    entry("Bayesian Inference", "bayesian")
   section("Data visualization", "data_viz/index.md"):
     entry("Plotting data", "plotting_data")
   section("Interfacing with other language", "external_language_integration/index.md"):
