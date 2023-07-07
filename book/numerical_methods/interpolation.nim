@@ -114,7 +114,7 @@ The extrapolation method is optionally supplied as an argument to `eval` and `de
 As you can see, the choice of extrapolation method affects the values considerably.
 Keep in mind though that `-1.0` is quite a big extrapolation and the further away we go, the worse the approximation gets.
 
-Here is a visual example of how the different methods behave. I have removed the two othermost points on each side from the example before (ignore the point at `(0, 0)`, it's a bug):
+Here is a visual example of how the different methods behave. I have removed the two outermost points on each side from the example before (ignore the point at `(0, 0)`, it's a bug):
 """
   block:
     let t = linspace(0.0, 4.2, 100)
