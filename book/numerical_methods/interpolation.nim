@@ -92,6 +92,55 @@ We can now evaluate it on a denser set of points and compare it to the original 
 As we can see, the interpolant does a decent job of approximating the function.
 It is worse where the function is changing a lot and closer to the original
 in the middle where there is less happening.  
+
+### Extrapolation
+For 1D interpolators, extrapolation is supported. The available methods are:
+- `Constant`: Set all points outside the range of the interpolator to a specified value.
+- `Edge`: Use the value of the left/right edge.
+- `Linear`: Uses linear extrapolation using the two points closest to the edge.
+- `Native` (default): Uses the native method of the interpolator to extrapolate. For Linear1D it will be a linear extrapolation, and for Cubic and Hermite splines it will be cubic extrapolation.
+- `Error`: Raises an `ValueError` if `x` is outside the range.
+
+The extrapolation method is optionally supplied as an argument to `eval` and `derivEval`:
+"""
+
+  nbCode:
+    echo "Edge: ", interp.eval(-1.0, Edge) # will use the value at x=0
+    echo "Constant: ", interp.eval(-1.0, Constant, NaN) # will return NaN
+    echo "Linear: ", interp.eval(-1.0, ExtrapolateKind.Linear)
+    echo "Native: ", interp.eval(-1.0) # will use Native by default
+
+  nbText: hlMd"""
+As you can see, the choice of extrapolation method affects the values considerably.
+Keep in mind though that `-1.0` is quite a big extrapolation and the further away we go, the worse the approximation get.
+
+Here is a visual example of how the different methods behave. I have removed the two othermost points on each side from the example before (ignore the point at `(0, 0)`, it's a bug):
+"""
+  block:
+    let t = linspace(0.0, 4.2, 100)
+    let yOriginal = t.map(f)
+    let x = x[2..^3]
+    let y = y[2..^3]
+    let interp = newHermiteSpline(x, y)
+    let yLinear = interp.eval(t, ExtrapolateKind.Linear)
+    let yConstant = interp.eval(t, ExtrapolateKind.Constant, 0.0)
+    let yEdge = interp.eval(t, ExtrapolateKind.Edge)
+    let yNative = interp.eval(t, ExtrapolateKind.Native)
+    var df = toDf({"x": x, "y": y, "t": t, "f(t)": yOriginal, "Linear": yLinear, "Constant": yConstant, "Edge": yEdge, "Native": yNative})
+    df = df.gather(@["f(t)", "Linear", "Constant", "Edge", "Native"], key = "Class", value = "Value")
+    ggplot(df, aes("t", "Value", color="Class")) +
+      geom_line() +
+      geom_point(aes("x", "y")) +
+      ylim(-3.5, 3.5, "drop") +
+      ggsave("images/compare_interp_extrapolate.png")
+
+  nbImage("images/compare_interp_extrapolate.png", caption="Showcase of the extrapolation methods.")
+
+  nbText: hlMd"""
+As we can see, the `Edge` and `Constant` are just horizontal lines while `Linear` has the same slope as the edge of the interpolant.
+`Native` on the other hand is smooth but quite quickly starts to take off towards $\pm \infty$ (for the linear interpolator it would behave the same as `Linear` though).
+Which method you should use is very dependent on the application and what behavior you want it to exhibit. 
+Of course, you should try to avoid extrapolation whenever possible.   
 """
 
 block Part2:
