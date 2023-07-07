@@ -5,7 +5,7 @@ nbInit(theme = useNimibook)
 nbText: """
 # Using Julia with Nim
 
-In this tutorial, we explore how to use [Nimjl](https://github.com/Clokk/nimjl) to integrate [Julia](https://julialang.org/) code with Nim.
+In this tutorial, we explore how to use [Nimjl](https://github.com/Clonkk/nimjl) to integrate [Julia](https://julialang.org/) code with Nim.
 
 ## What is Julia ?
 
@@ -20,7 +20,7 @@ Most notably, it has a strong emphasis on scientific computing and Julia's Array
 
 # Tutorial
 
-[Nimjl](https://github.com/Clokk/nimjl) already has some [examples](https://github.com/Clonkk/nimjl/examples/) that explains the basics, make sure to go through them in order.
+[Nimjl](https://github.com/Clonkk/nimjl) already has some [examples](https://github.com/Clonkk/nimjl/examples/) that explains the basics, make sure to go through them in order.
 
 ## Basic stuff
 
