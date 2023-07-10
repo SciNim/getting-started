@@ -29,6 +29,10 @@
 
 
         
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -263,60 +267,60 @@ down in section &quot;Length and capacity of a sequence&quot;.</p>
 they won't be discussed here.</p>
 <p>The standard library provides different ways to construct a sequence. Let's look at the
 default two constructors first:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> x = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> x = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
 <span class="hljs-keyword">echo</span> x
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, len(x)</code></pre><pre class="nb-output"><samp>@[0.0, 1.0, 2.0, 3.0]
-Length: 4</samp></pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, len(x)</code></pre><pre class="nb-output">@[0.0, 1.0, 2.0, 3.0]
+Length: 4</pre>
                         <p>The first constructor explicitly converts a number of elements into a sequence with
 4 elements. The length of the sequence can be accessed using <code>len</code>.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">float</span>]()
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, x.len</code></pre><pre class="nb-output"><samp>Length: 0</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">float</span>]()
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, x.len</code></pre><pre class="nb-output">Length: 0</pre>
                         <p>The second way to construct a sequence uses the <code>newSeq</code> procedure. It receives the
 generic type that should be housed in the sequence and as an argument the number of
 initial elements (the default being 0).</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">float</span>](<span class="hljs-number">4</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">float</span>](<span class="hljs-number">4</span>)
 <span class="hljs-keyword">echo</span> x
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, x.len</code></pre><pre class="nb-output"><samp>@[0.0, 0.0, 0.0, 0.0]
-Length: 4</samp></pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, x.len</code></pre><pre class="nb-output">@[0.0, 0.0, 0.0, 0.0]
+Length: 4</pre>
                         <p><code>x</code> then uses the <code>newSeq</code> constructor to directly construct a sequence of floats of
 length 4. All elements in the sequence are initialized to zero!</p>
 <p>From here we can modify any created sequence, remove elements or add new elements as
 long as the variable is declared as a <code>var</code> (instead of <code>let</code>).</p>
 <h3>Access</h3>
 <p>Elements in the sequence are accessed using bracket <code>[]</code> access:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> x = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
-<span class="hljs-keyword">echo</span> x[<span class="hljs-number">2</span>]</code></pre><pre class="nb-output"><samp>2.0</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> x = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
+<span class="hljs-keyword">echo</span> x[<span class="hljs-number">2</span>]</code></pre><pre class="nb-output">2.0</pre>
                         <h3>Mutation</h3>
 <p>Basic mutation of elements in the sequence is done using <code>[]=</code> (in Nim terms), which is simply
 bracket access and an assignment:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">float</span>](<span class="hljs-number">4</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">float</span>](<span class="hljs-number">4</span>)
 x[<span class="hljs-number">0</span>] = <span class="hljs-number">5.0</span>
-<span class="hljs-keyword">echo</span> x</code></pre><pre class="nb-output"><samp>@[5.0, 0.0, 0.0, 0.0]</samp></pre>
+<span class="hljs-keyword">echo</span> x</code></pre><pre class="nb-output">@[5.0, 0.0, 0.0, 0.0]</pre>
                         <p>New elements are added using <code>add</code> as is typical in Nim:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">float</span>]()
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">float</span>]()
 x.add <span class="hljs-number">10.0</span>
 <span class="hljs-keyword">echo</span> x
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, x.len</code></pre><pre class="nb-output"><samp>@[10.0]
-Length: 1</samp></pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, x.len</code></pre><pre class="nb-output">@[10.0]
+Length: 1</pre>
                         <p>So <code>y1</code> now contains 1 element instead of 0.</p>
 <p>Deleting elements is also supported, via <code>delete</code> or <code>del</code>. Both procedures take the index
 to be removed. <code>delete</code> keeps the order of the sequence intact, whereas <code>del</code> simply overwrites
 the given index with the last element of the sequence and reduces the length by one. Compare:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> x1 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> x1 = @[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]
 <span class="hljs-keyword">var</span> x2 = x1
 <span class="hljs-keyword">var</span> x3 = x1
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Starting from: &quot;</span>, x1
 x2.delete(<span class="hljs-number">1</span>)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Remove index 1 using `delete`: &quot;</span>, x2
 x3.del(<span class="hljs-number">1</span>)
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Remove index 1 using `del`: &quot;</span>, x3</code></pre><pre class="nb-output"><samp>Starting from: @[0.0, 1.0, 2.0, 3.0]
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Remove index 1 using `del`: &quot;</span>, x3</code></pre><pre class="nb-output">Starting from: @[0.0, 1.0, 2.0, 3.0]
 Remove index 1 using `delete`: @[0.0, 2.0, 3.0]
-Remove index 1 using `del`: @[0.0, 3.0, 2.0]</samp></pre>
+Remove index 1 using `del`: @[0.0, 3.0, 2.0]</pre>
                         <p>See how the order of <code>x3</code> is now different, whereas <code>x2</code> has the same order just with
 index 1 removed.</p>
 <h3>Length and capacity of a sequence</h3>
 <p>Consider the following code:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">int</span>]()
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = newSeq[<span class="hljs-built_in">int</span>]()
 <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; <span class="hljs-number">10</span>:
   x.add i</code></pre>
                         <p>A naive implementation of a sequence would have to reallocate the memory underlying the sequence for
@@ -329,12 +333,12 @@ a sequence with an existing length using <code>newSeq</code> (if we overestimate
 empty entries).</p>
 <p>For that usecase we can use <code>newSeqOfCap</code>. It creates a sequence of length 0 but whose capacity is the
 given number:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> x = newSeqOfCap[<span class="hljs-built_in">int</span>](<span class="hljs-number">100</span>)
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, x.len</code></pre><pre class="nb-output"><samp>Length: 0</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = newSeqOfCap[<span class="hljs-built_in">int</span>](<span class="hljs-number">100</span>)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Length: &quot;</span>, x.len</code></pre><pre class="nb-output">Length: 0</pre>
                         <p>As we can see the sequence is currently empty. But if we add to it, the sequence won't have to
 reallocate several times. In this way we can often get away with at most one reallocation or
 zero, if we accept a bit of overallocation.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> x = newSeqOfCap[<span class="hljs-built_in">int</span>](<span class="hljs-number">100</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = newSeqOfCap[<span class="hljs-built_in">int</span>](<span class="hljs-number">100</span>)
 <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; <span class="hljs-number">100</span>:
   x.add i</code></pre>
                         <p>So this operation won't reallocate.</p>
@@ -344,33 +348,33 @@ over the memory.</p>
 <h3>Filling a seq with a fixed value</h3>
 <p>Sometimes we wish to create a sequence that is initialized not to zero, but some other constant
 value. For this we can use <code>newSeqWith</code> from <code>sequtils</code>:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> sequtils
-<span class="hljs-keyword">echo</span> newSeqWith(<span class="hljs-number">3</span>, <span class="hljs-number">5.5</span>)</code></pre><pre class="nb-output"><samp>@[5.5, 5.5, 5.5]</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> sequtils
+<span class="hljs-keyword">echo</span> newSeqWith(<span class="hljs-number">3</span>, <span class="hljs-number">5.5</span>)</code></pre><pre class="nb-output">@[5.5, 5.5, 5.5]</pre>
                         <p>which takes as the first argument the size of the resulting sequence and as the second argument the
 value to initialize all values to.</p>
 <p>Note: this can also be used to create nested sequences:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> newSeqWith(<span class="hljs-number">3</span>, newSeqWith(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>))</code></pre><pre class="nb-output"><samp>@[@[5, 5, 5], @[5, 5, 5], @[5, 5, 5]]</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> newSeqWith(<span class="hljs-number">3</span>, newSeqWith(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>))</code></pre><pre class="nb-output">@[@[5, 5, 5], @[5, 5, 5], @[5, 5, 5]]</pre>
                         <p>which gives us a nested sequence of <code>seq[seq[int]]</code> where each element is a sequence of
 integers with value 5.</p>
 <h3>A few more typical ways to create sequences</h3>
 <p>To finish of this section, let's look at a few more sequence constructors that are often useful.</p>
 <p>Nim supports slices using the syntax <code>a .. b</code>, which includes all values from <code>a</code> to including <code>b</code>.
 Together with <code>toSeq</code> it can be used to generate a sequence:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">10</span> .. <span class="hljs-number">14</span>)</code></pre><pre class="nb-output"><samp>@[10, 11, 12, 13, 14]</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">10</span> .. <span class="hljs-number">14</span>)</code></pre><pre class="nb-output">@[10, 11, 12, 13, 14]</pre>
                         <p>This essentially takes the role of <code>arange</code> from numpy. Of course this only generates sequences of integers.</p>
 <p>For succinctness (but not performance) we can convert such a sequence using <code>mapIt</code> to map
 each element from an input type to some other type:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">10</span> .. <span class="hljs-number">14</span>).mapIt(it.<span class="hljs-built_in">float</span>)</code></pre><pre class="nb-output"><samp>@[10.0, 11.0, 12.0, 13.0, 14.0]</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">10</span> .. <span class="hljs-number">14</span>).mapIt(it.<span class="hljs-built_in">float</span>)</code></pre><pre class="nb-output">@[10.0, 11.0, 12.0, 13.0, 14.0]</pre>
                         <p>Returns a sequence of floats instead.</p>
 <p>Similarly, it is often desirable to get a linearly spaced sequence of numbers. <code>numericalnim</code> also
 provides a <code>linspace</code> implementation. Let's create 5 evenly spaced points between 1 and 2:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> numericalnim
-<span class="hljs-keyword">echo</span> linspace(<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">5</span>)</code></pre><pre class="nb-output"><samp>@[1.0, 1.25, 1.5, 1.75, 2.0]</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> numericalnim
+<span class="hljs-keyword">echo</span> linspace(<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">5</span>)</code></pre><pre class="nb-output">@[1.0, 1.25, 1.5, 1.75, 2.0]</pre>
                         <p>Finally, one may need a sequence of randomly sampled numbers. The <code>random</code> module of the Nim
 standard library provides a <code>rand</code> procedure we can combine with <code>mapIt</code>:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> random
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> random
 randomize()
-<span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>).mapIt(rand(<span class="hljs-number">10.0</span>))</code></pre><pre class="nb-output"><samp>@[2.576019807777017, 7.922631160159765, 1.992817334371717, 7.495363425053661, 1.232485108124604]</samp></pre>
+<span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>).mapIt(rand(<span class="hljs-number">10.0</span>))</code></pre><pre class="nb-output">@[3.248404591893539, 0.8147250549024365, 6.561275897577749, 8.244125886845488, 8.793871974402697]</pre>
                         <p>samples 5 floating point numbers between 0 and 10.</p>
 <h2><code>Tensor[T]</code> - an ND-array type from <a href="https://github.com/mratsim/Arraymancer">Arraymancer</a></h2>
 <p>Arraymancer provides an ND-array type called <code>Tensor[T]</code> that is best compared to a numpy
@@ -383,8 +387,8 @@ efficiently.</p>
 <p>In case of a <code>seq[T]</code> we either have to manually handle the indexing of the sequence (if we
 store ND data in a 1D sequence) or deal with the inefficiencies of a nested sequence <code>seq[seq[T]]</code>.
 In that case <em>every</em> access requires an additional pointer indirection.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> x = @[ @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], @[<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>] ]
-<span class="hljs-keyword">echo</span> x[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]</code></pre><pre class="nb-output"><samp>4</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> x = @[ @[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], @[<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>] ]
+<span class="hljs-keyword">echo</span> x[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]</code></pre><pre class="nb-output">4</pre>
                         <p>The access <code>[1][0]</code> in this example first returns a sequence, which we have to dereference
 <em>again</em> to get to an element. This makes accessing data expensive.
 An Arraymancer tensor on the other hand always stores data in a one-dimensional data storage.
@@ -394,22 +398,22 @@ free reshaping of the data, because the shape is only a piece of meta data.</p>
 assigning a tensor to a new variable and modifying that variable also modifies the initial
 tensor! This is for efficiency reasons to not copy all the data for each assignment.</p>
 <p>Two most basic ways to create are shown below:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> arraymancer
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> arraymancer
 <span class="hljs-keyword">let</span> t = @[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>].toTensor</code></pre>
                         <p>First we can just create a tensor from a (possibly nested) sequence or array using <code>toTensor</code>.</p>
 <p>Secondly:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> t = newTensor[<span class="hljs-built_in">float</span>](<span class="hljs-number">9</span>)</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> t = newTensor[<span class="hljs-built_in">float</span>](<span class="hljs-number">9</span>)</code></pre>
                         <p>This is the default tensor constructor. It creates a tensor of type <code>Tensor[float]</code> with
 10 elements that is zero initialized. If multiple elements are given to the procedure a tensor
 of different shape is created.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> t = newTensor[<span class="hljs-built_in">float</span>](<span class="hljs-number">3</span>, <span class="hljs-number">3</span>)</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> t = newTensor[<span class="hljs-built_in">float</span>](<span class="hljs-number">3</span>, <span class="hljs-number">3</span>)</code></pre>
                         <p>creates a tensor 2 dimensional tensor of size 3 in both dimensions (essentiall a 3x3 matrix).</p>
 <p>Note that due to the shape being a piece of meta data, it is cheap to convert from one shape
 to another using <code>reshape</code>.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> t = newTensor[<span class="hljs-built_in">float</span>](<span class="hljs-number">9</span>).reshape(<span class="hljs-number">3</span>, <span class="hljs-number">3</span>)</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> t = newTensor[<span class="hljs-built_in">float</span>](<span class="hljs-number">9</span>).reshape(<span class="hljs-number">3</span>, <span class="hljs-number">3</span>)</code></pre>
                         <p>This essentially does not have any meaningful overhead over the creation of <code>t3</code> above.</p>
 <p>Some more ways to construct a tensor:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> t1 = zeros[<span class="hljs-built_in">float</span>](<span class="hljs-number">9</span>) <span class="hljs-comment">## a tensor that is explicit 0, the default</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> t1 = zeros[<span class="hljs-built_in">float</span>](<span class="hljs-number">9</span>) <span class="hljs-comment">## a tensor that is explicit 0, the default</span>
 <span class="hljs-keyword">let</span> t2 = ones[<span class="hljs-built_in">float</span>](<span class="hljs-number">9</span>) <span class="hljs-comment">## a tensor that is initialized to 1</span>
 <span class="hljs-keyword">let</span> t3 = newTensorWith[<span class="hljs-built_in">float</span>]([<span class="hljs-number">3</span>, <span class="hljs-number">3</span>], <span class="hljs-number">5</span>) <span class="hljs-comment">## a 3x3 tensor initialized to 5</span>
 <span class="hljs-keyword">let</span> t4 = newTensorUninit[<span class="hljs-built_in">float</span>](<span class="hljs-number">10</span>) <span class="hljs-comment">## a tensor that is *not* initialized</span>
@@ -429,20 +433,6 @@ Furthermore, support for element-wise operations between multiple tensors are su
 <p>Of course Arraymancer provides a large amount of additional functionality, starting from
 linear algebra, to statistics, machine learning and more. View the full documentation here:</p>
 <p><a href="https://mratsim.github.io/Arraymancer/">Arraymancer documentation</a></p>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -479,7 +469,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->

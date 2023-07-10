@@ -29,6 +29,10 @@
 
 
         
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -244,12 +248,12 @@
 <p>There is a third use case : it's implementing Python module in Nim (for example, to speed up Python). While potentially useful, we will not cover it in this tutorial but you can read go check-out
 <a href="https://github.com/Pebaz/Nimporter">nimporter</a>.</p>
 <h2>Using Python as a scripting language in Nim</h2>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimpy
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> nimpy
 <span class="hljs-keyword">let</span> py = pyBuiltinsModule()
 <span class="hljs-keyword">discard</span> py.print(<span class="hljs-string">&quot;Hello world from Python..&quot;</span>)</code></pre>
                         <p>That's basically all there is to it.
 If you don't want to use the dot operator (which can get confusing), it is also possible use <code>callMethod</code> directly</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">discard</span> callMethod(py, <span class="hljs-string">&quot;print&quot;</span>, <span class="hljs-string">&quot;This is effectively identical to the previous call&quot;</span>)</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> callMethod(py, <span class="hljs-string">&quot;print&quot;</span>, <span class="hljs-string">&quot;This is effectively identical to the previous call&quot;</span>)</code></pre>
                         <p>Most type conversion Nim -&gt; Python will be done automatically though Nimpy templates. Python -&gt; Nim type conversion has to be called manually with the <code>to()</code> API.</p>
 <p>Let's see how it works in practice. In order to do that, we are going to create a local Python file with our custom functions, import it in Nim and call the Python function from Nim and convert the result back to Nim types.</p>
 <p>The next portion will create said Python file using Nim code. If you're looking to reproduce this tutorial  at home, you can (and probably should) do it using your favorite text editor.</p>
@@ -264,7 +268,7 @@ If you don't want to use the dot operator (which can get confusing), it is also 
 </code></pre>
 
                         <p>Now, onto the good parts :</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">type</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">type</span>
   <span class="hljs-type">MyObj</span>* = <span class="hljs-keyword">object</span>
     argFloat: <span class="hljs-built_in">float</span>
     argStr: <span class="hljs-built_in">string</span>
@@ -284,19 +288,19 @@ If you don't want to use the dot operator (which can get confusing), it is also 
 <span class="hljs-keyword">let</span> retValue = mymod.myfunc(nimTup)
 <span class="hljs-keyword">echo</span> typeof(retValue)
 <span class="hljs-comment"># We can still use retValue as an argument for Python function</span>
-<span class="hljs-keyword">discard</span> py.print(retValue)</code></pre><pre class="nb-output"><samp>PyObject</samp></pre>
+<span class="hljs-keyword">discard</span> py.print(retValue)</code></pre><pre class="nb-output">PyObject</pre>
                         <p>As you can see, by default every Python function called will return a PyObject. To convert this PyObject into a useful Nim type simply do :</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> nimValue = retValue.to(<span class="hljs-type">MyObj</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> nimValue = retValue.to(<span class="hljs-type">MyObj</span>)
 <span class="hljs-keyword">echo</span> typeof(nimValue)
-<span class="hljs-keyword">echo</span> nimValue</code></pre><pre class="nb-output"><samp>MyObj
-(argFloat: 18.33, argStr: &quot;gnirts a m\'I&quot;, argSeq: @[1, 2, 3, 4, 5, 6, 7, 8])</samp></pre>
+<span class="hljs-keyword">echo</span> nimValue</code></pre><pre class="nb-output">MyObj
+(argFloat: 18.33, argStr: &quot;gnirts a m\'I&quot;, argSeq: @[1, 2, 3, 4, 5, 6, 7, 8])</pre>
                         <p>Note that this example works with an object, but most Nim data structure are convertible to PyObject through Nimpy, including (but not limited to) : <code>Table, JsonNode, Set, OpenArray, Enum, Tuple</code> etc..</p>
 <h2>Extending Nim through Scipy &amp; Numpy</h2>
 <p>Now that we know how to use Python through Nim, let's see how we can use Nimpy / Scipy scientific functions through Nim.</p>
 <p>The main difficulty is to work with the numpy ndarray type in Nim.</p>
 <p>In order to do that, we'll use the <a href="https://github.com/SciNim/scinim/blob/main/scinim/numpyarrays.nim">scinim/numpyarrays API</a>.
 By default, the conversion is done from/to Arraymancer Tensor; but the API covers <code>ptr UncheckedArray[T]</code> so it can be extended to any type with an underlying data buffer.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> arraymancer
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> arraymancer
 <span class="hljs-keyword">import</span> scinim/numpyarrays
 
 <span class="hljs-keyword">let</span> np = pyImport(<span class="hljs-string">&quot;numpy&quot;</span>)
@@ -311,11 +315,11 @@ By default, the conversion is done from/to Arraymancer Tensor; but the API cover
 <span class="hljs-keyword">discard</span> py.print(mytensor)
 <span class="hljs-keyword">var</span> myarray = toNdArray(mytensor)
 <span class="hljs-keyword">echo</span> myarray.dtype()
-<span class="hljs-keyword">echo</span> myarray.shape</code></pre><pre class="nb-output"><samp>&lt;class 'numpy.float64'&gt;
-@[3, 3]</samp></pre>
+<span class="hljs-keyword">echo</span> myarray.shape</code></pre><pre class="nb-output">&lt;class 'numpy.float64'&gt;
+@[3, 3]</pre>
                         <p>Now let's do a simple 1d interpolation using Scipy.</p>
 <p>For simplicity, let's use a simple, straightforward function : $$f(x) = 10*x$$ and do a linear 1D interpolation. This makes the result easy to verify.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = pyImport(<span class="hljs-string">&quot;scipy.interpolate&quot;</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> interp = pyImport(<span class="hljs-string">&quot;scipy.interpolate&quot;</span>)
 <span class="hljs-keyword">var</span>
   mypoints = @[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>, <span class="hljs-number">7.0</span>, <span class="hljs-number">8.0</span>, <span class="hljs-number">9.0</span>, ].toTensor
   myvalues = @[<span class="hljs-number">10.0</span>, <span class="hljs-number">20.0</span>, <span class="hljs-number">30.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">50.0</span>, <span class="hljs-number">60.0</span>, <span class="hljs-number">70.0</span>, <span class="hljs-number">80.0</span>, <span class="hljs-number">90.0</span>, ].toTensor
@@ -325,34 +329,20 @@ By default, the conversion is done from/to Arraymancer Tensor; but the API cover
 <span class="hljs-keyword">var</span> f_interp = interp.interp1d(x_coord, y_coord, <span class="hljs-string">&quot;linear&quot;</span>)
 <span class="hljs-keyword">discard</span> py.print(f_interp)</code></pre>
                         <p>The result of interp1d is an interpolator function. In Nim, it's necessary to call it explicitly using <code>callObject</code> proc.</p>
-                        <pre><code class="nim hljs"><span class="hljs-comment"># The result of interp2d is a function object that can be called through __call__</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-comment"># The result of interp2d is a function object that can be called through __call__</span>
 <span class="hljs-keyword">var</span> val_at_new_point = callObject(f_interp, <span class="hljs-number">1.5</span>).to(<span class="hljs-built_in">float</span>)
 <span class="hljs-comment"># Yay, we just did a BiCubic interpolation !</span>
-<span class="hljs-keyword">echo</span> val_at_new_point</code></pre><pre class="nb-output"><samp>15.0</samp></pre>
+<span class="hljs-keyword">echo</span> val_at_new_point</code></pre><pre class="nb-output">15.0</pre>
                         <p>As expected, the result of the linear 1D interpolation evaluated on the coordinate 1.5 is 15.</p>
 <p>Now let's do it on an Array :</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> new_points_coord = @[<span class="hljs-number">2.5</span>, <span class="hljs-number">3.5</span>, <span class="hljs-number">4.5</span>, <span class="hljs-number">5.5</span>]
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> new_points_coord = @[<span class="hljs-number">2.5</span>, <span class="hljs-number">3.5</span>, <span class="hljs-number">4.5</span>, <span class="hljs-number">5.5</span>]
 <span class="hljs-keyword">var</span> new_values = callObject(f_interp, new_points_coord).toTensor[:<span class="hljs-built_in">float</span>]()
-<span class="hljs-keyword">echo</span> new_values</code></pre><pre class="nb-output"><samp>Tensor[system.float] of shape &quot;[4]&quot; on backend &quot;Cpu&quot;
-    25    35    45    55</samp></pre>
+<span class="hljs-keyword">echo</span> new_values</code></pre><pre class="nb-output">Tensor[system.float] of shape &quot;[4]&quot; on backend &quot;Cpu&quot;
+    25    35    45    55</pre>
                         <p>The result of the linear 1D interpolation on <code>[2.5, 3.5, 4.5, 5.5]</code> is <code>[25, 35, 45, 55]</code>, as we expected !</p>
 <p>(if you executed the code snippet as-is, don't forget to remove the generated Python file <code>mymod.py</code>).</p>
                         <p>And that's it, for this tutorial !</p>
 <p>While simple, the approach presented here allows to re-use most (if not all) of the Scipy / Numpy API relying on ndarray and convert them to Arraymancer Tensor, a format easily used in Nim.</p>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -389,7 +379,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->

@@ -31,6 +31,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -242,8 +246,8 @@ that either minimize or maximize the function. We will use <a href="https://gith
 in this tutorial to minimize the <a href="https://en.wikipedia.org/wiki/Rosenbrock_function">Rosenbrock banana 🍌 function</a>:</p>
 <p>$$f(x, y) = (1 - x)^2 + 100(y - x^2)^2$$</p>
 <p>It looks like this with its minimum at $(x, y) = (1, 1)$:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> ggplotnim, numericalnim, benchy, std / [math]</code></pre>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> (x, y) = meshgridFlat(linspace(-<span class="hljs-number">2.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">100</span>).toTensor, linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">3.0</span>, <span class="hljs-number">100</span>).toTensor)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> ggplotnim, numericalnim, benchy, std / [math]</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> (x, y) = meshgridFlat(linspace(-<span class="hljs-number">2.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">100</span>).toTensor, linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">3.0</span>, <span class="hljs-number">100</span>).toTensor)
 <span class="hljs-comment"># Log z to reduce its range</span>
 <span class="hljs-keyword">let</span> z = log10((<span class="hljs-number">1.0</span> -. x) ^. <span class="hljs-number">2</span> + <span class="hljs-number">100.0</span> * (y - x ^. <span class="hljs-number">2</span>) ^. <span class="hljs-number">2</span>)
 <span class="hljs-keyword">let</span> df = toDf(x, y, z)
@@ -256,7 +260,7 @@ ggplot(df, aes(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs
 </figure>
                         <p>As you can see the function's shape resembles a banana, and the dark spot
 on the right-hand side is the minimum. The format that <code>numericalnim</code> expects of the function is:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(theta: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> f(theta: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
   <span class="hljs-keyword">let</span> x = theta[<span class="hljs-number">0</span>]
   <span class="hljs-keyword">let</span> y = theta[<span class="hljs-number">1</span>]
   (<span class="hljs-number">1.0</span> - x) ^ <span class="hljs-number">2</span> + <span class="hljs-number">100.0</span> * (y - x ^ <span class="hljs-number">2</span>) ^ <span class="hljs-number">2</span></code></pre>
@@ -270,7 +274,7 @@ on the right-hand side is the minimum. The format that <code>numericalnim</code>
 </ul>
 <p>Now we are ready to try out the different methods, the only thing we need to provide is a start guess.
 To make it a bit of a challenge, let us start on the other side of the hill at $(-0.5, 2)$.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
 <span class="hljs-keyword">let</span> solutionSteepest = steepestDescent(f, theta0)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Steepest: &quot;</span>, solutionSteepest
 <span class="hljs-keyword">let</span> solutionNewton = newton(f, theta0)
@@ -287,7 +291,7 @@ benchy.timeIt <span class="hljs-string">&quot;Newton&quot;</span>:
 benchy.timeIt <span class="hljs-string">&quot;BFGS&quot;</span>:
   keep bfgs(f, theta0)
 benchy.timeIt <span class="hljs-string">&quot;LBFGS&quot;</span>:
-  keep lbfgs(f, theta0)</code></pre><pre class="nb-output"><samp>Steepest: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
+  keep lbfgs(f, theta0)</code></pre><pre class="nb-output">Steepest: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
     0.99157    0.983176
 Newton: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
     1     1
@@ -296,10 +300,10 @@ BFGS: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
 LBFGS: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
     1     1
    min time    avg time  std dv   runs name
-  97.224 ms   97.456 ms  ±0.174    x52 Steepest
-   0.172 ms    0.210 ms  ±0.075  x1000 Newton
-   2.739 ms    2.931 ms  ±0.073  x1000 BFGS
-   5.412 ms    5.573 ms  ±0.082   x898 LBFGS</samp></pre>
+ 357.320 ms  429.597 ms ±45.295    x12 Steepest
+   0.172 ms    0.328 ms  ±0.858  x1000 Newton
+   2.839 ms   12.164 ms  ±7.746   x412 BFGS
+   5.458 ms   15.298 ms  ±7.515   x324 LBFGS</pre>
                         <p>As we can see, Newton, BFGS and LBFGS found the exact solution and they did it fast.
 Steepest descent didn't find as good a solution and took by far the longest time.
 Steepest descent has an order of convergence of $O(N)$, Newton has $O(N^2)$ and (L)BFGS
@@ -313,7 +317,7 @@ and the time per step.</p>
 This is typically slower than providing the gradient as a function as <code>f</code> has to be called multiple times
 and the steps are not as accurate. All the above-mentioned methods supports this.
 To supply a analytical gradient is to create a function of the following form:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> fGradient(theta: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] =
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> fGradient(theta: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] =
   <span class="hljs-keyword">let</span> x = theta[<span class="hljs-number">0</span>]
   <span class="hljs-keyword">let</span> y = theta[<span class="hljs-number">1</span>]
   <span class="hljs-literal">result</span> = newTensor[<span class="hljs-built_in">float</span>](<span class="hljs-number">2</span>)
@@ -321,10 +325,10 @@ To supply a analytical gradient is to create a function of the following form:</
   <span class="hljs-literal">result</span>[<span class="hljs-number">1</span>] = <span class="hljs-number">100</span> * <span class="hljs-number">2</span> * (y - x*x)</code></pre>
                         <p>It takes the parameters as input and returns a Tensor of the same size with the gradient with respect to each parameter.
 It can then be supplied like this:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
 <span class="hljs-keyword">let</span> solutionLbfgs = lbfgs(f, theta0, analyticGradient=fGradient)
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;LBFGS (analytic): &quot;</span>, solutionLbfgs</code></pre><pre class="nb-output"><samp>LBFGS (analytic): Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
-    1     1</samp></pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;LBFGS (analytic): &quot;</span>, solutionLbfgs</code></pre><pre class="nb-output">LBFGS (analytic): Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
+    1     1</pre>
                         <p>No surprise that it also managed to find the correct solution.</p>
 <h2>Options</h2>
 <p>There are several options you can provide to the solver. Here's a summary of some of them:</p>
@@ -336,7 +340,7 @@ It can then be supplied like this:</p>
 <li><code>lineSearchCriterion</code>: Different methods of linesearch (Armijo, Wolfe, WolfeStrong, NoLineSearch).</li>
 </ul>
 <p>These are provided by creating a options object. Each method has its own initializer, for example:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> theta0 = [-<span class="hljs-number">0.5</span>, <span class="hljs-number">2.0</span>].toTensor()
 
 <span class="hljs-keyword">let</span> steepestOption = steepestDescentOptions[<span class="hljs-built_in">float</span>](alpha=<span class="hljs-number">1e-3</span>, fastMode=<span class="hljs-literal">true</span>)
 <span class="hljs-keyword">let</span> steepestSolution = steepestDescent(f, theta0, options=steepestOption)
@@ -349,20 +353,6 @@ It can then be supplied like this:</p>
 <li>We also have an article on <a href="https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html">curve fitting</a> which
 allows you to optimize parameters to minimize the error between a curve and data points.</li>
 </ul>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -399,7 +389,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->

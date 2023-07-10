@@ -31,6 +31,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -250,7 +254,7 @@ be a conversion factor injected.</p>
 It crashed. Why? Because the navigators at JPL used metric units while the manufacturers had used imperial units. So when
 the navigators thought they read 1 N⋅s from the craft's sensors it was in fact 1 lbf⋅s.</p>
 <p>As an introduction to <code>Unchained</code>, let's find out what 1 lbf⋅s is in N⋅s to understand how much of a difference it made.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> unchained
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> unchained
 
 <span class="hljs-comment">## Define composite units</span>
 defUnit(<span class="hljs-type">N•s</span>)
@@ -260,7 +264,7 @@ defUnit(lbf•s)
 <span class="hljs-keyword">let</span> lbfs = <span class="hljs-number">1.</span>lbf•s
 <span class="hljs-keyword">let</span> <span class="hljs-type">Ns</span> = lbfs.to(<span class="hljs-type">N•s</span>)
 
-<span class="hljs-keyword">echo</span> lbfs, <span class="hljs-string">&quot; equals &quot;</span>, <span class="hljs-type">Ns</span></code></pre><pre class="nb-output"><samp>1 lbf•s equals 4.44822 kg•m•s⁻¹</samp></pre>
+<span class="hljs-keyword">echo</span> lbfs, <span class="hljs-string">&quot; equals &quot;</span>, <span class="hljs-type">Ns</span></code></pre><pre class="nb-output">1 lbf•s equals 4.44822 kg•m•s⁻¹</pre>
                         <p>As you can see, they thought the value they read was 4.4 times smaller than it really was!</p>
 <p>But what does the code do? Let's dissect it block-by-block:</p>
 <ol>
@@ -278,7 +282,7 @@ Therefore you must define composite units manually before you use them. More on 
                         <h2>Defining and assigning units</h2>
 <p>The first thing you probably will want to do is to associate a value with a unit, for example 1 Newton. There are multiple ways
 to specify a unit, both short and long versions:</p>
-                        <pre><code class="nim hljs"><span class="hljs-comment">## Short version</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-comment">## Short version</span>
 <span class="hljs-keyword">let</span> n1 = <span class="hljs-number">1.</span><span class="hljs-type">N</span>
 <span class="hljs-comment">## Long version</span>
 <span class="hljs-keyword">let</span> n2 = <span class="hljs-number">1.</span><span class="hljs-type">Newton</span>
@@ -292,7 +296,7 @@ so you don't have to deal with them manually.</p>
 <p>When it comes to composite types it gets a bit more complicated though. For example if we want to use a unit <code>kg•m•s⁻¹</code> we
 have a few more things to consider. First and foremost, composite types must either be defined in a <code>defUnit</code> or be used in a
 dot expression (eg <code>10.kg•m•s⁻¹</code>) <em>before</em> it can be used in other parts of the code. Here are a few valid and invalid cases:</p>
-                        <pre><code class="nim hljs"><span class="hljs-comment">## Correct way of doing it!</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-comment">## Correct way of doing it!</span>
 defUnit(kg•m•s⁻¹)
 <span class="hljs-keyword">proc</span> unitProc(k: kg•m•s⁻¹) =
   <span class="hljs-keyword">echo</span> k</code></pre>
@@ -303,15 +307,15 @@ proc unitProc(k: kg•m•s⁻¹) =
                         <p>There is also the <code>UnitLess</code> type which represents a quantity without a unit like for example a count or a percentage.
 It is used like the other units with the addition that <code>UnitLess</code> numbers can be passed to procs accepting <code>float</code>.
 This is done through converters behind the scenes, so you don't have to manually convert between the two:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> = x*x + x + <span class="hljs-number">1</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> = x*x + x + <span class="hljs-number">1</span>
 <span class="hljs-keyword">let</span> ul = <span class="hljs-number">100.</span><span class="hljs-type">UnitLess</span>
 <span class="hljs-keyword">echo</span> f(ul)
 <span class="hljs-comment">## This will fail beacuse `x` isn't UnitLess:</span>
 <span class="hljs-comment">## let x = 100.kg</span>
-<span class="hljs-comment">## echo f(x)</span></code></pre><pre class="nb-output"><samp>10101.0</samp></pre>
+<span class="hljs-comment">## echo f(x)</span></code></pre><pre class="nb-output">10101.0</pre>
                         <p>To get the unit of a variable you can use <code>typeof</code> and checking units is done using <code>is</code>:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> mass = <span class="hljs-number">10.</span>kg
-<span class="hljs-keyword">echo</span> typeof(mass) <span class="hljs-keyword">is</span> kg</code></pre><pre class="nb-output"><samp>true</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> mass = <span class="hljs-number">10.</span>kg
+<span class="hljs-keyword">echo</span> typeof(mass) <span class="hljs-keyword">is</span> kg</code></pre><pre class="nb-output">true</pre>
                         <h3>Different ways to write units</h3>
 <p>As you might have noticed, we used a few unicode characters in the code above (•, ⁻¹). Most keyboard don't have these symbols on them but
 there are ways to work around that. On Linux you could check if your distro supports the &quot;Compose key&quot; which lets you use sensible
@@ -322,12 +326,12 @@ when you press <code>Windows + .</code> where you can find a multitude of symbol
 you can also write the types in backticks (<code>`</code>) and use <code>*</code> and <code>^</code>
 instead (<code>/</code> is not allowed, use negative exponents instead).
 Here are a few examples of equivalent ways of writing the same unit:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> unicodeUnit = <span class="hljs-number">1.</span>kg•m•s⁻¹
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> unicodeUnit = <span class="hljs-number">1.</span>kg•m•s⁻¹
 <span class="hljs-keyword">let</span> textUnit = <span class="hljs-number">1.</span>`kg*m*s^-<span class="hljs-number">1</span>`
-<span class="hljs-keyword">echo</span> unicodeUnit == textUnit</code></pre><pre class="nb-output"><samp>true</samp></pre>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> unicodeUnit = <span class="hljs-number">1.</span><span class="hljs-type">N•s</span>
+<span class="hljs-keyword">echo</span> unicodeUnit == textUnit</code></pre><pre class="nb-output">true</pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> unicodeUnit = <span class="hljs-number">1.</span><span class="hljs-type">N•s</span>
 <span class="hljs-keyword">let</span> textUnit = <span class="hljs-number">1.</span>`<span class="hljs-type">N</span>*s`
-<span class="hljs-keyword">echo</span> unicodeUnit == textUnit</code></pre><pre class="nb-output"><samp>true</samp></pre>
+<span class="hljs-keyword">echo</span> unicodeUnit == textUnit</code></pre><pre class="nb-output">true</pre>
                         <h3>Arithmetics with units</h3>
 <p>Units can of course be used in formulas. The supported operators are <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> and <code>^</code> (Note: <code>^</code> only work with integer exponents!).
 You don't have to <code>defUnit</code> the resulting unit of an operation, it's done automatically.
@@ -355,29 +359,15 @@ Example: <code>1.mm * 1.kg</code> results in <code>1 KiloGram•MilliMeter</code
 $$y(t) = A \cos (ω t + φ)$$
 where $ω$ is the frequency in $rad ⋅ s^{-1}$, $φ$ is an angle and $A$ is the maximum amplitude in $cm$.
 Let's get coding now!</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> math</code></pre>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> y(t: <span class="hljs-type">Second</span>): <span class="hljs-type">CentiMeter</span> =
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> math</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> y(t: <span class="hljs-type">Second</span>): <span class="hljs-type">CentiMeter</span> =
   <span class="hljs-keyword">let</span> ω = <span class="hljs-number">100.</span>rad•s⁻¹ <span class="hljs-comment">## or 100.`rad*s^-1`</span>
   <span class="hljs-keyword">let</span> <span class="hljs-type">A</span> = <span class="hljs-number">10.</span>cm
   <span class="hljs-keyword">let</span> φ = <span class="hljs-type">Pi</span>.rad
   <span class="hljs-keyword">let</span> argument = ω * t + φ
   <span class="hljs-literal">result</span> = <span class="hljs-type">A</span> * cos(argument)
 
-<span class="hljs-keyword">echo</span> y(<span class="hljs-number">0.</span>s)</code></pre><pre class="nb-output"><samp>-10 cm</samp></pre>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
+<span class="hljs-keyword">echo</span> y(<span class="hljs-number">0.</span>s)</code></pre><pre class="nb-output">-10 cm</pre>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -414,7 +404,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->

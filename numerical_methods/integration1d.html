@@ -31,6 +31,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -247,7 +251,7 @@ the <em>humps</em> function from MATLAB's demos:</p>
 <p>It has the primitive function:</p>
 <p>$$ F(x) = 10 \arctan(10x - 3) + 5 \arctan\left(5x - \frac{9}{2}\right) - 6x $$</p>
 <p>Let's code them!</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> math, sequtils
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> math, sequtils
 <span class="hljs-keyword">import</span> numericalnim, ggplotnim, benchy
 <span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>, ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
   <span class="hljs-literal">result</span> = <span class="hljs-number">1</span> / ((x - <span class="hljs-number">0.3</span>)^<span class="hljs-number">2</span> + <span class="hljs-number">0.01</span>) + <span class="hljs-number">1</span> / ((x - <span class="hljs-number">0.9</span>)^<span class="hljs-number">2</span> + <span class="hljs-number">0.04</span>) - <span class="hljs-number">6</span>
@@ -263,7 +267,7 @@ set of supported operations, as well as perform the integration using types <cod
 <p>We won't be integrating <code>F</code> (it is the indefinite integral already) so I skipped adding <code>ctx</code> there for simplicity.</p>
 <p>Aren't you curious of what <code>f(x)</code> looks like? Thought so! Let's plot them using <code>ggplotnim</code>,
 a more detailed plotting tutorial can be found <a href="../data_viz/plotting_data.html">here</a>.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> ctxPlot = newNumContext[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]()
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> ctxPlot = newNumContext[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]()
 <span class="hljs-keyword">let</span> xPlot = numericalnim.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1000</span>)
 <span class="hljs-keyword">let</span> yPlot = xPlot.mapIt(f(it, ctxPlot))
 
@@ -283,7 +287,7 @@ ggplot(dfPlot, aes(<span class="hljs-string">&quot;xPlot&quot;</span>, <span cla
 Where the last three are adaptive methods and the others are fixed-step methods. We will use a tolerance <code>tol=1e-6</code>
 for the adaptive methods and <code>N=100</code> intervals for the fixed-step methods.
 Let's code this now and compare them!</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
 <span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-6</span>
 <span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
@@ -301,16 +305,16 @@ Let's code this now and compare them!</p>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;GaussQuad Error:  &quot;</span>, gaussQuadError
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg Error:    &quot;</span>, rombergError
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;AdaSimpson Error: &quot;</span>, adaptiveSimpsonError
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;AdaGauss Error:   &quot;</span>, adaptiveGaussError</code></pre><pre class="nb-output"><samp>Trapz Error:      0.00123417243757018
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;AdaGauss Error:   &quot;</span>, adaptiveGaussError</code></pre><pre class="nb-output">Trapz Error:      0.00123417243757018
 Simpson Error:    3.129097940757219e-07
 GaussQuad Error:  3.907985046680551e-14
 Romberg Error:    3.411159354982374e-09
 AdaSimpson Error: 1.061664534063311e-09
-AdaGauss Error:   0.0</samp></pre>
+AdaGauss Error:   0.0</pre>
                         <p>It seems like the gauss methods were the most accurate with Romberg and Simpson
 coming afterwards and in last place trapz. But at what cost did these scores come at? Which method was the fastest?
 Let's find out with a package called <code>benchy</code>. <code>keep</code> is used to prevent the compiler from optimizing away the code:</p>
-                        <pre><code class="nim hljs">timeIt <span class="hljs-string">&quot;Trapz&quot;</span>:
+                        <pre><code class="nohighlight hljs nim">timeIt <span class="hljs-string">&quot;Trapz&quot;</span>:
   keep trapz(f, a, b, <span class="hljs-type">N</span>)
 
 timeIt <span class="hljs-string">&quot;Simpson&quot;</span>:
@@ -326,13 +330,13 @@ timeIt <span class="hljs-string">&quot;AdaSimpson&quot;</span>:
   keep adaptiveSimpson(f, a, b, tol=tol)
 
 timeIt <span class="hljs-string">&quot;AdaGauss&quot;</span>:
-  keep adaptiveGauss(f, a, b, tol=tol)</code></pre><pre class="nb-output"><samp>   min time    avg time  std dv   runs name
-   0.063 ms    0.070 ms  ±0.002  x1000 Trapz
-   0.063 ms    0.070 ms  ±0.002  x1000 Simpson
-   0.111 ms    0.117 ms  ±0.002  x1000 GaussQuad
-   0.082 ms    0.089 ms  ±0.002  x1000 Romberg
-   0.297 ms    0.306 ms  ±0.003  x1000 AdaSimpson
-   0.081 ms    0.113 ms  ±0.083  x1000 AdaGauss</samp></pre>
+  keep adaptiveGauss(f, a, b, tol=tol)</code></pre><pre class="nb-output">   min time    avg time  std dv   runs name
+   0.059 ms    0.069 ms  ±0.062  x1000 Trapz
+   0.059 ms    0.069 ms  ±0.056  x1000 Simpson
+   0.101 ms    0.112 ms  ±0.058  x1000 GaussQuad
+   0.077 ms    0.101 ms  ±0.128  x1000 Romberg
+   0.274 ms    0.470 ms  ±1.165  x1000 AdaSimpson
+   0.077 ms    0.123 ms  ±0.266  x1000 AdaGauss</pre>
                         <p>As we can see, all methods except AdaSimpson were roughly equally fast. So if I were to choose
 a winner, it would be <code>adaptiveGauss</code> because it was the most accurate while still being among
 the fastest methods.</p>
@@ -346,7 +350,7 @@ we need it as a function, not a single value. That is where cumulative integrati
 All methods except <code>cumGaussSpline</code> returns the cumulative integral as a <code>seq[T]</code>, but this instead returns a
 Hermite spline. We will both be calculating the errors and visualizing the different approximations of <code>F(x)</code>.
 Let's get coding!</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
 <span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-6</span>
 <span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
@@ -368,9 +372,9 @@ Let's get coding!</p>
 <span class="hljs-keyword">let</span> dfLong = df.gather([<span class="hljs-string">&quot;exact&quot;</span>, <span class="hljs-string">&quot;yTrapz&quot;</span>, <span class="hljs-string">&quot;ySimpson&quot;</span>, <span class="hljs-string">&quot;yGauss&quot;</span>], key=<span class="hljs-string">&quot;Method&quot;</span>, value=<span class="hljs-string">&quot;y&quot;</span>)
 ggplot(dfLong, aes(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>, color=<span class="hljs-string">&quot;Method&quot;</span>)) +
   geom_line() +
-  ggsave(<span class="hljs-string">&quot;images/continuousHumpsComparaision.png&quot;</span>)</code></pre><pre class="nb-output"><samp>Trapz Error:   0.1629684871013665
+  ggsave(<span class="hljs-string">&quot;images/continuousHumpsComparaision.png&quot;</span>)</code></pre><pre class="nb-output">Trapz Error:   0.1629684871013665
 Simpson Error: 0.001052250314251719
-Gauss Error:   5.453207330141652e-13</samp></pre>
+Gauss Error:   5.453207330141652e-13</pre>
                         <figure>
 <img src="../images/continuousHumpsComparaision.png" alt="">
 <figcaption></figcaption>
@@ -392,7 +396,7 @@ points to construct an accurate spline.</p>
 </blockquote>
 <p>The last method is <code>cumGaussSpline</code> which is identical to <code>cumGauss</code> except it constructs a Hermite spline
 from the returned values which can be evaluated when needed.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
 <span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-6</span>
 
@@ -402,9 +406,9 @@ from the returned values which can be evaluated when needed.</p>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Three points: &quot;</span>, spline.eval(@[<span class="hljs-number">0.0</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">1.0</span>]) <span class="hljs-comment"># or multiple at once</span>
 
 <span class="hljs-comment"># Thanks to converter you can integrate a spline by passing it as the function:</span>
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Integrate it again: &quot;</span>, adaptiveGauss(spline, a, b)</code></pre><pre class="nb-output"><samp>One point: 0.0
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Integrate it again: &quot;</span>, adaptiveGauss(spline, a, b)</code></pre><pre class="nb-output">One point: 0.0
 Three points: @[0.0, 21.78684367031352, 29.85832539549869]
-Integrate it again: 17.26538964301353</samp></pre>
+Integrate it again: 17.26538964301353</pre>
                         <p>I think that about wraps it up regarding integrating continuous functions! Let's take a look at
 integrating discrete data now!</p>
 <h2>Integrate Discrete Data</h2>
@@ -416,7 +420,7 @@ For example if we know the data isn't smooth (discontinuities), then <code>trapz
 than let's say <code>simpson</code>, because <code>simpson</code> assumes the data is smooth.</p>
 <p>Let's sample <code>f(x)</code> from above at let's say 9 points and plot how much information we lose by
 plotting the sampled points, a Hermite Spline interpolation of them and the original function:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> xSample = numericalnim.linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">9</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> xSample = numericalnim.linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">9</span>)
 <span class="hljs-keyword">var</span> ySample = xSample.mapIt(f(it, <span class="hljs-literal">nil</span>)) <span class="hljs-comment"># nil can be passed in instead of ctx if we don't use it</span>
 
 <span class="hljs-keyword">let</span> xDense = numericalnim.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1000</span>) <span class="hljs-comment"># &quot;continuous&quot; x</span>
@@ -449,7 +453,7 @@ is all the data we have at our disposal and let's see how the different methods 
 of the form <code>2^n + 1</code> (eg. 3, 5, 9, 17, 33 etc).</li>
 </ul>
 <p>Luckily for us our data satisfies all of them ;) So let's get coding:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> exact = <span class="hljs-type">F</span>(<span class="hljs-number">1</span>) - <span class="hljs-type">F</span>(<span class="hljs-number">0</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> exact = <span class="hljs-type">F</span>(<span class="hljs-number">1</span>) - <span class="hljs-type">F</span>(<span class="hljs-number">0</span>)
 
 <span class="hljs-keyword">var</span> trapzIntegral = trapz(ySample, xSample)
 <span class="hljs-keyword">var</span> simpsonIntegral = simpson(ySample, xSample)
@@ -461,17 +465,17 @@ of the form <code>2^n + 1</code> (eg. 3, 5, 9, 17, 33 etc).</li>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg: &quot;</span>, rombergIntegral
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:   &quot;</span>, abs(trapzIntegral - exact)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error: &quot;</span>, abs(simpsonIntegral - exact)
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg Error: &quot;</span>, abs(rombergIntegral - exact)</code></pre><pre class="nb-output"><samp>Exact:   29.85832539549867
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg Error: &quot;</span>, abs(rombergIntegral - exact)</code></pre><pre class="nb-output">Exact:   29.85832539549867
 Trapz:   29.33117732440506
 Simpson: 29.07021311510501
 Romberg: 28.53591179962037
 Trapz Error:   0.5271480710936096
 Simpson Error: 0.788112280393662
-Romberg Error: 1.322413595878309</samp></pre>
+Romberg Error: 1.322413595878309</pre>
                         <p>As expected all the methods underestimated the integral, but it might be unexpected that
 <code>trapz</code> performed the best out of them. Let's add a few more points, why not 33, and let's see if
 that changes things!</p>
-                        <pre><code class="nim hljs">xSample = numericalnim.linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">33</span>)
+                        <pre><code class="nohighlight hljs nim">xSample = numericalnim.linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">33</span>)
 ySample = xSample.mapIt(f(it, <span class="hljs-literal">nil</span>))
 
 sampledSpline = newHermiteSpline(xSample, ySample)
@@ -495,13 +499,13 @@ rombergIntegral = romberg(ySample, xSample)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg: &quot;</span>, rombergIntegral
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Trapz Error:   &quot;</span>, abs(trapzIntegral - exact)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Simpson Error: &quot;</span>, abs(simpsonIntegral - exact)
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg Error: &quot;</span>, abs(rombergIntegral - exact)</code></pre><pre class="nb-output"><samp>Exact:   29.85832539549867
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Romberg Error: &quot;</span>, abs(rombergIntegral - exact)</code></pre><pre class="nb-output">Exact:   29.85832539549867
 Trapz:   29.84626609518119
 Simpson: 29.85807788992319
 Romberg: 29.84669883230159
 Trapz Error:   0.01205930031748892
 Simpson Error: 0.0002475055754800337
-Romberg Error: 0.01162656319708333</samp></pre>
+Romberg Error: 0.01162656319708333</pre>
                         <figure>
 <img src="../images/sampledHumps33.png" alt="">
 <figcaption></figcaption>
@@ -518,7 +522,7 @@ it entirely depends on the data, so make sure to understand your data!</p>
 <h3>Cumulative Integration with Discrete Data</h3>
 <p>Performing cumulative integration on discrete data works the same as for continuous functions. The only differences are that
 only <code>cumtrapz</code> and <code>cumsimpson</code> are available and that you pass in <code>y</code> and <code>x</code> instead of <code>f</code>:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> a = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> b = <span class="hljs-number">1.0</span>
 <span class="hljs-keyword">let</span> tol = <span class="hljs-number">1e-6</span>
 <span class="hljs-keyword">let</span> <span class="hljs-type">N</span> = <span class="hljs-number">100</span>
@@ -538,8 +542,8 @@ only <code>cumtrapz</code> and <code>cumsimpson</code> are available and that yo
 <span class="hljs-keyword">let</span> dfLong = df.gather([<span class="hljs-string">&quot;exact&quot;</span>, <span class="hljs-string">&quot;yTrapz&quot;</span>, <span class="hljs-string">&quot;ySimpson&quot;</span>], key=<span class="hljs-string">&quot;Method&quot;</span>, value=<span class="hljs-string">&quot;y&quot;</span>)
 ggplot(dfLong, aes(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>, color=<span class="hljs-string">&quot;Method&quot;</span>)) +
   geom_line() +
-  ggsave(<span class="hljs-string">&quot;images/discreteHumpsComparaision.png&quot;</span>)</code></pre><pre class="nb-output"><samp>Trapz Error:   0.1667713445258438
-Simpson Error: 0.001344104336917881</samp></pre>
+  ggsave(<span class="hljs-string">&quot;images/discreteHumpsComparaision.png&quot;</span>)</code></pre><pre class="nb-output">Trapz Error:   0.1667713445258438
+Simpson Error: 0.001344104336917881</pre>
                         <figure>
 <img src="../images/discreteHumpsComparaision.png" alt="">
 <figcaption></figcaption>
@@ -548,20 +552,6 @@ Simpson Error: 0.001344104336917881</samp></pre>
 <ul>
 <li><a href="https://scinim.github.io/numericalnim/numericalnim/integrate.html">numericalnim's documentation on integration</a></li>
 </ul>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -598,7 +588,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->

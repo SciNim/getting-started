@@ -29,6 +29,10 @@
 
 
         
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -235,7 +239,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1>Using Julia with Nim</h1>
-<p>In this tutorial, we explore how to use <a href="https://github.com/Clokk/nimjl">Nimjl</a> to integrate <a href="https://julialang.org/">Julia</a> code with Nim.</p>
+<p>In this tutorial, we explore how to use <a href="https://github.com/Clonkk/nimjl">Nimjl</a> to integrate <a href="https://julialang.org/">Julia</a> code with Nim.</p>
 <h2>What is Julia ?</h2>
 <p>Julia is a dynamically typed scripting language designed for high performance; it compiles to efficient native code through LLVM.</p>
 <p>Most notably, it has a strong emphasis on scientific computing and Julia's Array types are one of the fastest multi-dimensional arrays - or Tensor-like - data structures out there.</p>
@@ -245,21 +249,21 @@
 <li>As an efficient scripting language in a compiled application.</li>
 </ul>
 <h1>Tutorial</h1>
-<p><a href="https://github.com/Clokk/nimjl">Nimjl</a> already has some <a href="https://github.com/Clonkk/nimjl/examples/">examples</a> that explains the basics, make sure to go through them in order.</p>
+<p><a href="https://github.com/Clonkk/nimjl">Nimjl</a> already has some <a href="https://github.com/Clonkk/nimjl/examples/">examples</a> that explains the basics, make sure to go through them in order.</p>
 <h2>Basic stuff</h2>
 <p>Nimjl is mostly a Nim wrapper around the C API of Julia; and then some syntax sugar around it to make it easier to use. That means that inherently, Nimjl is limited to the capabilities of the C-API of Julia.</p>
 <p>Now let's see what the code looks like :</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimjl
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> nimjl
 <span class="hljs-type">Julia</span>.init() <span class="hljs-comment"># Must be done once in the lifetime of your program</span>
 
 <span class="hljs-keyword">discard</span> <span class="hljs-type">Julia</span>.println(<span class="hljs-string">&quot;Hello world !&quot;</span>) <span class="hljs-comment"># Invoke the println function from Julia. This function return a nil JlValue</span>
 
 <span class="hljs-type">Julia</span>.exit() <span class="hljs-comment"># -&gt; This call is optionnal since it's called at the end of the process but making the exit explicit makes code more readable.</span>
-<span class="hljs-comment"># All successive Julia calls after the exit will probably segfault</span></code></pre><pre class="nb-output"><samp>Hello world !</samp></pre>
+<span class="hljs-comment"># All successive Julia calls after the exit will probably segfault</span></code></pre><pre class="nb-output">Hello world !</pre>
                         <p>The <code>Julia.init()</code> calls initialize the Julia VM. No call before the init will work.</p>
 <p>The <code>Julia.exit()</code> calls is optional since it's added as an exit procs (see <a href="https://nim-lang.org/docs/exitprocs.html">std/exitprocs</a> )</p>
 <p>Internally, this is rewritten to :</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">discard</span> jlCall(<span class="hljs-string">&quot;println&quot;</span>, <span class="hljs-string">&quot;Hello world !&quot;</span>)</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> jlCall(<span class="hljs-string">&quot;println&quot;</span>, <span class="hljs-string">&quot;Hello world !&quot;</span>)</code></pre>
                         <p>Both codes are identical; like mentioned above the <code>Julia.</code> is syntactic sugar for calling Julia functions; it always returns a JlValue (that can be nil if the Julia function does not return anything).</p>
 <p>The equivalent C code would be :</p>
 <pre><code class="language-c">    jl_function_t *func = jl_get_function(jl_base_module, &quot;println&quot;);
@@ -271,15 +275,15 @@
 <p>Most Nim values can be converted to JlValue through the function <code>toJlVal</code> or its alias <code>toJlValue</code> (I always got the two name confused so I ended up defining both...).</p>
 <p>When passing a Nim value as a Julia argument through <code>jlCall</code> or <code>Julia.myfunction</code>, Nim will automatically convert the argument by calling <code>toJlVal</code>.</p>
 <p>Let's see in practice what it means:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimjl
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> nimjl
 <span class="hljs-type">Julia</span>.init()
 <span class="hljs-keyword">var</span> res = <span class="hljs-type">Julia</span>.sqrt(<span class="hljs-number">255.0</span>)
 <span class="hljs-keyword">echo</span> res
 
 <span class="hljs-keyword">echo</span> typeof(res)
-<span class="hljs-keyword">echo</span> jltypeof(res)</code></pre><pre class="nb-output"><samp>15.968719422671311
+<span class="hljs-keyword">echo</span> jltypeof(res)</code></pre><pre class="nb-output">15.968719422671311
 JlValue
-Float64</samp></pre>
+Float64</pre>
                         <p><strong>This operation will perform a copy</strong> (almost always).</p>
 <p>For reference, the equivalent C code would be :</p>
 <pre><code class="language-c">jl_function_t *func = jl_get_function(jl_base_module, &quot;sqrt&quot;);
@@ -290,33 +294,19 @@ printf(&quot;cret=%f \n&quot;, cret);
 </code></pre>
 <h3>Converting from Julia to Nim</h3>
 <p>In the previous example we calculated the square root of 255.0, stored in a JlValue. But using JlValue in Nim is hardly practical, so let's how to convert it back to a float:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> nimRes = res.to(<span class="hljs-built_in">float64</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> nimRes = res.to(<span class="hljs-built_in">float64</span>)
 <span class="hljs-keyword">echo</span> nimRes
 <span class="hljs-keyword">echo</span> typeof(nimRes)
 <span class="hljs-keyword">import</span> std/math
 <span class="hljs-comment"># Check the result</span>
-<span class="hljs-keyword">assert</span> nimRes == sqrt(<span class="hljs-number">255.0</span>)</code></pre><pre class="nb-output"><samp>15.96871942267131
-float64</samp></pre>
+<span class="hljs-keyword">assert</span> nimRes == sqrt(<span class="hljs-number">255.0</span>)</code></pre><pre class="nb-output">15.96871942267131
+float64</pre>
                         <p>For convenience:</p>
 <ul>
 <li><code>proc jltypeof(x: JlVal) : string</code> will invoke the Julia function <code>typeof</code> and convert the result to a string.</li>
 <li><code>proc `$`(x: JlVal) : string</code> will call the Julia function <code>string</code> and convert the result to a string - this allow us to call <code>echo</code> with JlValue and obtain the same output as Julia's <code>println</code>.</li>
 </ul>
 <p>Keep these procs in mind as they will often be used in the following examples.</p>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -353,7 +343,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->

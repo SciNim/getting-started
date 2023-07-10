@@ -31,6 +31,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -241,7 +245,7 @@
 simple solutions you can solve using pen and paper. That is where numerical solutions come in. They allow
 us to solve these equations approximately. We will use <a href="https://github.com/SciNim/numericalnim">numericalnim</a>
 for this. The required imports are:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> ggplotnim, numericalnim, benchy, std / [math, sequtils]</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> ggplotnim, numericalnim, benchy, std / [math, sequtils]</code></pre>
                         <p>We will use an ODE with a known solution to be able to compare our numerical solution with
 the analytical one. The ODE we will solve is:
 $$y' = y (1 - y)$$
@@ -256,7 +260,7 @@ limited amounts of resources the growth stops and it reaches an equilibrium. The
 </figure>
                         <h2>Let's code</h2>
 <p>Let us create the function for evaluating the derivative $y'(t, y)$:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> exact(t: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> exact(t: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
   <span class="hljs-number">1</span> / (<span class="hljs-number">1</span> + <span class="hljs-number">9</span>*exp(-t))
 
 <span class="hljs-keyword">proc</span> dy(t: <span class="hljs-built_in">float</span>, y: <span class="hljs-built_in">float</span>, ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
@@ -265,7 +269,7 @@ limited amounts of resources the growth stops and it reaches an equilibrium. The
 where <code>T</code> is the type of the function value (can be <code>Tensor[float]</code> if you have a vector-valued function),
 and <code>ctx</code> is a context variable that allows you to pass parameters or save information between function calls.
 Now we need to define a few parameters before we can do the actual solving:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> t0 = <span class="hljs-number">0.0</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> t0 = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> tEnd = <span class="hljs-number">10.0</span>
 <span class="hljs-keyword">let</span> y0 = <span class="hljs-number">0.1</span> <span class="hljs-comment"># initial condition</span>
 <span class="hljs-keyword">let</span> tspan = linspace(t0, tEnd, <span class="hljs-number">20</span>)
@@ -294,12 +298,12 @@ The only thing left is to choose which method we want to use. The fixed step-siz
 <li><a href="https://www.sfu.ca/~jverner/">vern65</a></li>
 </ul>
                         <p>That is a lot to choose from, but its hard to go wrong with any of the adaptive methods <code>dopri54, tsit54 &amp; vern65</code>. So let's use <code>tsit54</code>!</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> (t, y) = solveOde(dy, y0, tspan, odeOptions, integrator=<span class="hljs-string">&quot;tsit54&quot;</span>)
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> (t, y) = solveOde(dy, y0, tspan, odeOptions, integrator=<span class="hljs-string">&quot;tsit54&quot;</span>)
 <span class="hljs-keyword">let</span> error = abs(y[^<span class="hljs-number">1</span>] - exact(t[^<span class="hljs-number">1</span>]))
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Error: &quot;</span>, error</code></pre><pre class="nb-output"><samp>Error: 3.33066907387547e-16</samp></pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Error: &quot;</span>, error</code></pre><pre class="nb-output">Error: 3.33066907387547e-16</pre>
                         <p>We call <code>solveOde</code> with our parameters and it returns one <code>seq</code> with our time points and one with our solution at those points.
 We can check the error at the last point and we see that it is around <code>3e-16</code>. Let's plot this solution:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> yExact = t.mapIt(exact(it))
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> yExact = t.mapIt(exact(it))
 <span class="hljs-keyword">var</span> df = toDf(t, y, yExact)
 df = df.gather([<span class="hljs-string">&quot;y&quot;</span>, <span class="hljs-string">&quot;yExact&quot;</span>], key=<span class="hljs-string">&quot;Class&quot;</span>, value=<span class="hljs-string">&quot;y&quot;</span>)
 ggplot(df, aes(<span class="hljs-string">&quot;t&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>, color=<span class="hljs-string">&quot;Class&quot;</span>)) +
@@ -327,11 +331,11 @@ ggplot(df, aes(<span class="hljs-string">&quot;t&quot;</span>, <span class="hljs
                         <p>We can see that the higher-order methods has a lower error compared to the lower-order ones. Tweaking the
 <code>odeOptions</code> would probably get them on-par with the others. There is one parameter we haven't talked about though,
 the execution time. Let's look at that and see if it bring any further insights:</p>
-                        <pre><code class="nim hljs"></code></pre><pre class="nb-output"><samp>   min time    avg time  std dv   runs name
-   7.775 ms    7.922 ms  ±0.085   x631 heun2
-  11.020 ms   11.164 ms  ±0.091   x448 rk4
-   0.283 ms    0.322 ms  ±0.080  x1000 rk21
-   0.346 ms    0.384 ms  ±0.080  x1000 tsit54</samp></pre>
+                        <pre><code class="nohighlight hljs nim"></code></pre><pre class="nb-output">   min time    avg time  std dv   runs name
+   7.521 ms   16.037 ms  ±6.048   x307 heun2
+  10.688 ms   14.887 ms  ±5.421   x334 rk4
+   0.278 ms    0.327 ms  ±0.175  x1000 rk21
+   0.342 ms    0.385 ms  ±0.124  x1000 tsit54</pre>
                         <p>As we can see, the adaptive methods are orders of magnitude faster while achieving roughly the same errors.
 This is because they take fewer and longer steps when the function is flatter and only decrease the
 step-size when the function is changing more rapidly.</p>
@@ -359,14 +363,14 @@ $$\mathbf{v}(0) = [0, 1]^T$$</p>
 This function can be represented as a matrix multiplication, $\mathbf{v}' = A\mathbf{v}$, with a matrix $A$:
 $$A = \begin{bmatrix}0 &amp; 1\\-1 &amp; 0\end{bmatrix}$$</p>
 <p>Let us code this function but let us also take this opportunity to explore the <code>NumContext</code> to pass in <code>A</code>.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> dv(t: <span class="hljs-built_in">float</span>, y: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>], ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>], <span class="hljs-built_in">float</span>]): <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] =
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> dv(t: <span class="hljs-built_in">float</span>, y: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>], ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>], <span class="hljs-built_in">float</span>]): <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] =
   ctx.tValues[<span class="hljs-string">&quot;A&quot;</span>] * y</code></pre>
                         <p><code>NumContext</code> consists of two tables, <code>ctx.fValues</code> which can contain <code>float</code>s and <code>ctx.tValues</code> which in this case can hold
 <code>Tensor[float]</code>. So we access <code>A</code> which we will insert when creating the context variable:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">var</span> ctx = newNumContext[<span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>], <span class="hljs-built_in">float</span>]()
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> ctx = newNumContext[<span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>], <span class="hljs-built_in">float</span>]()
 ctx.tValues[<span class="hljs-string">&quot;A&quot;</span>] = @[@[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>], @[-<span class="hljs-number">1.0</span>, <span class="hljs-number">0.0</span>]].toTensor</code></pre>
                         <p>Now we are ready to setup and run the simulation as we did previously:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> t0 = <span class="hljs-number">0.0</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> t0 = <span class="hljs-number">0.0</span>
 <span class="hljs-keyword">let</span> tEnd = <span class="hljs-number">20.0</span>
 <span class="hljs-keyword">let</span> y0 = @[@[<span class="hljs-number">0.0</span>], @[<span class="hljs-number">1.0</span>]].toTensor <span class="hljs-comment"># initial condition</span>
 <span class="hljs-keyword">let</span> tspan = linspace(t0, tEnd, <span class="hljs-number">50</span>)
@@ -375,7 +379,7 @@ ctx.tValues[<span class="hljs-string">&quot;A&quot;</span>] = @[@[<span class="h
 <span class="hljs-keyword">let</span> (t, y) = solveOde(dv, y0, tspan, odeOptions, ctx=ctx, integrator=<span class="hljs-string">&quot;tsit54&quot;</span>)
 <span class="hljs-keyword">let</span> yEnd = y[^<span class="hljs-number">1</span>][<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]
 <span class="hljs-keyword">let</span> error = abs(yEnd - sin(tEnd))
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Error: &quot;</span>, error</code></pre><pre class="nb-output"><samp>Error: 2.114974861910923e-13</samp></pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Error: &quot;</span>, error</code></pre><pre class="nb-output">Error: 2.114974861910923e-13</pre>
                         <p>The error is nice and low. The error for the other methods are along with the timings:</p>
                         <ul>
 <li>heun2: 1.361859e-08</li>
@@ -389,29 +393,15 @@ ctx.tValues[<span class="hljs-string">&quot;A&quot;</span>] = @[@[<span class="h
                         <ul>
 <li>tsit54: 2.114975e-13</li>
 </ul>
-                        <pre><code class="nim hljs"></code></pre><pre class="nb-output"><samp>4513.710 ms 4523.889 ms ±14.396     x2 heun2
-9170.500 ms 9170.500 ms  ±0.000     x1 rk4
-  86.940 ms   87.096 ms  ±0.060    x58 rk21
- 407.699 ms  407.815 ms  ±0.065    x13 tsit54</samp></pre>
+                        <pre><code class="nohighlight hljs nim"></code></pre><pre class="nb-output">4572.201 ms 4575.286 ms  ±4.364     x2 heun2
+9347.713 ms 9347.713 ms  ±0.000     x1 rk4
+  88.028 ms   88.096 ms  ±0.039    x57 rk21
+ 411.828 ms  411.949 ms  ±0.091    x13 tsit54</pre>
                         <p>We can once again see that the high-order adaptive methods are both more accurate and faster than the fixed-order ones.</p>
 <h2>Further reading</h2>
 <ul>
 <li><a href="https://scinim.github.io/numericalnim/numericalnim/ode.html">numericalnim's documentation on ODEs</a></li>
 </ul>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -448,7 +438,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->

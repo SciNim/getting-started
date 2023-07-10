@@ -31,6 +31,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -242,7 +246,7 @@ Often you have data in a finite number of discrete points instead. Two common wa
 interpolate the data or if you know the form it should take you can do curve fitting. In this tutorial we will cover the
 interpolation approach in 1D, 2D and 3D for some cases.</p>
 <p>We will be using <a href="https://github.com/SciNim/numericalnim">numericalnim</a> for this and the imports we will need are:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> numericalnim, arraymancer, ggplotnim, std/[math, sequtils]</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> numericalnim, arraymancer, ggplotnim, std/[math, sequtils]</code></pre>
                         <h2>1D Interpolation</h2>
 <p>This is the simplest case of interpolation and <code>numericalnim</code> can handle both evenly spaced and variable spacing in 1D.
 We will use the function $$f(x) = \sin(3x) (x-2)^2$$ for our benchmarks:</p>
@@ -251,7 +255,7 @@ We will use the function $$f(x) = \sin(3x) (x-2)^2$$ for our benchmarks:</p>
 <figcaption></figcaption>
 </figure>
                         <p>Let's get interpolating! We first define the function and sample from it:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> = sin(<span class="hljs-number">3</span>*x) * (x - <span class="hljs-number">2</span>)^<span class="hljs-number">2</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> = sin(<span class="hljs-number">3</span>*x) * (x - <span class="hljs-number">2</span>)^<span class="hljs-number">2</span>
 
 <span class="hljs-keyword">let</span> x = linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">4.2</span>, <span class="hljs-number">10</span>)
 <span class="hljs-keyword">let</span> y = x.map(f)</code></pre>
@@ -265,12 +269,12 @@ We will use the function $$f(x) = \sin(3x) (x-2)^2$$ for our benchmarks:</p>
 The Hermite spline can optionally supply the derivatives at each point as well.
 We will be using the Hermite spline without the derivatives, they will be approximated
 using finite differences for us.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = newHermiteSpline(x, y)</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> interp = newHermiteSpline(x, y)</code></pre>
                         <p>Now that we have constructed the interpolator, we can evaluate it using <code>eval</code>.
 It accepts either a single input or a <code>seq</code> of inputs:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> interp.eval(<span class="hljs-number">1.0</span>)
-<span class="hljs-keyword">echo</span> interp.eval(@[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>])</code></pre><pre class="nb-output"><samp>0.2080277072449881
-@[0.2080277072449881, 0.01739123273517499]</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> interp.eval(<span class="hljs-number">1.0</span>)
+<span class="hljs-keyword">echo</span> interp.eval(@[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>])</code></pre><pre class="nb-output">0.2080277072449881
+@[0.2080277072449881, 0.01739123273517499]</pre>
                         <p>We can now evaluate it on a denser set of points and compare it to the original function:</p>
                         <figure>
 <img src="../images/compare_interp.png" alt="">
@@ -279,6 +283,34 @@ It accepts either a single input or a <code>seq</code> of inputs:</p>
                         <p>As we can see, the interpolant does a decent job of approximating the function.
 It is worse where the function is changing a lot and closer to the original
 in the middle where there is less happening.</p>
+<h3>Extrapolation</h3>
+<p>For 1D interpolators, extrapolation is supported. The available methods are:</p>
+<ul>
+<li><code>Constant</code>: Set all points outside the range of the interpolator to a specified value.</li>
+<li><code>Edge</code>: Use the value of the left/right edge.</li>
+<li><code>Linear</code>: Uses linear extrapolation using the two points closest to the edge.</li>
+<li><code>Native</code> (default): Uses the native method of the interpolator to extrapolate. For Linear1D it will be a linear extrapolation, and for Cubic and Hermite splines it will be cubic extrapolation.</li>
+<li><code>Error</code>: Raises an <code>ValueError</code> if <code>x</code> is outside the range.</li>
+</ul>
+<p>The extrapolation method is optionally supplied as an argument to <code>eval</code> and <code>derivEval</code>:</p>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Edge: &quot;</span>, interp.eval(-<span class="hljs-number">1.0</span>, <span class="hljs-type">Edge</span>) <span class="hljs-comment"># will use the value at x=0</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Constant: &quot;</span>, interp.eval(-<span class="hljs-number">1.0</span>, <span class="hljs-type">Constant</span>, <span class="hljs-type">NaN</span>) <span class="hljs-comment"># will return NaN</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Linear: &quot;</span>, interp.eval(-<span class="hljs-number">1.0</span>, <span class="hljs-type">ExtrapolateKind</span>.<span class="hljs-type">Linear</span>)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Native: &quot;</span>, interp.eval(-<span class="hljs-number">1.0</span>) <span class="hljs-comment"># will use Native by default</span></code></pre><pre class="nb-output">Edge: 0.0
+Constant: nan
+Linear: -4.964789592037099
+Native: 25.7213250632593</pre>
+                        <p>As you can see, the choice of extrapolation method affects the values considerably.
+Keep in mind though that <code>-1.0</code> is quite a big extrapolation and the further away we go, the worse the approximation gets.</p>
+<p>Here is a visual example of how the different methods behave. I have removed the two outermost points on each side from the example before (ignore the point at <code>(0, 0)</code>, it's a bug):</p>
+                        <figure>
+<img src="../images/compare_interp_extrapolate.png" alt="Showcase of the extrapolation methods.">
+<figcaption>Showcase of the extrapolation methods.</figcaption>
+</figure>
+                        <p>As we can see, the <code>Edge</code> and <code>Constant</code> are just horizontal lines while <code>Linear</code> has the same slope as the edge of the interpolant.
+<code>Native</code> on the other hand is smooth but quite quickly starts to take off towards $\pm \infty$ (for the linear interpolator it would behave the same as <code>Linear</code> though).
+Which method you should use is very dependent on the application and what behavior you want it to exhibit.
+Of course, you should try to avoid extrapolation whenever possible.</p>
                         <h2>2D interpolation</h2>
 <p>For 2D interpolation, <code>numericalnim</code> offers 3 methods for gridded data:</p>
 <ul>
@@ -304,7 +336,7 @@ This will be a Gaussian centered around <code>(0, 0)</code>, here's a heatmap sh
 with the function values in grid as a Tensor. So if we have a 3x3 grid of data points, the Tensor
 should have shape 3x3 as well. Because the data is known to be on a grid, you don't have to give
 all the points on it, it's enough to only provide the limits as two tuples.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> f(x, y: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
   exp(-(x*x + y*y))
 
 <span class="hljs-keyword">let</span> xlim = (-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>)
@@ -317,9 +349,9 @@ all the points on it, it's enough to only provide the limits as two tuples.</p>
   <span class="hljs-keyword">for</span> j, y <span class="hljs-keyword">in</span> ys:
     z[i, j] = f(x, y)</code></pre>
                         <p>Now we have sampled our function, let's construct the interpolator:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = newBicubicSpline(z, xlim, ylim)</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> interp = newBicubicSpline(z, xlim, ylim)</code></pre>
                         <p>The interpolator can now be evaluated using <code>eval</code>:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> interp.eval(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>)</code></pre><pre class="nb-output"><samp>1.0</samp></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> interp.eval(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>)</code></pre><pre class="nb-output">1.0</pre>
                         <p>We can now plot the function to see how much it resembles the original function (the dots are the sampled points):</p>
                         <figure>
 <img src="../images/2d_interp_eval.png" alt="">
@@ -349,8 +381,8 @@ and the function values (can be multi-valued) of shape <code>(nPoints, nValues)<
 the points aren't gridded but if you want to create points on a grid you can do it with the
 <code>meshgrid</code> function. It takes in a <code>varargs</code> of <code>Tensor[float]</code>, one <code>Tensor</code> for each dimension containing the
 grid values in that dimension. An example is:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> x = meshgrid(arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>), arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>), arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>))
-<span class="hljs-keyword">echo</span> x[<span class="hljs-number">0.</span>.<span class="hljs-number">10</span>, _]</code></pre><pre class="nb-output"><samp>Tensor[system.float] of shape &quot;[11, 3]&quot; on backend &quot;Cpu&quot;
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> x = meshgrid(arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>), arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>), arraymancer.linspace(-<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">5</span>))
+<span class="hljs-keyword">echo</span> x[<span class="hljs-number">0.</span>.<span class="hljs-number">10</span>, _]</code></pre><pre class="nb-output">Tensor[system.float] of shape &quot;[11, 3]&quot; on backend &quot;Cpu&quot;
 |-1        -1      -1|
 |-0.5      -1      -1|
 |0         -1      -1|
@@ -361,24 +393,24 @@ grid values in that dimension. An example is:</p>
 |0       -0.5      -1|
 |0.5     -0.5      -1|
 |1       -0.5      -1|
-|-1         0      -1|</samp></pre>
+|-1         0      -1|</pre>
                         <p>which will create a 3D grid with 5 points between -1 and 1 in each of the dimensions.</p>
 <p>Now let's define a function we are going to interpolate:
 $$f(x, y, z) = \sin(x) \sin(y) \sin(z)$$
 Here's the code for implementing it:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] =
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> f(x: <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-type">Tensor</span>[<span class="hljs-built_in">float</span>] =
   product(sin(x), axis=<span class="hljs-number">1</span>)
   
 <span class="hljs-keyword">let</span> y = f(x)</code></pre>
                         <p>Now we can construct the interpolator as such:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> interp = newRbf(x, y)</code></pre>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> interp = newRbf(x, y)</code></pre>
                         <p>Evaluation is done by calling <code>eval</code> with the evaluation point(s):</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">let</span> xEval = [[<span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>], [<span class="hljs-number">0.6</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.3</span>], [<span class="hljs-number">0.75</span>, -<span class="hljs-number">0.23</span>, <span class="hljs-number">0.46</span>]].toTensor
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> xEval = [[<span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>], [<span class="hljs-number">0.6</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.3</span>], [<span class="hljs-number">0.75</span>, -<span class="hljs-number">0.23</span>, <span class="hljs-number">0.46</span>]].toTensor
 <span class="hljs-keyword">echo</span> interp.eval(xEval).squeeze
-<span class="hljs-keyword">echo</span> f(xEval).squeeze</code></pre><pre class="nb-output"><samp>Tensor[system.float] of shape &quot;[3]&quot; on backend &quot;Cpu&quot;
+<span class="hljs-keyword">echo</span> f(xEval).squeeze</code></pre><pre class="nb-output">Tensor[system.float] of shape &quot;[3]&quot; on backend &quot;Cpu&quot;
     0.110195     0.0784921    -0.0651828
 Tensor[system.float] of shape &quot;[3]&quot; on backend &quot;Cpu&quot;
-    0.110195     0.0799985    -0.0689888</samp></pre>
+    0.110195     0.0799985    -0.0689888</pre>
                         <p>As we can see by comparing the exact solution with the interpolant, they are pretty close to each other.</p>
 <h2>Conclusion</h2>
 <p>As we have seen, you can do all sorts of interpolations in Nim with just a few lines of code.
@@ -390,20 +422,6 @@ Have a nice day!</p>
 <li><a href="https://scinim.github.io/getting-started/numerical_methods/curve_fitting.html">Curve fitting</a> is a method you can use
 if you know the parametric form of the function of the data you want to interpolate.</li>
 </ul>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -440,7 +458,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->

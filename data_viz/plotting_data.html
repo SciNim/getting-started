@@ -29,6 +29,10 @@
 
 
         
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
         
         <!-- plausible analytics (new in nimibook) -->
         <script defer data-domain="scinim.github.io/getting-started" src="https://plausible.io/js/plausible.js"></script>
@@ -259,7 +263,7 @@ as long as you speak its language.</p>
 <h2>A motivating example</h2>
 <p>Let's now consider a somewhat complicated plotting example. Using that we will look at why
 it is called a <em>grammar</em> of graphics.</p>
-                        <pre><code class="nim hljs"><span class="hljs-comment">## ignore the dummy `df` here. This is to be able to compile the code (we throw away</span>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-comment">## ignore the dummy `df` here. This is to be able to compile the code (we throw away</span>
 <span class="hljs-comment">## the `ggplot` result as we don't call `ggsave`)</span>
 <span class="hljs-keyword">let</span> df = toDf({<span class="hljs-string">&quot;Energy&quot;</span> : @[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;Counts&quot;</span> : @[<span class="hljs-number">2</span>], <span class="hljs-string">&quot;Type&quot;</span> : @[<span class="hljs-string">&quot;background&quot;</span>]})
 <span class="hljs-keyword">discard</span> ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>)) +
@@ -447,7 +451,7 @@ integer numbers</li>
 25 as &quot;candidates&quot;</li>
 </ul>
 <p>Our construction in the following is a bit artificial of course.</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">import</span> ggplotnim, random, sequtils
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> ggplotnim, random, sequtils
 randomize(<span class="hljs-number">42</span>)
 <span class="hljs-keyword">let</span> df = toDf({ <span class="hljs-string">&quot;Energy&quot;</span> : cycle(linspace(<span class="hljs-number">0.0</span>, <span class="hljs-number">10.0</span>, <span class="hljs-number">25</span>).toRawSeq, <span class="hljs-number">2</span>),
                     <span class="hljs-string">&quot;Counts&quot;</span> : concat(toSeq(<span class="hljs-number">0</span> ..&lt; <span class="hljs-number">25</span>).mapIt(rand(<span class="hljs-number">10.0</span>)),
@@ -456,7 +460,7 @@ randomize(<span class="hljs-number">42</span>)
                                     newSeqWith(<span class="hljs-number">25</span>, <span class="hljs-string">&quot;candidates&quot;</span>)) })
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Input data frame: &quot;</span>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Head(10): &quot;</span>, df.head(<span class="hljs-number">10</span>).pretty(<span class="hljs-number">10</span>)
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Tail(10): &quot;</span>, df.tail(<span class="hljs-number">10</span>).pretty(<span class="hljs-number">10</span>)</code></pre><pre class="nb-output"><samp>Input data frame: 
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Tail(10): &quot;</span>, df.tail(<span class="hljs-number">10</span>).pretty(<span class="hljs-number">10</span>)</code></pre><pre class="nb-output">Input data frame: 
 Head(10): DataFrame with 3 columns and 10 rows:
      Idx       Energy       Counts         Type
   dtype:        float        float       string
@@ -483,7 +487,7 @@ Tail(10): DataFrame with 3 columns and 10 rows:
        6         8.75            2   candidates
        7        9.167            6   candidates
        8        9.583            8   candidates
-       9           10            0   candidates</samp></pre>
+       9           10            0   candidates</pre>
                         <p>What we want to achieve as a final plot is the following, where the explanations
 are mainly due to the original motivation of where the plot example is taken from:</p>
 <ul>
@@ -501,7 +505,7 @@ we can write down some variance in our candidates)</li>
 </ul>
 <h4>Building layer 1 - <code>geom_histogram</code></h4>
 <p>So, let's start with drawing a histogram of &quot;Energy&quot; and &quot;Counts&quot;:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>)) +
   geom_histogram() +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_0.png&quot;</span>)</code></pre>
                         <figure>
@@ -514,7 +518,7 @@ histogram based on the <code>x</code> aesthetic. (Note: it should at least print
 message if a <code>y</code> aesthetic is given that user probably wants identity stats!).
 Instead our data is <em>already</em> binned. We need the <code>stat = &quot;identity&quot;</code> option to
 the <code>geom_histogram</code> call:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>) +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_1.png&quot;</span>)</code></pre>
                         <figure>
@@ -534,16 +538,16 @@ the full range from 0 to 10 (with a &quot;negative&quot; bin width if we compute
 </ol>
 <p>it bin to bin). Let's check that assumption by printing values between
 index 24 and 26 from our data frame:</p>
-                        <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df[<span class="hljs-number">24</span> .. <span class="hljs-number">26</span>]</code></pre><pre class="nb-output"><samp>DataFrame with 3 columns and 3 rows:
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> df[<span class="hljs-number">24</span> .. <span class="hljs-number">26</span>]</code></pre><pre class="nb-output">DataFrame with 3 columns and 3 rows:
      Idx       Energy       Counts         Type
   dtype:        float        float       string
        0           10        8.151   background
        1            0            9   candidates
-       2       0.4167            8   candidates</samp></pre>
+       2       0.4167            8   candidates</pre>
                         <p>As we can see index 24 with a value of <code>2.746</code> is used for a bin with bin width 10.</p>
 <p>To get closer to the plot we want, we will perform classification by a discrete
 variable. Let's <code>color</code> by the &quot;Type&quot; column:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>) +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_2.png&quot;</span>)</code></pre>
                         <figure>
@@ -556,7 +560,7 @@ two classes found in column &quot;Type&quot;.</p>
 10. And didn't we say we want to have classification by <code>color</code>? For bars
 <code>color</code> refers to the <em>outline</em> of a bar. We need to add a <code>fill</code> to get the
 bars into a fully colored object.</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>) +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_3.png&quot;</span>)</code></pre>
                         <figure>
@@ -568,7 +572,7 @@ another. This is the default behavior for classified histograms so
 that all the data is visible. Without transparency we would hide data
 otherwise.</p>
 <p>To change this behavior to the one we want we will apply <code>position =&quot;identity&quot;</code>:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>) +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_4.png&quot;</span>)</code></pre>
                         <figure>
@@ -578,7 +582,7 @@ otherwise.</p>
                         <p>This is already looking somewhat reasonable, barring the fact that we now
 have the exact problem stacking is supposed to fix. One histogram overlaps
 the other. We can solve that by applying 50% alpha channel:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>) +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_5.png&quot;</span>)</code></pre>
                         <figure>
@@ -589,7 +593,7 @@ the other. We can solve that by applying 50% alpha channel:</p>
 annoyance is that the outline is still sticking out between all bars,
 which makes it more busy than it should be. Let's fix that by drawing
 the histograms using <em>outlines</em> instead of individual bars:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>, hdKind = hdOutline) +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_6.png&quot;</span>)</code></pre>
                         <figure>
@@ -602,7 +606,7 @@ of our plot. As we can see, we've added <em>one</em> geom to the call chain. One
 <p>Next up, let's plot some points for the data to better highlight where our actual
 data lies (and to lay the foundation for our error bars). This is as simple as adding
 a single <code>geom_point</code> call into the chain:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>, hdKind = hdOutline) +
   geom_point() +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_7.png&quot;</span>)</code></pre>
@@ -617,7 +621,7 @@ the <code>x</code> axis data as bin edges, whereas point plot of courses uses th
 location where to draw the points.</p>
 <p>However, the grammar of graphics allows us to change that as well. Let's tell <code>geom_point</code>
 that the data points are <em>bin centers</em>:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>, hdKind = hdOutline) +
   geom_point(binPosition = <span class="hljs-string">&quot;center&quot;</span>) +
   ggsave(<span class="hljs-string">&quot;images/multi_layer_histogram_8.png&quot;</span>)</code></pre>
@@ -634,7 +638,7 @@ draw nothing, because without limits error bars make no sense).</p>
 <p>So, let's assume we want (arbitrary) error bars that are ± 1 at each
 point. This can be achieved by assigning a formula to the <code>yMin</code> and
 <code>yMax</code> aesthetic in which we describe this relationship. Start with <code>yMin</code>:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>, hdKind = hdOutline) +
   geom_point(binPosition = <span class="hljs-string">&quot;center&quot;</span>) +
   geom_errorbar(aes = aes(yMin = f{`<span class="hljs-type">Counts</span>` - <span class="hljs-number">1.0</span>})) +
@@ -650,7 +654,7 @@ should stop at 0, because we cannot measure negative counts!</p>
 in each case between the computed difference and 0.</p>
 <p>And in addition they are also drawn on the left side of each bin. Let's fix
 both the range of the bar as well as its placement:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>, hdKind = hdOutline) +
   geom_point(binPosition = <span class="hljs-string">&quot;center&quot;</span>) +
   geom_errorbar(binPosition = <span class="hljs-string">&quot;center&quot;</span>, aes = aes(yMin = f{max(`<span class="hljs-type">Counts</span>` - <span class="hljs-number">1.0</span>, <span class="hljs-number">0.0</span>)})) +
@@ -661,7 +665,7 @@ both the range of the bar as well as its placement:</p>
 </figure>
                         <p>Much better. Of course we still only have error bars in the negative direction and lines
 down to zero (<code>yMax</code> is unset, so default value 0). On to add positive bars then:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>, hdKind = hdOutline) +
   geom_point(binPosition = <span class="hljs-string">&quot;center&quot;</span>) +
   geom_errorbar(binPosition = <span class="hljs-string">&quot;center&quot;</span>, aes = aes(yMin = f{max(`<span class="hljs-type">Counts</span>` - <span class="hljs-number">1.0</span>, <span class="hljs-number">0.0</span>)}, yMax = f{`<span class="hljs-type">Counts</span>` + <span class="hljs-number">1.0</span>})) +
@@ -675,7 +679,7 @@ the fact that individual geoms can receive their own data frame comes in. We'll 
 hand <code>geom_errorbar</code> the input data frame filtered to only &quot;background&quot; rows. This way
 it will only have that data to plot and we should end up without error bars on the
 &quot;candidates&quot; data:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>, hdKind = hdOutline) +
   geom_point(binPosition = <span class="hljs-string">&quot;center&quot;</span>) +
   geom_errorbar(binPosition = <span class="hljs-string">&quot;center&quot;</span>, data = df.filter(f{`<span class="hljs-keyword">Type</span>` == <span class="hljs-string">&quot;background&quot;</span>}),
@@ -687,7 +691,7 @@ it will only have that data to plot and we should end up without error bars on t
 </figure>
                         <p>Perfect! Let's round it off by modifying the <code>x</code> and <code>y</code> labels and add a nice
 title on top:</p>
-                        <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
+                        <pre><code class="nohighlight hljs nim">ggplot(df, aes(<span class="hljs-string">&quot;Energy&quot;</span>, <span class="hljs-string">&quot;Counts&quot;</span>, color = <span class="hljs-string">&quot;Type&quot;</span>, fill = <span class="hljs-string">&quot;Type&quot;</span>)) +
   geom_histogram(stat = <span class="hljs-string">&quot;identity&quot;</span>, position = <span class="hljs-string">&quot;identity&quot;</span>, alpha = <span class="hljs-number">0.5</span>, hdKind = hdOutline) +
   geom_point(binPosition = <span class="hljs-string">&quot;center&quot;</span>) +
   geom_errorbar(binPosition = <span class="hljs-string">&quot;center&quot;</span>, data = df.filter(f{`<span class="hljs-keyword">Type</span>` == <span class="hljs-string">&quot;background&quot;</span>}),
@@ -713,20 +717,6 @@ that can be mapped to geometric objects and data, even for example
 <p>For a large variety of actual plotting example snippets, check out the <code>ggplotnim</code> recipe section here:</p>
 <p><a href="https://github.com/Vindaar/ggplotnim/blob/master/recipes.org">Recipes</a></p>
 <p>Thanks for reading! :)</p>
-                        <script defer>/* Generated by the Nim Compiler v1.6.10 */
-var framePtr = null;
-var excHandler = 0;
-var lastJSError = null;
-if (!Math.trunc) {
-  Math.trunc = function(v) {
-    v = +v;
-    if (!isFinite(v)) return v;
-    return (v - v % 1) || (v < 0 ? -0 : v === 0 ? v : 0);
-  };
-}
-
-var objectID_620757154 = [0];
-</script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -763,7 +753,6 @@ var objectID_620757154 = [0];
 
 
         <script src="../assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../assets/js/highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="../assets/js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
