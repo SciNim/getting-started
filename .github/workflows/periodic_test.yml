@@ -1,0 +1,22 @@
+name: periodic test
+
+on:
+  schedule:
+    # Run every month the 20th when the clock is 13:00 UTC
+    - cron: '0 13 20 * *'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: pip install scipy numpy
+      - name: "install_nim"
+        id: install_nim
+        uses: iffy/install-nim@v4.1.1
+      - run: nimble install -y
+      - name: GenBook
+        run: nimble genbook
