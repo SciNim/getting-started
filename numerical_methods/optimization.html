@@ -300,10 +300,10 @@ BFGS: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
 LBFGS: Tensor[system.float] of shape &quot;[2]&quot; on backend &quot;Cpu&quot;
     1     1
    min time    avg time  std dv   runs name
- 357.320 ms  429.597 ms ±45.295    x12 Steepest
-   0.172 ms    0.328 ms  ±0.858  x1000 Newton
-   2.839 ms   12.164 ms  ±7.746   x412 BFGS
-   5.458 ms   15.298 ms  ±7.515   x324 LBFGS</pre>
+ 214.122 ms  315.523 ms ±49.139    x16 Steepest
+   0.201 ms    0.268 ms  ±0.332  x1000 Newton
+   3.051 ms    9.665 ms  ±7.740   x509 BFGS
+   4.878 ms    9.730 ms  ±5.731   x504 LBFGS</pre>
                         <p>As we can see, Newton, BFGS and LBFGS found the exact solution and they did it fast.
 Steepest descent didn't find as good a solution and took by far the longest time.
 Steepest descent has an order of convergence of $O(N)$, Newton has $O(N^2)$ and (L)BFGS

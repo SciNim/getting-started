@@ -290,14 +290,14 @@ that is needed is an initial guess of the parameters. We will set them to all 1 
                         <p>Now we are ready to do the actual fitting:</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> solution = levmarq(fitFunc, initialGuess, t, y)
 <span class="hljs-keyword">echo</span> solution</code></pre><pre class="nb-output">Tensor[system.float] of shape &quot;[4]&quot; on backend &quot;Cpu&quot;
-    0.49973     5.96365    0.114903    0.981149</pre>
+    0.503366      6.03074    0.0489922      1.00508</pre>
                         <p>As we can see, the found parameters are very close to the actual ones. But maybe we can do better,
 <code>levmarq</code> accepts an <code>options</code> parameter which is the same as the one described in <a href="./optimization.html">Optimization</a>
 with the addition of the <code>lambda0</code> parameter. We can reduce the <code>tol</code> and see if we get an even better fit:</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> options = levmarqOptions(tol=<span class="hljs-number">1e-10</span>)
 <span class="hljs-keyword">let</span> solution = levmarq(fitFunc, initialGuess, t, y, options=options)
 <span class="hljs-keyword">echo</span> solution</code></pre><pre class="nb-output">Tensor[system.float] of shape &quot;[4]&quot; on backend &quot;Cpu&quot;
-    0.49973     5.96365    0.114903    0.981149</pre>
+    0.503366      6.03074    0.0489921      1.00508</pre>
                         <p>As we can see, there isn't really any difference. So we can conclude that the
 found solution has in fact converged.</p>
 <p>Here's a plot comparing the fitted and original function:</p>
@@ -321,7 +321,7 @@ of your measurements or you may have to approximate it using the data itself.</p
   fitFunc(solution, x)</code></pre>
                         <p>Now we can calculate the $\chi^2$ using numericalnim's <code>chi2</code> proc:</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> chi = chi2(y, yCurve, yError)
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;χ² = &quot;</span>, chi</code></pre><pre class="nb-output">χ² = 16.72018127975399</pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;χ² = &quot;</span>, chi</code></pre><pre class="nb-output">χ² = 16.93637503832095</pre>
                         <p>Great! Now we have a measure of how good the fit is, but what if we add more points?
 Then we will get a better fit, but we will also get more points to sum over.
 And what if we choose another curve to fit with more parameters?
@@ -337,7 +337,7 @@ This is simplified, the mean $\chi^2$
 score adjusted to penalize too complex curves.</p>
 <p>Let's calculate it!</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> reducedChi = chi / (y.len - solution.len).<span class="hljs-built_in">float</span>
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Reduced χ² = &quot;</span>, reducedChi</code></pre><pre class="nb-output">Reduced χ² = 1.045011329984624</pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Reduced χ² = &quot;</span>, reducedChi</code></pre><pre class="nb-output">Reduced χ² = 1.058523439895059</pre>
                         <p>As a rule of thumb, values around 1 are desirable. If it is much larger
 than 1, it indicates a bad fit. And if it is much smaller than 1 it means
 that the fit is much better than the uncertainties suggested. This could
@@ -351,28 +351,28 @@ the Hessian of the objective function (we used $\chi^2$).
 <code>numericalnim</code> can compute the covariance matrix for us using <code>paramUncertainties</code>:</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> cov = paramUncertainties(solution, fitFunc, t, y, yError, returnFullCov=<span class="hljs-literal">true</span>)
 <span class="hljs-keyword">echo</span> cov</code></pre><pre class="nb-output">Tensor[system.float] of shape &quot;[4, 4]&quot; on backend &quot;Cpu&quot;
-|1.68076e-05      1.53698e-05    -9.88303e-06     -2.1667e-06|
-|1.53698e-05      0.000670963    -0.000247717     5.82197e-06|
-|-9.88303e-06    -0.000247717     0.000246359    -1.88845e-06|
-|-2.1667e-06      5.82197e-06    -1.88845e-06     0.000409496|</pre>
+|1.70541e-05      1.58002e-05    -1.04688e-05     -2.4089e-06|
+|1.58002e-05      0.000707119    -0.000250193    -9.67158e-06|
+|-1.04688e-05    -0.000250193     0.000245993     4.47236e-06|
+|-2.4089e-06     -9.67158e-06     4.47236e-06     0.000446313|</pre>
                         <p>That is the full covariance matrix, but we are only interested in the diagonal elements.
 By default <code>returnFullCov</code> is false and then we get a 1D Tensor with the diagonal instead:</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> variances = paramUncertainties(solution, fitFunc, t, y, yError)
 <span class="hljs-keyword">echo</span> variances</code></pre><pre class="nb-output">Tensor[system.float] of shape &quot;[4]&quot; on backend &quot;Cpu&quot;
-    1.68076e-05    0.000670963    0.000246359    0.000409496</pre>
+    1.70541e-05    0.000707119    0.000245993    0.000446313</pre>
                         <p>It's important to note that these values are the <strong>variances</strong> of the parameters.
 So if we want the standard deviations we will have to take the square root:</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> paramUncertainty = sqrt(variances)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Uncertainties: &quot;</span>, paramUncertainty</code></pre><pre class="nb-output">Uncertainties: Tensor[system.float] of shape &quot;[4]&quot; on backend &quot;Cpu&quot;
-    0.0040997    0.0259029    0.0156958     0.020236</pre>
+    0.00412966     0.0265917     0.0156842     0.0211261</pre>
                         <p>All in all, these are the values and uncertainties we got for each of the parameters:</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;α = &quot;</span>, solution[<span class="hljs-number">0</span>], <span class="hljs-string">&quot; ± &quot;</span>, paramUncertainty[<span class="hljs-number">0</span>]
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;β = &quot;</span>, solution[<span class="hljs-number">1</span>], <span class="hljs-string">&quot; ± &quot;</span>, paramUncertainty[<span class="hljs-number">1</span>]
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;γ = &quot;</span>, solution[<span class="hljs-number">2</span>], <span class="hljs-string">&quot; ± &quot;</span>, paramUncertainty[<span class="hljs-number">2</span>]
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;δ = &quot;</span>, solution[<span class="hljs-number">3</span>], <span class="hljs-string">&quot; ± &quot;</span>, paramUncertainty[<span class="hljs-number">3</span>]</code></pre><pre class="nb-output">α = 0.4997296913630543 ± 0.004099702618360112
-β = 5.963645135105484 ± 0.02590294391910104
-γ = 0.1149030201635752 ± 0.01569584154385546
-δ = 0.9811490467398611 ± 0.02023601553057025</pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;δ = &quot;</span>, solution[<span class="hljs-number">3</span>], <span class="hljs-string">&quot; ± &quot;</span>, paramUncertainty[<span class="hljs-number">3</span>]</code></pre><pre class="nb-output">α = 0.5033663155477502 ± 0.004129656819321223
+β = 6.030735258169046 ± 0.02659170150059456
+γ = 0.0489920969605781 ± 0.01568416864219338
+δ = 1.005076206375797 ± 0.02112613290725861</pre>
                         <h2>Further reading</h2>
 <ul>
 <li><a href="https://scinim.github.io/numericalnim/numericalnim/optimize.html">numericalnim's documentation on optimization</a></li>
