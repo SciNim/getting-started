@@ -331,12 +331,12 @@ timeIt <span class="hljs-string">&quot;AdaSimpson&quot;</span>:
 
 timeIt <span class="hljs-string">&quot;AdaGauss&quot;</span>:
   keep adaptiveGauss(f, a, b, tol=tol)</code></pre><pre class="nb-output">   min time    avg time  std dv   runs name
-   0.017 ms    0.019 ms  ±0.001  x1000 Trapz
-   0.018 ms    0.019 ms  ±0.005  x1000 Simpson
-   0.066 ms    0.076 ms  ±0.128  x1000 GaussQuad
-   0.036 ms    0.040 ms  ±0.002  x1000 Romberg
-   0.293 ms    0.493 ms  ±1.211  x1000 AdaSimpson
-   0.040 ms    0.045 ms  ±0.003  x1000 AdaGauss</pre>
+   0.015 ms    0.017 ms  ±0.001  x1000 Trapz
+   0.016 ms    0.019 ms  ±0.064  x1000 Simpson
+   0.065 ms    0.073 ms  ±0.093  x1000 GaussQuad
+   0.035 ms    0.038 ms  ±0.002  x1000 Romberg
+   0.293 ms    0.605 ms  ±1.541  x1000 AdaSimpson
+   0.032 ms    0.037 ms  ±0.040  x1000 AdaGauss</pre>
                         <p>As we can see, all methods except AdaSimpson were roughly equally fast. So if I were to choose
 a winner, it would be <code>adaptiveGauss</code> because it was the most accurate while still being among
 the fastest methods.</p>

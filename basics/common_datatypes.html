@@ -374,7 +374,7 @@ provides a <code>linspace</code> implementation. Let's create 5 evenly spaced po
 standard library provides a <code>rand</code> procedure we can combine with <code>mapIt</code>:</p>
                         <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> random
 randomize()
-<span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>).mapIt(rand(<span class="hljs-number">10.0</span>))</code></pre><pre class="nb-output">@[9.579251111264801, 1.578132457619805, 4.889709401360747, 8.848071916580956, 2.386300214710697]</pre>
+<span class="hljs-keyword">echo</span> toSeq(<span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>).mapIt(rand(<span class="hljs-number">10.0</span>))</code></pre><pre class="nb-output">@[0.8769893891051761, 8.003552359258268, 0.1919852990291604, 9.043200846330667, 1.789818960578717]</pre>
                         <p>samples 5 floating point numbers between 0 and 10.</p>
 <h2><code>Tensor[T]</code> - an ND-array type from <a href="https://github.com/mratsim/Arraymancer">Arraymancer</a></h2>
 <p>Arraymancer provides an ND-array type called <code>Tensor[T]</code> that is best compared to a numpy

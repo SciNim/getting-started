@@ -332,10 +332,10 @@ ggplot(df, aes(<span class="hljs-string">&quot;t&quot;</span>, <span class="hljs
 <code>odeOptions</code> would probably get them on-par with the others. There is one parameter we haven't talked about though,
 the execution time. Let's look at that and see if it bring any further insights:</p>
                         <pre><code class="nohighlight hljs nim"></code></pre><pre class="nb-output">   min time    avg time  std dv   runs name
-  11.259 ms   20.406 ms  ±6.787   x243 heun2
-  14.426 ms   16.404 ms  ±3.768   x295 rk4
-   0.259 ms    0.284 ms  ±0.009  x1000 rk21
-   0.304 ms    0.361 ms  ±0.118  x1000 tsit54</pre>
+  11.078 ms   16.221 ms  ±6.710   x298 heun2
+  10.544 ms   10.629 ms  ±0.268   x460 rk4
+   0.214 ms    0.217 ms  ±0.002  x1000 rk21
+   0.256 ms    0.258 ms  ±0.002  x1000 tsit54</pre>
                         <p>As we can see, the adaptive methods are orders of magnitude faster while achieving roughly the same errors.
 This is because they take fewer and longer steps when the function is flatter and only decrease the
 step-size when the function is changing more rapidly.</p>
@@ -393,10 +393,10 @@ ctx.tValues[<span class="hljs-string">&quot;A&quot;</span>] = @[@[<span class="h
                         <ul>
 <li>tsit54: 2.114975e-13</li>
 </ul>
-                        <pre><code class="nohighlight hljs nim"></code></pre><pre class="nb-output">2615.167 ms 2626.198 ms ±15.601     x2 heun2
-5261.133 ms 5261.133 ms  ±0.000     x1 rk4
-  50.778 ms   51.349 ms  ±0.291    x98 rk21
- 224.308 ms  225.149 ms  ±0.704    x23 tsit54</pre>
+                        <pre><code class="nohighlight hljs nim"></code></pre><pre class="nb-output">2733.102 ms 2738.193 ms  ±7.199     x2 heun2
+5430.602 ms 5430.602 ms  ±0.000     x1 rk4
+  52.290 ms   52.462 ms  ±0.123    x96 rk21
+ 232.087 ms  233.602 ms  ±1.008    x22 tsit54</pre>
                         <p>We can once again see that the high-order adaptive methods are both more accurate and faster than the fixed-order ones.</p>
 <h2>Further reading</h2>
 <ul>
