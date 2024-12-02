@@ -7,6 +7,7 @@ var book = initBookWithToc:
     entry("Common datatypes", "common_datatypes")
     entry("Data wrangling with dataframes", "data_wrangling")
     entry("Plotting", "basic_plotting")
+    entry("Machine Learning", "machine_learning")
     entry("Units", "units_basics")
   section("Numerical methods", "numerical_methods/index.md"):
     entry("Curve fitting", "curve_fitting")
