@@ -4,7 +4,7 @@ import nimibook
 nbInit(theme = useNimibook)
 nb.useLatex
 
-nbText: md"""
+nbText: hlMd"""
 # 1D Numerical Integration
 In this tutorial you will learn learn how to use [numericalnim](https://github.com/HugoGranstrom/numericalnim/) to perform
 numerical integration both on discrete data and continuous functions.
@@ -34,7 +34,7 @@ nbCode:
 
 block continuousPart: # Want to be able to use cross-codeblock variables, but also separate each part of the tutorial.
 
-  nbText: md"""
+  nbText: hlMd"""
 As you can see, we defined `f` not as just `proc f(x: float): float` but added a `ctx: NumContext[float, float]` as well.
 That is because `numericalnim`'s integration methods expect a proc with the signature ``proc f[T; U](x: U, ctx: NumContext[T, U]): T``,
 where `U` is the type used for computations internally (typically a `float` or a type like it) and `T` is the user defined
@@ -61,7 +61,7 @@ a more detailed plotting tutorial can be found [here](../data_viz/plotting_data.
 
   nbImage("images/humps.png")
 
-  nbText: md"""
+  nbText: hlMd"""
 ### Let the integration begin!
 Now we have everything we need to start integrating. The specific integral we want to compute is:
 
@@ -95,7 +95,7 @@ Let's code this now and compare them!
     echo "AdaSimpson Error: ", adaptiveSimpsonError
     echo "AdaGauss Error:   ", adaptiveGaussError
 
-  nbText: md"""
+  nbText: hlMd"""
 It seems like the gauss methods were the most accurate with Romberg and Simpson
 coming afterwards and in last place trapz. But at what cost did these scores come at? Which method was the fastest?
 Let's find out with a package called `benchy`. `keep` is used to prevent the compiler from optimizing away the code:
@@ -121,7 +121,7 @@ Let's find out with a package called `benchy`. `keep` is used to prevent the com
     timeIt "AdaGauss":
       keep adaptiveGauss(f, a, b, tol=tol)
 
-  nbText: md"""
+  nbText: hlMd"""
 As we can see, all methods except AdaSimpson were roughly equally fast. So if I were to choose
 a winner, it would be `adaptiveGauss` because it was the most accurate while still being among
 the fastest methods.
@@ -166,7 +166,7 @@ Let's get coding!
 
   nbImage("images/continuousHumpsComparaision.png")
 
-  nbText: md"""
+  nbText: hlMd"""
 As we can see in the graph they are all so close to the exact curve that you can't distingush between
 them, but when we look at the total error we see that once again the Gauss method is superior.
 
@@ -199,7 +199,7 @@ from the returned values which can be evaluated when needed.
     # Thanks to converter you can integrate a spline by passing it as the function:
     echo "Integrate it again: ", adaptiveGauss(spline, a, b)
 
-  nbText: md"""
+  nbText: hlMd"""
   I think that about wraps it up regarding integrating continuous functions! Let's take a look at
   integrating discrete data now!
 
@@ -238,7 +238,7 @@ block discretePart:
 
   nbImage("images/sampledHumps.png")
 
-  nbText: md"""
+  nbText: hlMd"""
 As you can see, the resolution was too small to fully account for the big peak and undershoots it by quite a margin.
 Without having known the "real" function in this case we wouldn't have known this of course, and that is most often the
 case when we have discrete data. Therefore, the resolution of the data is crucial for the accuracy. But let's say this
@@ -268,7 +268,7 @@ Luckily for us our data satisfies all of them ;) So let's get coding:
     echo "Simpson Error: ", abs(simpsonIntegral - exact)
     echo "Romberg Error: ", abs(rombergIntegral - exact)
 
-  nbText: md"""
+  nbText: hlMd"""
 As expected all the methods underestimated the integral, but it might be unexpected that
 `trapz` performed the best out of them. Let's add a few more points, why not 33, and let's see if
 that changes things!
@@ -303,7 +303,7 @@ that changes things!
 
   nbImage("images/sampledHumps33.png")
 
-  nbText: md"""
+  nbText: hlMd"""
 As expected all methods became more accurate when we increased the amount of points.
 And from the graph we can see that the points capture the shape of the curve much better now.
 We can also note that `simpson` has overtaken `trapz` and `romberg` is neck-in-neck with `trapz` now.

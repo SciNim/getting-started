@@ -10,9 +10,10 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # libpcre3 is not packaged in ubuntu 26.04 (ubuntu-latest)
     steps:
       - uses: actions/checkout@v2
+      - run: sudo apt-get install -y libpcre3 # nim-markdown (used by nimib) imports std/re
       - run: pip install scipy numpy
       - name: "install_nim"
         id: install_nim
